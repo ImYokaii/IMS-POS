@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django_recaptcha',
+    'login_view',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +57,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # Lock user after multiple failed attempts
+    'middleware.IPLockMiddleware',
+
+    # Check user permission and role
+    'middleware.PermissionMiddleware'
 ]
 
 ROOT_URLCONF = 'inventory_system.urls'
@@ -119,12 +128,23 @@ USE_I18N = True
 USE_TZ = True
 
 
+# Login Url
+LOGIN_URL = "/login/"
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# RECAPTCHA KEYS from Google Recaptcha (Project Name: Account Mamangement Project EXP).
+# Documentation: https://pypi.org/project/django-recaptcha/
+RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
