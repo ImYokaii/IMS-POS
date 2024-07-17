@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{% static 'login.css' %}">
+    </head>
+    <body>
+
+        <div class="screen">
+
+            <div class="box-container">
+
+                <div class="title">
+                    <h1>Log In</h1>
+                </div>
+
+                <div class="form-container">
+                    <form method="post">
+                        {% csrf_token %}
+    
+                        <h4>Username:</h4>
+                        {{ form.username }}
+    
+                        <h4>Password:</h4>
+                        {{ form.password }}
+    
+                        <h4>Captcha:</h4>
+                        {{ form.captcha }}
+                        
+                        <div class="btn-container">
+                            <button type="submit">Login</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Sign Up</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <h4>Username:</h4>
+            {{ form.username }}
+
+            <h4>First Name:</h4>
+            {{ form.first_name }}
+
+            <h4>Last Name:</h4>
+            {{ form.last_name }}
+
+            <h4>Email Address:</h4>
+            {{ form.email }}
+
+            <h4>Password:</h4>
+            {{ form.password1 }}
+
+            <h4>Confirm Password:</h4>
+            {{ form.password2 }}
+
+            <h4>Captcha:</h4>
+            {{ form.captcha }}
+
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+</html>
