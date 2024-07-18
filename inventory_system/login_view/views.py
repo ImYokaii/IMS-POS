@@ -74,7 +74,7 @@ def login_page(request):
                 attempts += 1
                 cache.set(key, attempts, timeout=int(os.environ.get('FAILED_LOGIN_LOCK_DURATION')))
                 
-                if attempts >= settings.MAX_FAILED_LOGIN_ATTEMPTS:
+                if attempts >= int(os.environ.get('MAX_FAILED_LOGIN_ATTEMPTS')):
                     return HttpResponse("Temporarily locked due to multiple failed login attempts. Wait for 60 seconds")
                 
             username = request.POST.get('username')
