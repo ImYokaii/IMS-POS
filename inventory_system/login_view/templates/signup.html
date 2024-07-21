@@ -1,38 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        {% load static %}
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <h1>Sign Up</h1>
+{% extends 'login_base.html' %}
 
-        <form method="post">
-            {% csrf_token %}
+{% block title %}Sign Up Page{% endblock %}
 
-            <h4>Username:</h4>
-            {{ form.username }}
+{% block content %}
+    <h1>Sign Up</h1>
 
-            <h4>First Name:</h4>
-            {{ form.first_name }}
+    <form method="post">
+        {% csrf_token %}
 
-            <h4>Last Name:</h4>
-            {{ form.last_name }}
+        <h4>Username:</h4>
+        {{ form.username }}
 
-            <h4>Email Address:</h4>
-            {{ form.email }}
+        <h4>First Name:</h4>
+        {{ form.first_name }}
 
-            <h4>Password:</h4>
-            {{ form.password1 }}
+        <h4>Last Name:</h4>
+        {{ form.last_name }}
 
-            <h4>Confirm Password:</h4>
-            {{ form.password2 }}
+        <h4>Email Address:</h4>
+        {{ form.email }}
 
-            <h4>Captcha:</h4>
-            {{ form.captcha }}
+        <h4>Password:</h4>
+        {{ form.password1 }}
 
-            <button type="submit">Submit</button>
-        </form>
-    </body>
-</html>
+        <h4>Confirm Password:</h4>
+        {{ form.password2 }}
+
+        <h4>Captcha:</h4>
+        {{ form.captcha }}
+
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

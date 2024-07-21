@@ -1,43 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        {% load static %}
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="{% static 'login.css' %}">
-    </head>
-    <body>
+{% extends 'login_base.html' %}
 
-        <div class="screen">
+{% block title %}Login Page{% endblock %}
 
-            <div class="box-container">
+{% block content %}  
+    <h1>Log In</h1>
 
-                <div class="title">
-                    <h1>Log In</h1>
-                </div>
+    <form method="post">
+        {% csrf_token %}
 
-                <div class="form-container">
-                    <form method="post">
-                        {% csrf_token %}
-    
-                        <h4>Username:</h4>
-                        {{ form.username }}
-    
-                        <h4>Password:</h4>
-                        {{ form.password }}
-    
-                        <h4>Captcha:</h4>
-                        {{ form.captcha }}
-                        
-                        <div class="btn-container">
-                            <button type="submit">Login</button>
-                        </div>
-                    </form>
-                </div>
-                
-            </div>
-            
-        </div>
+        <h4>Username:</h4>
+        {{ form.username }}
+
+        <h4>Password:</h4>
+        {{ form.password }}
+
+        <h4>Captcha:</h4>
+        {{ form.captcha }}
         
-    </body>
-</html>
+        <div class="btn-container">
+            <button type="submit">Login</button>
+        </div>
+    </form>
+{% endblock %}

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_recaptcha',
+    'inventory_view',
     'login_view',
 ]
 
