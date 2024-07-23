@@ -1,0 +1,45 @@
+{% extends 'inventory_base.html' %}
+
+{% block title %}Filter Product List{% endblock %}
+
+{% block content %}
+    <a href="{% url 'product_list' %}" class="btn btn-secondary mb-3">
+        <i class="bi bi-arrow-bar-left"></i>
+        Back
+    </a>
+
+    <h1>Transfer Product to Waste</h1>
+
+    <form method="get" class="mb-3">
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Expiration Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td class="text-truncate" style="max-width: 150px;">{{ product.sku }}</td>
+                    <td class="text-truncate" style="max-width: 150px;">{{ product.name }}</td>
+                    <td class="text-truncate" style="max-width: 150px;">{{ product.category }}</td>
+                    <td class="text-truncate" style="max-width: 150px;">{{ product.quantity_in_stock }}</td>
+                    <td class="text-truncate" style="max-width: 150px;">{{ product.expiration_date }}</td>
+                    <td class="text-truncate" style="max-width: 150px;">
+                        <a href="{% url 'add_to_waste' product.id %}" class="btn btn-danger">Add to Waste</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+{% endblock %}
