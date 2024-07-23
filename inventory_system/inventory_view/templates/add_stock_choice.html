@@ -1,0 +1,25 @@
+{% extends 'inventory_base.html' %}
+
+{% block title %}Add Stock Choice{% endblock %}
+
+{% block content %}
+    <div class="text-center mt-5">
+        <h1>Add Stock Choice</h1>
+
+        <div class="row justify-content-center mt-4" >
+            <div class="col-auto" style="display: flex; flex-direction: column;">
+                <a href="{% url 'add_perishable' %}" class="btn btn-primary btn-lg" style="width: 200px; height: 150px; display: flex; flex-direction: column;">
+                    <i class="bi bi-droplet" style="font-size: 3.5rem;"></i>
+                    Perishable
+                </a>
+            </div>
+            
+            <div class="col-auto" style="display: flex; flex-direction: column;">
+                <a href="{% url 'add_nonperishable' %}" class="btn btn-secondary btn-lg" style="width: 200px; height: 150px; display: flex; flex-direction: column;">
+                    <i class="bi bi-box-seam" style="font-size: 3.5rem;"></i>
+                    Non-Perishable
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

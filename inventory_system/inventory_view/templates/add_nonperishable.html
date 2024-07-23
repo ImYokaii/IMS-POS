@@ -1,0 +1,18 @@
+{% extends 'inventory_base.html' %}
+
+{% block title %}Add Stock Choice{% endblock %}
+
+{% block content %}
+    <a href="{% url 'add_stock_choice' %}" class="btn btn-secondary mb-3">
+        <i class="bi bi-arrow-bar-left"></i>
+        Back
+    </a>
+
+    <h1>ADD NON-PERISHABLE PRODUCT</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Product</button>
+    </form>
+{% endblock %}
