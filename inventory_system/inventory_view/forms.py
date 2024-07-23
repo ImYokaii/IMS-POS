@@ -4,26 +4,31 @@ from .models import Product
 class PerishableProductForm(forms.ModelForm):
     class Meta:
         model = Product
+
         fields = [
-            'name', 'description', 'sku', 'category', 'price', 'cost_price',
-            'quantity_in_stock', 'unit_of_measurement', 'weight', 'dimensions',
-            'color', 'material', 'supplier_name', 'supplier_contact', 'reorder_level',
-            'last_restock_date', 'warranty_period', 'expiration_date', 'batch_number', 'brand'
+            'name', 'description', 'sku', 'category', 'price', 'cost_price', 
+            'unit_of_measurement', 'weight', 'dimensions', 'color', 'material', 
+            'supplier_name', 'expiration_date', 'batch_number', 'brand'
         ]
+
         widgets = {
             'expiration_date': forms.DateInput(attrs={'type': 'date'}),
-            'last_restock_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
 
 class NonPerishableProductForm(forms.ModelForm):
     class Meta:
         model = Product
+
         fields = [
-            'name', 'description', 'sku', 'category', 'price', 'cost_price',
-            'quantity_in_stock', 'unit_of_measurement', 'weight', 'dimensions',
-            'color', 'material', 'supplier_name', 'supplier_contact', 'reorder_level',
-            'last_restock_date', 'warranty_period', 'brand'
+            'name', 'description', 'sku', 'category', 'price', 'cost_price', 
+            'unit_of_measurement', 'weight', 'dimensions', 'color', 'material', 
+            'supplier_name', 'brand'
         ]
-        widgets = {
-            'last_restock_date': forms.DateInput(attrs={'type': 'date'}),
-        }
+
+
+class ProductFilterForm(forms.Form):
+    sku = forms.CharField(max_length=50, required=False)
+    name = forms.CharField(max_length=100, required=False)
+    expiration_date = forms.DateField(required=False, widget=forms.TextInput(attrs={'type': 'date'}))
+
