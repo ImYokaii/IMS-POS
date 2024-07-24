@@ -1,6 +1,10 @@
+import os
+from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .forms import PerishableProductForm, NonPerishableProductForm, ProductFilterForm
 from .models import Product, WasteProduct
+
+load_dotenv()
 
 
 # ===== DUMMY PAGE FOR TESTING ===== #
@@ -11,8 +15,41 @@ def dummy_page(request):
 
 # ===== ALL PRODUCTS PAGE ===== #
 def product_list(request):
+    form = ProductFilterForm(request.GET)
     products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
+
+    if form.is_valid():
+        sku = form.cleaned_data.get('sku')
+        name = form.cleaned_data.get('name')
+        product_type = form.cleaned_data.get('product_type')
+        expiration_date = form.cleaned_data.get('expiration_date')
+        category = form.cleaned_data.get('category')
+
+        if sku:
+            products = products.filter(sku=sku)
+
+        if name:
+            products = products.filter(name=name)
+
+        if product_type:
+            PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
+
+            PERISHABLE_TYPE = PRODUCT_TYPES[0].strip()
+            NON_PERISHABLE_TYPE = PRODUCT_TYPES[1].strip()
+
+            if product_type == PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=False)
+
+            elif product_type == NON_PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=True)
+
+        if category:
+            products = products.filter(category=category)
+
+        if expiration_date:
+            products = products.filter(expiration_date=expiration_date)
+
+    return render(request, 'product_list.html', {'form': form, 'products': products})
 # =============================================== #
 
 
@@ -62,12 +99,31 @@ def filter_product_list(request):
     if form.is_valid():
         sku = form.cleaned_data.get('sku')
         name = form.cleaned_data.get('name')
+        product_type = form.cleaned_data.get('product_type')
+        category = form.cleaned_data.get('category')
         expiration_date = form.cleaned_data.get('expiration_date')
 
         if sku:
-            products = products.filter(sku__icontains=sku)
+            products = products.filter(sku=sku)
+
         if name:
-            products = products.filter(name__icontains=name)
+            products = products.filter(name=name)
+
+        if product_type:
+            PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
+
+            PERISHABLE_TYPE = PRODUCT_TYPES[0].strip()
+            NON_PERISHABLE_TYPE = PRODUCT_TYPES[1].strip()
+
+            if product_type == PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=False)
+
+            elif product_type == NON_PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=True)
+
+        if category:
+            products = products.filter(category=category)
+            
         if expiration_date:
             products = products.filter(expiration_date=expiration_date)
 
@@ -75,7 +131,7 @@ def filter_product_list(request):
 # =============================================== #
 
 
-# ===== ADD PRODUCT TO WASTAGE PAGE ===== #
+# ===== ADD PRODUCT TO WASTE PAGE ===== #
 def add_to_waste(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -93,7 +149,6 @@ def add_to_waste(request, product_id):
             color=product.color,
             material=product.material,
             supplier_name=product.supplier_name,
-            date_added=product.date_added,
             expiration_date=product.expiration_date,
             batch_number=product.batch_number,
             brand=product.brand,
@@ -105,4 +160,44 @@ def add_to_waste(request, product_id):
         return redirect('filter_product_list')
     
     return render(request, 'add_to_waste.html', {'product': product})
+# =============================================== #
+
+
+# ===== ALL WASTED PRODUCTS PAGE ===== #
+def wasted_product_list(request):
+    form = ProductFilterForm(request.GET)
+    products = Product.objects.all()
+
+    if form.is_valid():
+        sku = form.cleaned_data.get('sku')
+        name = form.cleaned_data.get('name')
+        product_type = form.cleaned_data.get('product_type')
+        expiration_date = form.cleaned_data.get('expiration_date')
+        category = form.cleaned_data.get('category')
+
+        if sku:
+            products = products.filter(sku=sku)
+
+        if name:
+            products = products.filter(name=name)
+
+        if product_type:
+            PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
+
+            PERISHABLE_TYPE = PRODUCT_TYPES[0].strip()
+            NON_PERISHABLE_TYPE = PRODUCT_TYPES[1].strip()
+
+            if product_type == PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=False)
+
+            elif product_type == NON_PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=True)
+
+        if category:
+            products = products.filter(category=category)
+
+        if expiration_date:
+            products = products.filter(expiration_date=expiration_date)
+
+    return render(request, 'wasted_product_list.html', {'form': form, 'products': products})
 # =============================================== #

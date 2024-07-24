@@ -21,7 +21,7 @@ class Product(models.Model):
     brand = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"Name: {self.name} (Qty. {self.quantity_in_stock})"
+        return f"Name: {self.name} (₱ {self.price})"
 
 
 class WasteProduct(models.Model):
