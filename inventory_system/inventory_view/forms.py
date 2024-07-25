@@ -28,6 +28,9 @@ CATEGORY_CHOICES = [
     ('Chemicals', 'Chemicals'),
 ]
 
+PRODUCT_CATEGORIES = os.environ.get('PRODUCT_CATEGORIES', '').split(',')
+PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
+
 
 class PerishableProductForm(forms.ModelForm):
     class Meta:
@@ -63,12 +66,11 @@ class NonPerishableProductForm(forms.ModelForm):
 
 
 class ProductFilterForm(forms.Form):
-    CATEGORY_CHOICES = os.environ.get('PRODUCT_CATEGORIES', '').split(',')
-    PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
-
     sku = forms.CharField(max_length=50, required=False)
     name = forms.CharField(max_length=100, required=False)
     product_type = forms.ChoiceField(choices=[("", "All Products")] + [(ptype, ptype) for ptype in PRODUCT_TYPES], required=False)
-    category = forms.ChoiceField(choices=[("", "All Categories")] + [(category, category) for category in CATEGORY_CHOICES], required=False)
+    category = forms.ChoiceField(choices=[("", "All Categories")] + [(category, category) for category in PRODUCT_CATEGORIES], required=False)
     expiration_date = forms.DateField(required=False, widget=forms.TextInput(attrs={'type': 'date'}))
+
+
 
