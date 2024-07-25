@@ -3,11 +3,11 @@
 {% block title %}Filter Product List{% endblock %}
 
 {% block content %}
-    <h1>Transfer Product to Waste</h1>
+    <h1>Wasted Products</h1>
 
     <form method="get" class="mb-3">
         {{ form.as_p }}
-        <button type="submit">Filter</button>
+        <button type="submit" class="btn btn-primary">Filter</button>
     </form>
 
     <table class="table table-striped">
@@ -17,6 +17,7 @@
                 <th>Name</th>
                 <th>Category</th>
                 <th>Expiration</th>
+                <th>Date Of Waste</th>
             </tr>
         </thead>
 
@@ -27,11 +28,7 @@
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.expiration_date }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">
-                        <a href="{% url 'add_to_waste' product.id %}">
-                            <i class="bi bi-trash3-fill" style="color: red; font-size: 20px;"></i>
-                        </a>
-                    </td>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.date_added }}</td>
                 </tr>
             {% endfor %}
         </tbody>

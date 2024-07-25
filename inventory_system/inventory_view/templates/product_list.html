@@ -5,11 +5,10 @@
 {% block content %}
     <h1>Product List</h1>
 
-    <nav class="d-flex justify-content-start">
-        <a class="nav-link me-3" href="{% url 'add_stock_choice' %}">+Add New Stock</a>
-        <a class="nav-link me-3" href="{% url 'filter_product_list' %}">+Add Inventory Wastage</a>
-    </nav>
-    
+    <form method="get" class="mb-3">
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover table-sm table-custom">
@@ -20,10 +19,8 @@
                     <th>SKU</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Quantity in Stock</th>
                     <th>Unit of Measurement</th>
-                    <th>Package Size</th>
-                    <th>Package Quantity</th>
+                    <th>Expiration</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,11 +30,9 @@
                     <td class="text-truncate" style="max-width: 150px;">{{ product.description }}</td>
                     <td class="text-truncate" style="max-width: 100px;">{{ product.sku }}</td>
                     <td class="text-truncate" style="max-width: 100px;">{{ product.category }}</td>
-                    <td class="text-truncate" style="max-width: 100px;">{{ product.price }}</td>
-                    <td class="text-truncate" style="max-width: 100px;">{{ product.quantity_in_stock }}</td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ product.unit_of_measurement }}</td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ product.package_size }}</td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ product.package_quantity }}</td>
+                    <td class="text-truncate" style="max-width: 50px;">₱{{ product.price }}</td>
+                    <td class="text-truncate" style="max-width: 50px;">{{ product.unit_of_measurement }}</td>
+                    <td class="text-truncate" style="max-width: 100px;">{{ product.expiration_date }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

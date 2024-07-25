@@ -1,0 +1,31 @@
+<nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
+    <div class="position-sticky">
+        <ul class="nav flex-column">
+
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'product_list' %}">
+                    <strong>View Inventory</strong>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'add_item_choice' %}">
+                    <strong>Add New Stock</strong>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'wasted_product_list' %}">
+                    <strong>View Product Waste</strong>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'filter_product_list' %}">
+                    <strong>Add Product Waste</strong>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</nav>
