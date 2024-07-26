@@ -22,7 +22,19 @@ class Product(models.Model):
 
     def __str__(self):
         return f"Name: {self.name} (₱ {self.price})"
+    
+    def generate_batch_number(self):
+        if self.expiration_date:
+            return self.expiration_date.strftime('%m%d%y')
+        
+        else:
+            return None
+        
+    def save(self):
+        if self.expiration_date and not self.batch_number:
+            self.batch_number = self.generate_batch_number()
 
+        super(Product, self).save()
 
 class WasteProduct(models.Model):
     name = models.CharField(max_length=100, null=True)
@@ -44,4 +56,4 @@ class WasteProduct(models.Model):
 
 
     def __str__(self):
-        return f"Name: {self.name} (Qty. {self.quantity})"
+        return f"Name: {self.name} (Date of Waste: {self.date_added})"

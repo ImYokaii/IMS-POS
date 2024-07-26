@@ -39,7 +39,7 @@ class PerishableProductForm(forms.ModelForm):
         fields = [
             'name', 'description', 'sku', 'category', 'price', 'cost_price', 
             'unit_of_measurement', 'weight', 'dimensions', 'color', 'material', 
-            'supplier_name', 'expiration_date', 'batch_number', 'brand'
+            'supplier_name', 'expiration_date', 'brand'
         ]
 
         widgets = {
