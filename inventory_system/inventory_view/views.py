@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .forms import PerishableProductForm, NonPerishableProductForm, ProductFilterForm
 from .models import Product, WasteProduct
+from dashboard_view.models import ProductInstance
 
 load_dotenv()
 
@@ -134,7 +135,8 @@ def add_existing_product(request, product_id):
         form = form_class(request.POST, initial=initial_data)
 
         if form.is_valid():
-            form.save()
+            product = form.save()
+            ProductInstance.add_or_update_instance(product)
             return redirect('product_list')
         
     else:
@@ -150,7 +152,8 @@ def add_perishable(request):
         form = PerishableProductForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            product = form.save()
+            ProductInstance.add_or_update_instance(product)
             return redirect('product_list')
         
     else:
@@ -166,7 +169,8 @@ def add_nonperishable(request):
         form = NonPerishableProductForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            product = form.save()
+            ProductInstance.add_or_update_instance(product)
             return redirect('product_list')
         
     else:
@@ -251,7 +255,7 @@ def add_to_waste(request, product_id):
 # ===== ALL WASTED PRODUCTS PAGE ===== #
 def wasted_product_list(request):
     form = ProductFilterForm(request.GET)
-    products = Product.objects.all()
+    products = WasteProduct.objects.all()
 
     if form.is_valid():
         sku = form.cleaned_data.get('sku')
