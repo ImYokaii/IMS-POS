@@ -7,6 +7,8 @@ class ProductInstance(models.Model):
     category = models.CharField(max_length=100, blank=True, null=True)
     quantity = models.PositiveIntegerField()
     brand = models.CharField(max_length=100, blank=True, null=True)
+    reorder_level = models.PositiveIntegerField(blank=True, null=True, default=0)
+
 
     def __str__(self):
         return f"{self.product.name} (Qty. {self.quantity}) - {self.category}"
