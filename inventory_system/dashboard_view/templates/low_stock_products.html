@@ -1,0 +1,30 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+    <h1>Low Stock Products</h1>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Reorder Level</th>
+                <th>Brand</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for product in product_instance %}
+                <tr>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.quantity }}</td>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.reorder_level }}</td>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.brand }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+{% endblock %}

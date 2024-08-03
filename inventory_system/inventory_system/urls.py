@@ -24,4 +24,5 @@ urlpatterns = [
     path(os.environ.get('ADMIN_URL'), admin.site.urls),
     path('', include("login_view.urls")),
     path('', include("inventory_view.urls")),
+    path('', include("dashboard_view.urls")),
 ]

@@ -1,0 +1,42 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="mb-4">Edit Reorder Level for Product: <span class="text-primary">{{ product.name }}</span></h1>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h4 class="mb-2">Category:</h4>
+                <p class="lead">{{ product.category }}</p>
+            </div>
+            <div class="col-md-6">
+                <h4 class="mb-2">Brand:</h4>
+                <p class="lead">{{ product.brand }}</p>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h4 class="mb-2">Quantity:</h4>
+                <p class="lead">{{ product.quantity }}</p>
+            </div>
+            <div class="col-md-6">
+                <h4 class="mb-2">Reorder Level:</h4>
+                <p class="lead">{{ product.reorder_level }}</p>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <h3 class="mb-3">Update Reorder Level</h3>
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+{% endblock %}
