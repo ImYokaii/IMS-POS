@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from inventory_view.models import Product
 from .models import ProductInstance
 from .forms import ReorderLevelForm, SearchFilterForm
+from .utils import search_filter_product_list
 from django.db.models import Sum, F
 import matplotlib.pyplot as plt
 import matplotlib
@@ -57,18 +58,13 @@ def dashboard(request):
 
 # ===== Product Levels Page ===== #
 def product_levels(request):
-    product_instance = ProductInstance.objects.all()
     form = SearchFilterForm(request.POST)
     
     if form.is_valid():
         name = form.cleaned_data.get('name')
         category = form.cleaned_data.get('category')
 
-        if name:
-            product_instance = product_instance.filter(name=name)
-
-        if category:
-            product_instance = product_instance.filter(category=category)
+        product_instance = search_filter_product_list(name, category)
 
     return render(request, 'product_levels.html', {'product_instance': product_instance, 'form': form})
 # =============================================== #
