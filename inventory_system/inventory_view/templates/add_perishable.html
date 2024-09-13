@@ -12,7 +12,152 @@
 
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" id="name" name="name" value="{{ form.name.value|default:'' }}">
+            {% if form.name.errors %}
+                <div class="invalid-feedback">
+                    Invalid name.
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control {% if form.description.errors %}is-invalid{% endif %}" id="description" name="description" value="{{ form.description.value|default:'' }}">
+            {% if form.description.errors %}
+                <div class="invalid-feedback">
+                    Invalid description.
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="sku" class="form-label">SKU</label>
+            <input type="text" class="form-control {% if form.sku.errors %}is-invalid{% endif %}" id="sku" name="sku" value="{{ form.sku.value|default:'' }}">
+            {% if form.sku.errors %}
+                <div class="invalid-feedback">
+                    Invalid sku or sku already exists.
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-control {% if form.category.errors %}is-invalid{% endif %}" id="category" name="category" value="{{ form.sku.value|default:'' }}">
+                {% for value, label in form.category.field.widget.choices %}
+                    <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if form.category.errors %}
+                <div class="invalid-feedback">
+                    Invalid category.
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="text" class="form-control {% if form.price.errors %}is-invalid{% endif %}" id="price" name="price" value="{{ form.price.value|default:'' }}">
+                {% if form.price.errors %}
+                    <div class="invalid-feedback">
+                        Invalid price.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="cost_price" class="form-label">Cost Price</label>
+                <input type="text" class="form-control {% if form.cost_price.errors %}is-invalid{% endif %}" id="cost_price" name="cost_price" value="{{ form.cost_price.value|default:'' }}">
+                {% if form.cost_price.errors %}
+                    <div class="invalid-feedback">
+                        Invalid cost price.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="unit_of_measurement" class="form-label">Unit of Measurement</label>
+                <input type="text" class="form-control {% if form.unit_of_measurement.errors %}is-invalid{% endif %}" id="unit_of_measurement" name="unit_of_measurement" value="{{ form.unit_of_measurement.value|default:'' }}">
+                {% if form.unit_of_measurement.errors %}
+                    <div class="invalid-feedback">
+                        Invalid unit of measurement.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="weight" class="form-label">Weight</label>
+                <input type="text" class="form-control {% if form.weight.errors %}is-invalid{% endif %}" id="weight" name="weight" value="{{ form.weight.value|default:'' }}">
+                {% if form.weight.errors %}
+                    <div class="invalid-feedback">
+                        Invalid weight.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="dimensions" class="form-label">Dimensions</label>
+                <input type="text" class="form-control {% if form.dimensions.errors %}is-invalid{% endif %}" id="dimensions" name="dimensions" value="{{ form.dimensions.value|default:'' }}">
+                {% if form.dimensions.errors %}
+                    <div class="invalid-feedback">
+                        Invalid dimensions.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="color" class="form-label">Color</label>
+                <input type="text" class="form-control {% if form.color.errors %}is-invalid{% endif %}" id="color" name="color" value="{{ form.color.value|default:'' }}">
+                {% if form.color.errors %}
+                    <div class="invalid-feedback">
+                        Invalid color.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="material" class="form-label">Material</label>
+                <input type="text" class="form-control {% if form.material.errors %}is-invalid{% endif %}" id="material" name="material" value="{{ form.material.value|default:'' }}">
+                {% if form.material.errors %}
+                    <div class="invalid-feedback">
+                        Invalid material.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="supplier_name" class="form-label">Supplier Name</label>
+                <input type="text" class="form-control {% if form.supplier_name.errors %}is-invalid{% endif %}" id="supplier_name" name="supplier_name" value="{{ form.supplier_name.value|default:'' }}">
+                {% if form.supplier_name.errors %}
+                    <div class="invalid-feedback">
+                        Invalid supplier name.
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="expiration_date" class="form-label">Expiration Date</label>
+                <input type="date" class="form-control {% if form.expiration_date.errors %}is-invalid{% endif %}" id="expiration_date" name="expiration_date" value="{{ form.expiration_date.value|default:'' }}">
+                {% if form.expiration_date.errors %}
+                    <div class="invalid-feedback">
+                        Invalid expiration date.
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="brand" class="form-label">Brand</label>
+                <input type="text" class="form-control {% if form.brand.errors %}is-invalid{% endif %}" id="brand" name="brand" value="{{ form.brand.value|default:'' }}">
+                {% if form.brand.errors %}
+                    <div class="invalid-feedback">
+                        Invalid brand name.
+                    </div>
+                {% endif %}
+            </div>
+        </div>     
+
         <button type="submit" class="btn btn-primary">Add Product</button>
     </form>
 {% endblock %}

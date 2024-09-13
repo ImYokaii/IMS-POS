@@ -1,11 +1,45 @@
 {% extends "inventory_base.html" %}
 
 {% block content %}
-    <h1>Product List</h1>
+    <h1>Existing Product List</h1>
 
     <form method="get" class="mb-3">
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Filter</button>
+        <div class="d-flex flex-wrap gap-3">
+            <div class="mb-3">
+                <label for="id_sku" class="form-label">SKU</label>
+                <input type="text" class="form-control" id="id_sku" name="sku"">
+            </div>
+        
+            <div class="mb-3">
+                <label for="id_name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="id_name" name="name"">
+            </div>
+
+            <div class="mb-3">
+                <label for="id_product_type" class="form-label">Product Type</label>
+                <select class="form-control" name="product_type">
+                    {% for value, label in form.product_type.field.widget.choices %}
+                        <option value="{{ value }}" {% if value == form.product_type.value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="mb-3">
+                <label for="id_category" class="form-label">Category</label>
+                <select class="form-control" id="id_category" name="category">
+                    {% for value, label in form.category.field.widget.choices %}
+                        <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="mb-3">
+                <label for="id_expiration_date" class="form-label">Expiration Date</label>
+                <input type="date" class="form-control" id="id_expiration_date" name="expiration_date">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
     </form>
 
     <table class="table table-striped">
