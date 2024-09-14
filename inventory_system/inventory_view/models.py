@@ -1,11 +1,13 @@
 from django.db import models
-
-
-
+import barcode
+from barcode.writer import ImageWriter
+from io import BytesIO
+from django.core.files import File
 class Product(models.Model):
     name = models.CharField(max_length=100, null=True)
     description = models.TextField(blank=True, null=True)
     sku = models.CharField(max_length=50, unique=True, null=True)
+    barcode = models.ImageField(upload_to='images/', default='barcodes/placeholder.jpg')
     category = models.CharField(max_length=50, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Selling price
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Purchase price
@@ -33,6 +35,11 @@ class Product(models.Model):
     def save(self):
         if self.expiration_date and not self.batch_number:
             self.batch_number = self.generate_batch_number()
+        EAN = barcode.get_barcode_class('ean13')
+        ean = EAN(f'{self.sku}',writer=ImageWriter())
+        buffer = BytesIO()
+        ean.write(buffer)
+        self.barcode.save(f'{self.name}_{'barcode.png'}', File(buffer), save=False )
 
         super(Product, self).save()
 
@@ -57,3 +64,4 @@ class WasteProduct(models.Model):
 
     def __str__(self):
         return f"Name: {self.name} (Date of Waste: {self.date_added})"
+    

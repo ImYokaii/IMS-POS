@@ -1,0 +1,19 @@
+ADMIN_URL=7$QyV8!mX@Lz9PfT&n4WdG3bRqJ1+o2H*F
+
+SECRET_KEY=django-insecure-4w65x6k#w=)doytcnd0s^pvlcm&rc-4=rg+h0n)a3ppcd7j8v0
+RECAPTCHA_PUBLIC_KEY=6LdizBEqAAAAAPSOS_42-wg1E0Uq0oOhvnL0ttSq
+RECAPTCHA_PRIVATE_KEY=6LdizBEqAAAAAO9MUSHAGivwt5e1VgOIM9WJTsg4
+MAX_FAILED_LOGIN_ATTEMPTS=3
+FAILED_LOGIN_LOCK_DURATION=60
+
+LOGOUT_URL=/logout/
+ROLE_1_URL=/managers/
+ROLE_2_URL=/employees/
+ROLE_3_URL=/suppliers/
+ROLE_1=manager
+ROLE_2=employee
+ROLE_3=supplier
+ROLE_4=unkown
+
+PRODUCT_CATEGORIES="Concreting and Masonry,Rebars and Gi Wires,Roofing and Insulation,Steel,Water Proofing,Sealant and Adhesive,Wood Products,Dry Wall and Ceiling,Plumbing Pipes,Electrical Pipes,Wires and Cables,Tiling Supplies,Painting Supplies,Door and Cabinet Hardwares,Electrical Fixtures and Devices,Finishing Materials,Power Tools and Equipments,Nails and Screws,Screen and Covers,Chemicals"
+PRODUCT_TYPES="Perishable,Non-Perishable"
