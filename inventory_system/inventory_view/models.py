@@ -1,7 +1,8 @@
 from django.db import models
-
-
-
+import barcode
+from barcode.writer import ImageWriter
+from io import BytesIO
+from django.core.files import File
 class Product(models.Model):
     name = models.CharField(max_length=100, null=True)
     description = models.TextField(blank=True, null=True)
@@ -34,6 +35,11 @@ class Product(models.Model):
     def save(self):
         if self.expiration_date and not self.batch_number:
             self.batch_number = self.generate_batch_number()
+        EAN = barcode.get_barcode_class('ean13')
+        ean = EAN(f'{self.sku}',writer=ImageWriter())
+        buffer = BytesIO()
+        ean.write(buffer)
+        self.barcode.save(f'{self.name}_{'barcode.png'}', File(buffer), save=False )
 
         super(Product, self).save()
 
