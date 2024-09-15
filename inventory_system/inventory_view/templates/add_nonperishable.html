@@ -37,16 +37,6 @@
             </div>
             
             <div class="mb-3">
-                <label for="sku" class="form-label">SKU</label>
-                <input type="text" class="form-control {% if form.sku.errors %}is-invalid{% endif %}" id="sku" name="sku" value="{{ form.sku.value|default:'' }}">
-                {% if form.sku.errors %}
-                    <div class="invalid-feedback">
-                        Invalid sku or sku already exists.
-                    </div>
-                {% endif %}
-            </div>
-            
-            <div class="mb-3">
                 <label for="category" class="form-label">Category</label>
                 <select class="form-control {% if form.category.errors %}is-invalid{% endif %}" id="category" name="category" value="{{ form.sku.value|default:'' }}">
                     {% for value, label in form.category.field.widget.choices %}

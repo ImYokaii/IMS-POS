@@ -37,7 +37,7 @@ class PerishableProductForm(forms.ModelForm):
         model = Product
 
         fields = [
-            'name', 'description', 'sku', 'category', 'price', 'cost_price', 
+            'name', 'description', 'category', 'price', 'cost_price', 
             'unit_of_measurement', 'weight', 'dimensions', 'color', 'material', 
             'supplier_name', 'expiration_date', 'brand'
         ]
@@ -55,7 +55,7 @@ class NonPerishableProductForm(forms.ModelForm):
         model = Product
 
         fields = [
-            'name', 'description', 'sku', 'category', 'price', 'cost_price', 
+            'name', 'description', 'category', 'price', 'cost_price', 
             'unit_of_measurement', 'weight', 'dimensions', 'color', 'material', 
             'supplier_name', 'brand'
         ]

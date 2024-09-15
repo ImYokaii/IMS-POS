@@ -21,14 +21,8 @@
     <form method="post">
         {% csrf_token %}
     
-        <p>SKU:</p>
-        {{ form.sku }}
-
-        {% for field in form %}
-            {% if field.name != 'sku' %}
-                <input type="hidden" name="{{ field.name }}" value="{{ field.value|default_if_none:'' }}">
-            {% endif %}
-        {% endfor %}
+        <p>QUANTITY:</p>
+        <P>**UNDER CONSTRUCTION**</p>
         
         <button type="submit" class="btn btn-primary">Save</button>
     </form>

@@ -3,6 +3,8 @@ import barcode
 from barcode.writer import ImageWriter
 from io import BytesIO
 from django.core.files import File
+from .utils import generate_digits
+
 class Product(models.Model):
     name = models.CharField(max_length=100, null=True)
     description = models.TextField(blank=True, null=True)
@@ -32,9 +34,24 @@ class Product(models.Model):
         else:
             return None
         
+    def generate_sku_num(self):
+        category = self.category
+        
+        if self.expiration_date:
+            type = True
+        
+        else:
+            type = False
+
+        self.sku = generate_digits(category, type)
+        print(self.sku)
+        
     def save(self):
         if self.expiration_date and not self.batch_number:
             self.batch_number = self.generate_batch_number()
+
+        self.generate_sku_num()
+
         EAN = barcode.get_barcode_class('ean13')
         ean = EAN(f'{self.sku}',writer=ImageWriter())
         buffer = BytesIO()
