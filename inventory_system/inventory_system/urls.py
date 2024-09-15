@@ -19,13 +19,10 @@ import os
 from dotenv import load_dotenv
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls.static import static
-from django.conf import settings
 
 urlpatterns = [
-    path(os.environ.get('ADMIN_URL','admin/'), admin.site.urls),
+    path(os.environ.get('ADMIN_URL'), admin.site.urls),
     path('', include("login_view.urls")),
     path('', include("inventory_view.urls")),
     path('', include("dashboard_view.urls")),
-    
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
