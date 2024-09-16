@@ -29,4 +29,3 @@ class ProductInstance(models.Model):
                 quantity=1,
                 brand=product.brand,
             )
-    

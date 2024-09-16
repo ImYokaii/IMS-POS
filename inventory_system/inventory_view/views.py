@@ -2,9 +2,9 @@ import os
 from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
-from .forms import PerishableProductForm, NonPerishableProductForm, ProductFilterForm
+from .forms import PerishableProductForm, NonPerishableProductForm, ProductFilterForm, ExistingPerishableProductForm, ExistingNonPerishableProductForm
 from .models import Product, WasteProduct
-from .utils import search_filter_products, search_filter_wasted_products
+from .utils import search_filter_products, search_filter_wasted_products, duplicate_product
 from dashboard_view.models import ProductInstance
 
 load_dotenv()
@@ -66,43 +66,38 @@ def existing_product_page(request):
 def add_existing_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    initial_data = {
-        'name': product.name,
-        'description': product.description,
-        'category': product.category,
-        'price': product.price,
-        'cost_price': product.cost_price,
-        'unit_of_measurement': product.unit_of_measurement,
-        'weight': product.weight,
-        'dimensions': product.dimensions,
-        'color': product.color,
-        'material': product.material,
-        'supplier_name': product.supplier_name,
-        'brand': product.brand,
-    }
-
     if product.expiration_date:
-        initial_data['expiration_date'] = product.expiration_date
-        initial_data['batch_number'] = product.batch_number
-        form_class = PerishableProductForm
+        form_class = ExistingPerishableProductForm
 
     else:
-        form_class = NonPerishableProductForm
+        form_class = ExistingNonPerishableProductForm
 
     if request.method == 'POST':
-        form = form_class(request.POST, initial=initial_data)
+        form = form_class(request.POST)
 
         if form.is_valid():
-            product = form.save()
-            ProductInstance.add_or_update_instance(product)
-            messages.success(request, "Product was added successfully!")
+            if product.expiration_date:
+                expiration_date = form.cleaned_data['expiration_date']
+                new_product = duplicate_product(product, expiration_date)
+                ProductInstance.add_or_update_instance(new_product)
+                messages.success(request, f"{product.name} restocked successfully!")
+            
+            else:
+                quantity = form.cleaned_data['quantity']
+
+                for _ in range(quantity):
+                    new_product = duplicate_product(product)
+                    ProductInstance.add_or_update_instance(new_product)
+
+                messages.success(request, f"{product.name} restocked successfully!")
+
             return redirect('product_list')
         
         else:
-            messages.error(request, "Invalid SKU or SKU already exists.")
+            messages.error(request, "Invalid data provided.")
         
     else:
-        form = form_class(initial=initial_data)
+        form = form_class()
 
     return render(request, 'add_existing_product.html', {'form': form, 'product': product})
 # =============================================== #

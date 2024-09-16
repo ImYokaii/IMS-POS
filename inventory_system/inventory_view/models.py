@@ -25,7 +25,7 @@ class Product(models.Model):
     brand = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return f"Name: {self.name} (₱ {self.price})"
+        return f"Name: {self.name} (₱ {self.price}) - {self.category}"
     
     def generate_batch_number(self):
         if self.expiration_date:
@@ -44,14 +44,15 @@ class Product(models.Model):
             type = False
 
         self.sku = generate_digits(category, type)
-        print(self.sku)
+        
         
     def save(self):
         if self.expiration_date and not self.batch_number:
             self.batch_number = self.generate_batch_number()
 
-        self.generate_sku_num()
-
+        if not self.sku:
+            self.generate_sku_num()
+        
         EAN = barcode.get_barcode_class('ean13')
         ean = EAN(f'{self.sku}',writer=ImageWriter())
         buffer = BytesIO()
