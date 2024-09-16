@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from .forms import PerishableProductForm, NonPerishableProductForm, ProductFilterForm, ExistingPerishableProductForm, ExistingNonPerishableProductForm
 from .models import Product, WasteProduct
-from .utils import search_filter_products, search_filter_wasted_products, duplicate_product
+from .utils import search_filter_products, search_filter_wasted_products, duplicate_product, transfer_to_waste
 from dashboard_view.models import ProductInstance
 
 load_dotenv()
@@ -180,28 +180,9 @@ def add_to_waste(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
     if request.method == 'POST':
-        waste_product = WasteProduct(
-            name=product.name,
-            description=product.description,
-            category=product.category,
-            price=product.price,
-            cost_price=product.cost_price,
-            unit_of_measurement=product.unit_of_measurement,
-            weight=product.weight,
-            dimensions=product.dimensions,
-            color=product.color,
-            material=product.material,
-            supplier_name=product.supplier_name,
-            expiration_date=product.expiration_date,
-            batch_number=product.batch_number,
-            brand=product.brand,
-        )
-
-        waste_product.save()
-        product.delete()
+        transfer_to_waste(product)
         
         messages.success(request, "Product successfully transfered to waste!")
-
         return redirect('wasted_product_list')
     
     return render(request, 'add_to_waste.html', {'product': product})

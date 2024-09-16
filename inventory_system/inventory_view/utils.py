@@ -205,3 +205,29 @@ def duplicate_product(product, expiration_date=None):
     new_product.save()
     return new_product
 # =============================================== #
+
+
+# ===== CREATE DUPLICATE INSTANCES OF A PRODUCT BEING RESTOCKED ===== #
+def transfer_to_waste(product):
+    from .models import WasteProduct
+
+    waste_product = WasteProduct(
+        name=product.name,
+        description=product.description,
+        category=product.category,
+        price=product.price,
+        cost_price=product.cost_price,
+        unit_of_measurement=product.unit_of_measurement,
+        weight=product.weight,
+        dimensions=product.dimensions,
+        color=product.color,
+        material=product.material,
+        supplier_name=product.supplier_name,
+        expiration_date=product.expiration_date,
+        batch_number=product.batch_number,
+        brand=product.brand,
+    )
+    
+    waste_product.save()
+    product.delete()
+# =============================================== #
