@@ -13,7 +13,7 @@ from .utils import check_logging_user_role, get_client_ip, increment_failed_logi
 # ===== LOGIN PAGE ===== #
 def login_page(request):
     if request.user.is_authenticated:
-        return HttpResponse("Welcome")
+        return render(request, "dashboard")
     
     if request.method == "POST":
         form = LoginForm(request, data=request.POST)

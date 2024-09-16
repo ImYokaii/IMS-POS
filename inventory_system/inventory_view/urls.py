@@ -3,7 +3,6 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path("", views.dummy_page, name=""),
     path('product_list/', views.product_list, name="product_list"),
     path('add_item_choice/', views.add_item_choice, name="add_item_choice"),
     path('existing_product_page/', views.existing_product_page, name="existing_product_page"),
