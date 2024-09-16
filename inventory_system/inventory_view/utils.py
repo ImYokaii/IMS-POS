@@ -159,5 +159,49 @@ def generate_digits(category, type):
     digits = int(''.join(map(str, digit_arr)))
 
     return digits
-    
+# =============================================== #
+
+
+# ===== CREATE DUPLICATE INSTANCES OF A PRODUCT BEING RESTOCKED ===== #
+def duplicate_product(product, expiration_date=None):
+    from .models import Product
+
+    if product.expiration_date:
+        new_product = Product(
+            name=product.name,
+            description=product.description,
+            barcode=product.barcode,
+            category=product.category,
+            price=product.price,
+            cost_price=product.cost_price,
+            unit_of_measurement=product.unit_of_measurement,
+            weight=product.weight,
+            dimensions=product.dimensions,
+            color=product.color,
+            material=product.material,  
+            supplier_name=product.supplier_name,
+            brand=product.brand,
+            expiration_date=expiration_date,
+        )
+
+    else:
+        new_product = Product(
+            name=product.name,
+            description=product.description,
+            barcode=product.barcode,
+            category=product.category,
+            price=product.price,
+            cost_price=product.cost_price,
+            unit_of_measurement=product.unit_of_measurement,
+            weight=product.weight,
+            dimensions=product.dimensions,
+            color=product.color,
+            material=product.material,  
+            supplier_name=product.supplier_name,
+            brand=product.brand,
+            expiration_date=None,
+        )
+
+    new_product.save()
+    return new_product
 # =============================================== #

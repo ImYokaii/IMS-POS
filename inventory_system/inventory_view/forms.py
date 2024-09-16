@@ -1,7 +1,9 @@
 import os
 from dotenv import load_dotenv
 from django import forms
+from django.forms import DateField
 from .models import Product
+from dashboard_view.models import ProductInstance
 
 load_dotenv()
 
@@ -63,6 +65,14 @@ class NonPerishableProductForm(forms.ModelForm):
         widgets = {
             'category': forms.Select(choices=CATEGORY_CHOICES),
         }
+
+
+class ExistingPerishableProductForm(forms.Form):
+    expiration_date = DateField(required=True)
+
+
+class ExistingNonPerishableProductForm(forms.Form):
+    quantity = forms.IntegerField(required=True, min_value=1)
 
 
 class ProductFilterForm(forms.Form):

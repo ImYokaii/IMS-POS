@@ -21,8 +21,28 @@
     <form method="post">
         {% csrf_token %}
     
-        <p>QUANTITY:</p>
-        <P>**UNDER CONSTRUCTION**</p>
+        {% if form.quantity %}
+            <div class="col-md-6 mb-3">
+                <label for="price" class="form-label">Quantity</label>
+                <input type="text" class="form-control {% if form.price.errors %}is-invalid{% endif %}" id="quantity" name="quantity" value="{{ form.price.value|default:'' }}">
+                {% if form.price.errors %}
+                    <div class="invalid-feedback">
+                        Invalid Quantity.
+                    </div>
+                {% endif %}
+            </div>
+
+        {% elif form.expiration_date %}
+            <div class="col-md-6 mb-3">
+                <label for="expiration_date" class="form-label">Expiration Date</label>
+                <input type="date" class="form-control {% if form.expiration_date.errors %}is-invalid{% endif %}" id="expiration_date" name="expiration_date" value="{{ form.expiration_date.value|default:'' }}">
+                {% if form.expiration_date.errors %}
+                    <div class="invalid-feedback">
+                        Invalid expiration date.
+                {% endif %}
+            </div>
+
+        {% endif %}
         
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
