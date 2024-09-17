@@ -29,3 +29,13 @@ class ProductInstance(models.Model):
                 quantity=1,
                 brand=product.brand,
             )
+    
+    @classmethod
+    def subtract_instance(cls, product):
+        existing_instance = cls.objects.filter(name=product.name, category=product.category, brand=product.brand).first()
+
+        if existing_instance:
+            existing_instance.quantity -= 1
+            existing_instance.save(update_fields=['quantity'])
+
+            

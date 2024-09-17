@@ -181,7 +181,7 @@ def add_to_waste(request, product_id):
 
     if request.method == 'POST':
         transfer_to_waste(product)
-        
+        ProductInstance.subtract_instance(product)
         messages.success(request, "Product successfully transfered to waste!")
         return redirect('wasted_product_list')
     
