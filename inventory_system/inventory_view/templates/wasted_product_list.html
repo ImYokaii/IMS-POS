@@ -19,12 +19,12 @@
         <div class="d-flex flex-wrap gap-3">
             <div class="mb-3">
                 <label for="id_sku" class="form-label">SKU</label>
-                <input type="text" class="form-control" id="id_sku" name="sku"">
+                <input type="text" class="form-control" id="id_sku" name="sku">
             </div>
         
             <div class="mb-3">
                 <label for="id_name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="id_name" name="name"">
+                <input type="text" class="form-control" id="id_name" name="name">
             </div>
 
             <div class="mb-3">
@@ -57,20 +57,20 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Expiration</th>
-                <th>Date Of Waste</th>
+                <th class="text-truncate" style="max-width: 50px;">SKU</th>
+                <th class="text-truncate" style="max-width: 150px;">Name</th>
+                <th class="text-truncate" style="max-width: 150px;">Category</th>
+                <th class="text-truncate" style="max-width: 50px;">Expiration</th>
             </tr>
         </thead>
 
         <tbody>
             {% for product in products %}
                 <tr>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.sku }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.expiration_date }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.date_added }}</td>
                 </tr>
             {% endfor %}
         </tbody>

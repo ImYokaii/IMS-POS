@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
 from .forms import PerishableProductForm, NonPerishableProductForm, ProductFilterForm, ExistingPerishableProductForm, ExistingNonPerishableProductForm
-from .models import Product, WasteProduct
-from .utils import search_filter_products, search_filter_wasted_products, duplicate_product, transfer_to_waste
+from .models import Product
+from .utils import search_filter_products, duplicate_product, transfer_to_waste
 from dashboard_view.models import ProductInstance
 
 load_dotenv()
@@ -19,6 +19,7 @@ def dummy_page(request):
 # ===== ALL PRODUCTS PAGE ===== #
 def product_list(request):
     form = ProductFilterForm(request.GET)
+    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
 
     if form.is_valid():
         sku = form.cleaned_data.get('sku')
@@ -26,10 +27,18 @@ def product_list(request):
         product_type = form.cleaned_data.get('product_type')
         expiration_date = form.cleaned_data.get('expiration_date')
         category = form.cleaned_data.get('category')
+        status = PRODUCT_STATUS[0].strip()
 
-        products = search_filter_products(sku, name, product_type, expiration_date, category)
+        products = search_filter_products(sku, name, product_type, expiration_date, category, status)
 
     return render(request, 'product_list.html', {'form': form, 'products': products})
+# =============================================== #
+
+# ===== VIEW PRODUCT DETAILS PAGE ===== #
+def product_view(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    return render(request, 'product_view.html', {'product': product})
 # =============================================== #
 
 
@@ -48,6 +57,7 @@ def add_product_type(request):
 # ===== EXISTING PRODUCT PAGE (For Restocking) ===== #
 def existing_product_page(request):
     form = ProductFilterForm(request.GET)
+    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
 
     if form.is_valid():
         sku = form.cleaned_data.get('sku')
@@ -55,8 +65,9 @@ def existing_product_page(request):
         product_type = form.cleaned_data.get('product_type')
         category = form.cleaned_data.get('category')
         expiration_date = form.cleaned_data.get('expiration_date')
+        status = PRODUCT_STATUS[0].strip()
 
-        products = search_filter_products(sku, name, product_type, expiration_date, category)
+        products = search_filter_products(sku, name, product_type, expiration_date, category, status)
 
     return render(request, 'existing_product_page.html', {'form': form, 'products': products})
 # =============================================== #
@@ -133,6 +144,10 @@ def add_nonperishable(request):
             messages.success(request, "New product was added successfully!")
             return redirect('product_list')
         
+        else:
+            for field, errors in form.errors.items():
+                print(f"Field '{field}' has errors: {errors}")
+
     else:
         messages.error(request, "Invalid Input!")
         form = NonPerishableProductForm()
@@ -144,6 +159,7 @@ def add_nonperishable(request):
 # ===== VIEW PRODUCT WASTE PAGE ===== #
 def wasted_product_list(request):
     form = ProductFilterForm(request.GET)
+    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
 
     if form.is_valid():
         sku = form.cleaned_data.get('sku')
@@ -151,8 +167,9 @@ def wasted_product_list(request):
         product_type = form.cleaned_data.get('product_type')
         expiration_date = form.cleaned_data.get('expiration_date')
         category = form.cleaned_data.get('category')
+        status = PRODUCT_STATUS[3].strip()
 
-        products = search_filter_wasted_products(sku, name, product_type, expiration_date, category)
+        products = search_filter_products(sku, name, product_type, expiration_date, category, status)
 
     return render(request, 'wasted_product_list.html', {'form': form, 'products': products})
 # =============================================== #
@@ -161,6 +178,7 @@ def wasted_product_list(request):
 # ===== ADD PRODUCT WASTE PAGE ===== #
 def add_product_waste(request):
     form = ProductFilterForm(request.GET)
+    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
 
     if form.is_valid():
         sku = form.cleaned_data.get('sku')
@@ -168,8 +186,9 @@ def add_product_waste(request):
         product_type = form.cleaned_data.get('product_type')
         category = form.cleaned_data.get('category')
         expiration_date = form.cleaned_data.get('expiration_date')
+        status = PRODUCT_STATUS[0].strip()
 
-        products = search_filter_products(sku, name, product_type, expiration_date, category)
+        products = search_filter_products(sku, name, product_type, expiration_date, category, status)
 
     return render(request, 'add_product_waste.html', {'form': form, 'products': products})
 # =============================================== #
