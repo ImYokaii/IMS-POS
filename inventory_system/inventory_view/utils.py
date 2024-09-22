@@ -6,68 +6,42 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ===== FILTER PRODUCT SEARCH RESULTS ===== #
-def search_filter_products(sku, name, product_type, expiration_date, category):
+def search_filter_products(sku, name, product_type, expiration_date, category, status):
     from .models import Product
-    products = Product.objects.all()
 
-    if sku:
-        products = products.filter(sku=sku)
+    def filter(product_status):
+        products = Product.objects.filter(status=product_status)
+        
+        if sku:
+            products = products.filter(sku=sku)
 
-    if name:
-        products = products.filter(name=name)
+        if name:
+            products = products.filter(name__icontains=name)
 
-    if product_type:
-        PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
+        if product_type:
+            PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
 
-        PERISHABLE_TYPE = PRODUCT_TYPES[0].strip()
-        NON_PERISHABLE_TYPE = PRODUCT_TYPES[1].strip()
+            PERISHABLE_TYPE = PRODUCT_TYPES[0].strip()
+            NON_PERISHABLE_TYPE = PRODUCT_TYPES[1].strip()
 
-        if product_type == PERISHABLE_TYPE:
-            products = products.filter(expiration_date__isnull=False)
+            if product_type == PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=False)
 
-        elif product_type == NON_PERISHABLE_TYPE:
-            products = products.filter(expiration_date__isnull=True)
+            elif product_type == NON_PERISHABLE_TYPE:
+                products = products.filter(expiration_date__isnull=True)
 
-    if category:
-        products = products.filter(category=category)
+        if category:
+            products = products.filter(category=category)
 
-    if expiration_date:
-        products = products.filter(expiration_date=expiration_date)
+        if expiration_date:
+            products = products.filter(expiration_date=expiration_date)
 
-    return products
-# =============================================== #
+        return products
 
+    product_status = status
+    results = filter(product_status)
 
-# ===== FILTER WASTED PRODUCT SEARCH RESULTS ===== #
-def search_filter_wasted_products(sku, name, product_type, expiration_date, category):
-    from .models import WasteProduct
-    products = WasteProduct.objects.all()
-
-    if sku:
-        products = products.filter(sku=sku)
-
-    if name:
-        products = products.filter(name=name)
-
-    if product_type:
-        PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
-
-        PERISHABLE_TYPE = PRODUCT_TYPES[0].strip()
-        NON_PERISHABLE_TYPE = PRODUCT_TYPES[1].strip()
-
-        if product_type == PERISHABLE_TYPE:
-            products = products.filter(expiration_date__isnull=False)
-
-        elif product_type == NON_PERISHABLE_TYPE:
-            products = products.filter(expiration_date__isnull=True)
-
-    if category:
-        products = products.filter(category=category)
-
-    if expiration_date:
-        products = products.filter(expiration_date=expiration_date)
-
-    return products
+    return results
 # =============================================== #
 
 
@@ -169,16 +143,10 @@ def duplicate_product(product, expiration_date=None):
     if product.expiration_date:
         new_product = Product(
             name=product.name,
-            description=product.description,
-            barcode=product.barcode,
+            barcode=None,
             category=product.category,
-            price=product.price,
+            selling_price=product.selling_price,
             cost_price=product.cost_price,
-            unit_of_measurement=product.unit_of_measurement,
-            weight=product.weight,
-            dimensions=product.dimensions,
-            color=product.color,
-            material=product.material,  
             supplier_name=product.supplier_name,
             brand=product.brand,
             expiration_date=expiration_date,
@@ -187,16 +155,10 @@ def duplicate_product(product, expiration_date=None):
     else:
         new_product = Product(
             name=product.name,
-            description=product.description,
-            barcode=product.barcode,
+            barcode=None,
             category=product.category,
-            price=product.price,
-            cost_price=product.cost_price,
-            unit_of_measurement=product.unit_of_measurement,
-            weight=product.weight,
-            dimensions=product.dimensions,
-            color=product.color,
-            material=product.material,  
+            selling_price=product.selling_price,
+            cost_price=product.cost_price, 
             supplier_name=product.supplier_name,
             brand=product.brand,
             expiration_date=None,
@@ -209,25 +171,8 @@ def duplicate_product(product, expiration_date=None):
 
 # ===== CREATE DUPLICATE INSTANCES OF A PRODUCT BEING RESTOCKED ===== #
 def transfer_to_waste(product):
-    from .models import WasteProduct
+    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
 
-    waste_product = WasteProduct(
-        name=product.name,
-        description=product.description,
-        category=product.category,
-        price=product.price,
-        cost_price=product.cost_price,
-        unit_of_measurement=product.unit_of_measurement,
-        weight=product.weight,
-        dimensions=product.dimensions,
-        color=product.color,
-        material=product.material,
-        supplier_name=product.supplier_name,
-        expiration_date=product.expiration_date,
-        batch_number=product.batch_number,
-        brand=product.brand,
-    )
-    
-    waste_product.save()
-    product.delete()
+    product.status = PRODUCT_STATUS[3].strip()
+    product.save()
 # =============================================== #

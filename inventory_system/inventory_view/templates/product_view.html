@@ -1,0 +1,62 @@
+{% extends 'inventory_base.html' %}
+
+{% block title %}Product View{% endblock %}
+
+{% block content %}
+    <p class="h1">View Product: 
+        <small class="text-muted">{{ product.name }}</small>
+    </p>
+
+    <div class="mb-3">
+        <div class="col-md-6 mb-3">
+            <p class="h3">Barcode:</p>
+            <img src="{{ product.barcode.url }}" alt="Image" style="width: 180px; height: 100px;">
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <div class="col-md-6 mb-3">
+            <p class="h3">SKU:</p>
+            <small class="text-muted">{{ product.sku }}</small>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="mb-3">
+            <div class="col-md-6 mb-3">
+                <p class="h3">Category:</p>
+                <small class="text-muted">{{ product.category }}</small>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Selling Price:</p>
+            <small class="text-muted">₱{{ product.selling_price }}</small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Cost Price:</p>
+            <small class="text-muted">₱{{ product.cost_price }}</small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Date Added:</p>
+            <small class="text-muted">{{ product.date_added }}</small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Expiration Date:</p>
+            <small class="text-muted">{{ product.expiration_date }}</small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Supplier Name:</p>
+            <small class="text-muted">{{ product.supplier_name }}</small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Brand Name:</p>
+            <small class="text-muted">{{ product.brand }}</small>
+        </div>
+    </div>
+{% endblock %}

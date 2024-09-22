@@ -58,25 +58,27 @@
         <table class="table table-bordered table-striped table-hover table-sm table-custom">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>SKU</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Unit of Measurement</th>
-                    <th>Expiration</th>
+                    <th class="text-truncate" style="max-width: 50px;">SKU</th>
+                    <th class="text-truncate" style="max-width: 150px;">Name</th>
+                    <th class="text-truncate" style="max-width: 150px;">Category</th>
+                    <th class="text-truncate" style="max-width: 50px;">Selling Price</th>
+                    <th class="text-truncate" style="max-width: 50px;">Expiration</th>
+                    <th class="text-truncate" style="max-width: 30px;">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
                 <tr>
+                    <td class="text-truncate" style="max-width: 50px;">{{ product.sku }}</td>
                     <td class="text-truncate" style="max-width: 150px;">{{ product.name }}</td>
-                    <td class="text-truncate" style="max-width: 150px;">{{ product.description }}</td>
-                    <td class="text-truncate" style="max-width: 100px;">{{ product.sku }}</td>
-                    <td class="text-truncate" style="max-width: 100px;">{{ product.category }}</td>
-                    <td class="text-truncate" style="max-width: 50px;">₱{{ product.price }}</td>
-                    <td class="text-truncate" style="max-width: 50px;">{{ product.unit_of_measurement }}</td>
-                    <td class="text-truncate" style="max-width: 100px;">{{ product.expiration_date }}</td>
+                    <td class="text-truncate" style="max-width: 150px;">{{ product.category }}</td>
+                    <td class="text-truncate" style="max-width: 50px;">₱{{ product.selling_price }}</td>
+                    <td class="text-truncate" style="max-width: 50px;">{{ product.expiration_date }}</td>
+                    <td class="text-truncate" style="max-width: 30px;">
+                        <a href="{% url 'product_view' product.id %}">
+                            <i class="bi bi-eye"> View</i>
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

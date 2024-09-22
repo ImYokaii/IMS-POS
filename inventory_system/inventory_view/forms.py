@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from django import forms
 from django.forms import DateField
 from .models import Product
-from dashboard_view.models import ProductInstance
 
 load_dotenv()
 
@@ -39,8 +38,7 @@ class PerishableProductForm(forms.ModelForm):
         model = Product
 
         fields = [
-            'name', 'description', 'category', 'price', 'cost_price', 
-            'unit_of_measurement', 'weight', 'dimensions', 'color', 'material', 
+            'name', 'category', 'selling_price', 'cost_price',
             'supplier_name', 'expiration_date', 'brand'
         ]
 
@@ -51,14 +49,11 @@ class PerishableProductForm(forms.ModelForm):
 
 
 class NonPerishableProductForm(forms.ModelForm):
-    category = forms.Select(choices=CATEGORY_CHOICES)
-
     class Meta:
         model = Product
 
         fields = [
-            'name', 'description', 'category', 'price', 'cost_price', 
-            'unit_of_measurement', 'weight', 'dimensions', 'color', 'material', 
+            'name', 'category', 'selling_price', 'cost_price',
             'supplier_name', 'brand'
         ]
 

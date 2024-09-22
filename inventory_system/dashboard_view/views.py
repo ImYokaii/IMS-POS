@@ -8,6 +8,7 @@ from .utils import search_filter_product_list
 from django.db.models import Sum, F
 import matplotlib.pyplot as plt
 import matplotlib
+import math
 from io import BytesIO
 import base64
 
@@ -29,6 +30,17 @@ def dashboard(request):
         total_qty = ProductInstance.objects.filter(category=category).aggregate(total=Sum('quantity', default=0))
         product_category.append(category)
         product_category_qty.append(total_qty['total'])
+
+        # Check for None or NaN values
+        qty = total_qty['total']
+        if qty is None or math.isnan(qty):
+            qty = 0 # Placeholder
+
+        product_category_qty.append(qty)
+
+        if not any(product_category_qty):
+            product_category_qty = [1]  # Placeholder
+            product_category = ["No Data"]
 
     # just setting the pie chart specifications
     plt.figure(figsize=(4, 4))
