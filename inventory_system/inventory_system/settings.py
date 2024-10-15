@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'dashboard_view',
     'inventory_view',
     'login_view',
+    'procurement_view',
 ]
 
 MIDDLEWARE = [
