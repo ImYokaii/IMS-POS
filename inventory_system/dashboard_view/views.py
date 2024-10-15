@@ -11,6 +11,8 @@ import matplotlib
 import math
 from io import BytesIO
 import base64
+from django.shortcuts import render
+import cv2
 
 load_dotenv()
 matplotlib.use('agg')
@@ -106,3 +108,44 @@ def low_stock_products(request):
 
     return render(request, 'low_stock_products.html', {'product_instance': product_instance})
 # =============================================== #
+
+# ===== QR Scanner ===== #
+class QRCodeScanner:
+    def __init__(self):
+        self.cap = cv2.VideoCapture(0)
+        self.detector = cv2.QRCodeDetector()
+        self.data = None
+
+    def start_scanning(self):
+        while True:
+            ret, img = self.cap.read()
+            if not ret:
+                print("Failed to grab frame.")
+                break
+
+            self.data, _, _ = self.detector.detectAndDecode(img)
+            if self.data:
+                break
+
+            cv2.imshow('QR Scanner', img)
+            if cv2.waitKey(1) == ord('q'):
+                break
+
+    def get_scanned_data(self):
+        return self.data
+
+    def release_resources(self):
+        self.cap.release()
+        cv2.destroyAllWindows()
+
+def scan_qr_code(request):
+    if request.method == "POST":
+        scanner = QRCodeScanner()
+        try:
+            scanner.start_scanning()
+            scanned_value = scanner.get_scanned_data()
+        finally:
+            scanner.release_resources()
+
+        return render(request, 'scan_result.html', {'scanned_value': scanned_value})
+    return render(request, 'scan_qr.html')

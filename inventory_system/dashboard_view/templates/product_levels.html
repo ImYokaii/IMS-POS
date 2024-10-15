@@ -5,11 +5,17 @@
 
     <form method="post">
         {% csrf_token %}
-
         {{ form.as_p }}
         <button class="btn btn-primary" type="submit">Filter</button>
     </form>
-    
+
+    <!-- QR Code Scanning Section -->
+    <h2>Scan QR Code</h2>
+    <button id="startScanButton" class="btn btn-secondary">Start Scanning</button>
+    <button id="stopScanButton" class="btn btn-danger" style="display: none;">Stop Scanning</button>
+    <video id="videoElement" autoplay style="display: none; width: 100%; height: auto; border: 1px solid black;"></video>
+    <p id="scannedValue" class="mt-3"></p>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -21,7 +27,6 @@
                 <th>Action</th>
             </tr>
         </thead>
-
         <tbody>
             {% for product in product_instance %}
                 <tr>
@@ -38,6 +43,69 @@
                 </tr>
             {% endfor %}
         </tbody>
-
     </table>
+
+    <!-- Include jsQR library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsqr.min.js"></script>
+
+    <script>
+        const video = document.getElementById('videoElement');
+        const scannedValueDisplay = document.getElementById('scannedValue');
+        const startScanButton = document.getElementById('startScanButton');
+        const stopScanButton = document.getElementById('stopScanButton');
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        let scanningInterval;
+
+        // Access the webcam and start scanning
+        startScanButton.addEventListener('click', () => {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.style.display = 'block'; // Show video element
+                    video.play();
+                    startScanning();
+                    startScanButton.style.display = 'none'; // Hide start button
+                    stopScanButton.style.display = 'inline'; // Show stop button
+                })
+                .catch(err => {
+                    console.error("Error accessing webcam: " + err);
+                });
+        });
+
+        function startScanning() {
+            scanningInterval = setInterval(() => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+                // Log dimensions and pixel data for debugging
+                console.log('Canvas Width:', canvas.width, 'Canvas Height:', canvas.height);
+                if (code) {
+                    const scannedValue = code.data;
+                    scannedValueDisplay.textContent = `Scanned Value: ${scannedValue}`;
+                    alert(`Successfully scanned: ${scannedValue}`); // Prompt upon successful scan
+                    stopScanning(); // Stop scanning once a code is detected
+                    video.srcObject.getTracks().forEach(track => track.stop()); // Stop the video immediately after scanning
+                } else {
+                    scannedValueDisplay.textContent = 'No QR code detected. Try again.';
+                }
+            }, 1000); // Adjust interval as needed
+        }
+
+        function stopScanning() {
+            clearInterval(scanningInterval);
+            video.style.display = 'none'; // Hide video element
+            startScanButton.style.display = 'inline'; // Show start button
+            stopScanButton.style.display = 'none'; // Hide stop button
+        }
+
+        // Stop scanning button event listener
+        stopScanButton.addEventListener('click', () => {
+            stopScanning(); // Call stop scanning when stop button is clicked
+            video.srcObject.getTracks().forEach(track => track.stop()); // Ensure video is stopped
+        });
+    </script>
 {% endblock %}
