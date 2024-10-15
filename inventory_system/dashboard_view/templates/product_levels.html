@@ -30,12 +30,12 @@
         <tbody>
             {% for product in product_instance %}
                 <tr>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.quantity }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.reorder_level }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.brand }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">
+                    <td class="text-truncate">{{ product.name }}</td>
+                    <td class="text-truncate">{{ product.category }}</td>
+                    <td class="text-truncate">{{ product.quantity }}</td>
+                    <td class="text-truncate">{{ product.reorder_level }}</td>
+                    <td class="text-truncate">{{ product.brand }}</td>
+                    <td class="text-truncate">
                         <a href="{% url 'edit_reorder_levels' product.id %}">
                             <i class="bi bi-pencil-square"></i>
                         </a>
@@ -46,7 +46,8 @@
     </table>
 
     <!-- Include jsQR library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsqr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
 
     <script>
         const video = document.getElementById('videoElement');
@@ -54,58 +55,56 @@
         const startScanButton = document.getElementById('startScanButton');
         const stopScanButton = document.getElementById('stopScanButton');
         const canvas = document.createElement('canvas');
+        canvas.willReadFrequently = true; // Set this attribute
         const context = canvas.getContext('2d');
         let scanningInterval;
 
-        // Access the webcam and start scanning
-        startScanButton.addEventListener('click', () => {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.style.display = 'block'; // Show video element
-                    video.play();
-                    startScanning();
-                    startScanButton.style.display = 'none'; // Hide start button
-                    stopScanButton.style.display = 'inline'; // Show stop button
-                })
-                .catch(err => {
-                    console.error("Error accessing webcam: " + err);
-                });
+        startScanButton.addEventListener('click', async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                video.play();
+                startScanning();
+                startScanButton.style.display = 'none';
+                stopScanButton.style.display = 'inline';
+            } catch (err) {
+                console.error("Error accessing webcam: ", err);
+                alert("Could not access the webcam. Please check permissions.");
+            }
         });
 
         function startScanning() {
             scanningInterval = setInterval(() => {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                const code = jsQR(imageData.data, canvas.width, canvas.height);
+                if (video.videoWidth > 0 && video.videoHeight > 0) {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, canvas.width, canvas.height);
 
-                // Log dimensions and pixel data for debugging
-                console.log('Canvas Width:', canvas.width, 'Canvas Height:', canvas.height);
-                if (code) {
-                    const scannedValue = code.data;
-                    scannedValueDisplay.textContent = `Scanned Value: ${scannedValue}`;
-                    alert(`Successfully scanned: ${scannedValue}`); // Prompt upon successful scan
-                    stopScanning(); // Stop scanning once a code is detected
-                    video.srcObject.getTracks().forEach(track => track.stop()); // Stop the video immediately after scanning
-                } else {
-                    scannedValueDisplay.textContent = 'No QR code detected. Try again.';
+                    if (code) {
+                        const scannedValue = code.data;
+                        scannedValueDisplay.textContent = `Scanned Value: ${scannedValue}`;
+                        alert(`Successfully scanned: ${scannedValue}`);
+                        stopScanning();
+                    } else {
+                        scannedValueDisplay.textContent = 'No QR code detected. Try again.';
+                    }
                 }
-            }, 1000); // Adjust interval as needed
+            }, 500);
         }
 
         function stopScanning() {
             clearInterval(scanningInterval);
-            video.style.display = 'none'; // Hide video element
-            startScanButton.style.display = 'inline'; // Show start button
-            stopScanButton.style.display = 'none'; // Hide stop button
+            video.style.display = 'none';
+            startScanButton.style.display = 'inline';
+            stopScanButton.style.display = 'none';
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
         }
 
-        // Stop scanning button event listener
-        stopScanButton.addEventListener('click', () => {
-            stopScanning(); // Call stop scanning when stop button is clicked
-            video.srcObject.getTracks().forEach(track => track.stop()); // Ensure video is stopped
-        });
+        stopScanButton.addEventListener('click', stopScanning);
     </script>
 {% endblock %}

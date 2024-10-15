@@ -13,6 +13,8 @@ from io import BytesIO
 import base64
 from django.shortcuts import render
 import cv2
+from django.shortcuts import render
+from django.http import JsonResponse
 
 load_dotenv()
 matplotlib.use('agg')
@@ -117,21 +119,12 @@ class QRCodeScanner:
         self.data = None
 
     def start_scanning(self):
-        while True:
-            ret, img = self.cap.read()
-            if not ret:
-                print("Failed to grab frame.")
-                break
-
-            self.data, _, _ = self.detector.detectAndDecode(img)
-            if self.data:
-                break
-
-            cv2.imshow('QR Scanner', img)
-            if cv2.waitKey(1) == ord('q'):
-                break
-
-    def get_scanned_data(self):
+        ret, img = self.cap.read()
+        if not ret:
+            print("Failed to grab frame.")
+            return None
+        
+        self.data, _, _ = self.detector.detectAndDecode(img)
         return self.data
 
     def release_resources(self):
@@ -142,10 +135,13 @@ def scan_qr_code(request):
     if request.method == "POST":
         scanner = QRCodeScanner()
         try:
-            scanner.start_scanning()
-            scanned_value = scanner.get_scanned_data()
+            scanned_value = scanner.start_scanning()
         finally:
             scanner.release_resources()
 
-        return render(request, 'scan_result.html', {'scanned_value': scanned_value})
+        if scanned_value:
+            return render(request, 'scan_result.html', {'scanned_value': scanned_value})
+        else:
+            return render(request, 'scan_result.html', {'error': 'No QR code detected.'})
+
     return render(request, 'scan_qr.html')
