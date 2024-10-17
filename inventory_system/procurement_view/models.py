@@ -10,7 +10,7 @@ class RequestQuotation(models.Model):
     quotation_no = models.CharField(max_length=50, unique=True)
     prepared_by = models.CharField(max_length=100)
     quote_valid_until = models.DateField()
-    date_prepared = models.DateField()
+    date_prepared = models.DateField(auto_now_add=True)
     terms_and_conditions = models.TextField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50)

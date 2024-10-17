@@ -1,0 +1,15 @@
+{% extends 'procurement_base.html' %}
+
+{% block title %}Create Request Quotation{% endblock %}
+
+{% block content %}
+    <h1>Create Request Quotation</h1>
+    
+    <form method="post" >
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}
