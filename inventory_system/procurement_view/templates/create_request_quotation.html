@@ -1,0 +1,24 @@
+{% extends 'procurement_base.html' %}
+
+{% block title %}Create Request Quotation{% endblock %}
+
+{% block content %}
+    <h1>Create Request Quotation</h1>
+    
+    <form method="post" >
+        {% csrf_token %}
+
+        <h2>Request Quotation Details</h2>
+        {{ form1.as_p }}
+
+        <h2>Request Quotation Items</h2>
+        {{ formset.management_form }}
+        
+        {% for form in formset %}
+            {{ form.as_p }}
+        {% endfor %}
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}
