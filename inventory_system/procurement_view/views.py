@@ -2,14 +2,13 @@ from django.shortcuts import render, redirect
 from .forms import RequestQuotationForm, RequestQuotationItemForm, RequestQuotationItemFormSet
 from .models import RequestQuotationItem
 
-# Create your views here.
 def create_request_quotation(request):
     if request.method == "POST":
-        form1 = RequestQuotationForm(request.POST)
+        form = RequestQuotationForm(request.POST)
         formset = RequestQuotationItemFormSet(request.POST)
 
-        if form1.is_valid() and formset.is_valid():
-            request_quotation = form1.save()
+        if form.is_valid() and formset.is_valid():
+            request_quotation = form.save()
 
             for form in formset:
 
@@ -21,7 +20,7 @@ def create_request_quotation(request):
             return redirect("dashboard")
 
     else:
-        form1 = RequestQuotationForm()
+        form = RequestQuotationForm()
         formset = RequestQuotationItemFormSet(queryset=RequestQuotationItem.objects.none())
         
-    return render(request, 'create_request_quotation.html', {'form1': form1,'formset': formset})
+    return render(request, 'create_request_quotation.html', {'form': form,'formset': formset})
