@@ -13,7 +13,7 @@ load_dotenv()
 # ===== DUMMY PAGE FOR TESTING ===== #
 def dummy_page(request):
     return HttpResponse("Welcome to a page.")
-# =============================================== #
+# ============================================= #
 
 
 # ===== ALL PRODUCTS PAGE ===== #
