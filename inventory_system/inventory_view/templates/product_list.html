@@ -15,18 +15,18 @@
 
     <h1>View Product List</h1>
 
-    <form method="get" class="mb-3">
+    <form method="get" id="filterForm" class="mb-3">
         <div class="d-flex flex-wrap gap-3">
             <div class="mb-3">
                 <label for="id_sku" class="form-label">SKU</label>
-                <input type="text" class="form-control" id="id_sku" name="sku"">
+                <input type="text" class="form-control" id="id_sku" name="sku">
             </div>
         
             <div class="mb-3">
                 <label for="id_name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="id_name" name="name"">
+                <input type="text" class="form-control" id="id_name" name="name">
             </div>
-
+    
             <div class="mb-3">
                 <label for="id_product_type" class="form-label">Product Type</label>
                 <select class="form-control" name="product_type">
@@ -50,10 +50,10 @@
                 <input type="date" class="form-control" id="id_expiration_date" name="expiration_date">
             </div>
         </div>
-
+    
         <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-        
     </form>
+    
         <button id="startScanButton" class="btn btn-secondary mt-3">Start Scanning</button>
         <button id="stopScanButton" class="btn btn-danger d-none mt-3">Stop Scanning</button>
 

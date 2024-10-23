@@ -41,7 +41,7 @@ function scanQRCode() {
 
 function handleScannedValue(scannedValue) {
     scannedValueDisplay.textContent = `Scanned Value: ${scannedValue}`;
-    filterForm.querySelector('[sku="sku"]').value = scannedValue; // Populate input
+    filterForm.querySelector('[name="sku"]').value = scannedValue; // Use 'name' attribute
     filterForm.submit(); // Submit the form
     stopScanning(); // Stop scanning after successful scan
 }
