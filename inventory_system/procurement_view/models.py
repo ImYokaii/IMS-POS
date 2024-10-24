@@ -15,7 +15,7 @@ class RequestQuotation(models.Model):
     status = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"Quotation {self.quotation_no} for {self.buyer_company_name}"
+        return f"Quotation No.:{self.quotation_no}"
 
 class RequestQuotationItem(models.Model):
     request_quotation = models.ForeignKey(RequestQuotation, on_delete=models.CASCADE)
