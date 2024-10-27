@@ -1,10 +1,8 @@
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
     path('create_request_quotation/', views.create_request_quotation, name="create_request_quotation"),
-    path('invoice_generation/', views.invoice_generation, name="invoice_generation"),
-    
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('request_quotation_list/', views.request_quotation_list, name="request_quotation_list"),  
+    path('request_quotation_detail/<int:quotation_id>/', views.request_quotation_detail, name="request_quotation_detail"),
+]
