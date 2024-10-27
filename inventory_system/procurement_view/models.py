@@ -33,7 +33,7 @@ class QuotationSubmission(models.Model):
     quotation_no = models.CharField(max_length=50)
     prepared_by = models.CharField(max_length=255)
     quote_valid_until = models.DateField()
-    date_submitted = models.DateField()
+    date_submitted = models.DateField(auto_now_add=True)
     terms_and_conditions = models.TextField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=50)

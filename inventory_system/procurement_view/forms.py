@@ -30,7 +30,7 @@ class QuotationSubmissionForm(forms.ModelForm):
         model = QuotationSubmission
         fields = [
             'supplier', 'buyer_company_name', 'buyer_address', 'buyer_contact', 
-            'quotation_no', 'prepared_by', 'quote_valid_until', 'date_submitted', 
+            'quotation_no', 'prepared_by', 'quote_valid_until',  
             'terms_and_conditions', 'total_amount', 'status'
         ]
         
