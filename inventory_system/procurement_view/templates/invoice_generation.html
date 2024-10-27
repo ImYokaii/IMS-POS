@@ -1,0 +1,42 @@
+{% extends 'procurement_base.html' %}
+
+{% block title %}Request Quotation List{% endblock %}
+
+{% block content %}
+    <h1>Request Quotations</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Buyer Company Name</th>
+                <th>Quotation No</th>
+                <th>Prepared By</th>
+                <th>Quote Valid Until</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for quotation in quotations %}
+                <tr>
+                    <td>{{ quotation.id }}</td>
+                    <td>{{ quotation.buyer_company_name }}</td>
+                    <td>{{ quotation.quotation_no }}</td>
+                    <td>{{ quotation.prepared_by }}</td>
+                    <td>{{ quotation.quote_valid_until }}</td>
+                    <td>{{ quotation.status }}</td>
+                    <td>
+                        <a href="{% url 'request_quotation_detail' quotation.id %}" class="btn btn-info">View</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">No request quotations available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'create_request_quotation' %}" class="btn btn-primary">Create New Request Quotation</a>
+{% endblock %}
