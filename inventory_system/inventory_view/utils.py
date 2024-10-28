@@ -173,6 +173,6 @@ def duplicate_product(product, expiration_date=None):
 def transfer_to_waste(product):
     PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
 
-    product.status = PRODUCT_STATUS[3].strip()
+    product.status = PRODUCT_STATUS[2].strip()
     product.save()
 # =============================================== #

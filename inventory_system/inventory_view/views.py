@@ -167,7 +167,7 @@ def wasted_product_list(request):
         product_type = form.cleaned_data.get('product_type')
         expiration_date = form.cleaned_data.get('expiration_date')
         category = form.cleaned_data.get('category')
-        status = PRODUCT_STATUS[3].strip()
+        status = PRODUCT_STATUS[2].strip()
 
         products = search_filter_products(sku, name, product_type, expiration_date, category, status)
 
