@@ -7,8 +7,7 @@
 
     <h2>Quotation Information</h2>
     <p>Buyer Company Name: {{ request_quotation.buyer_company_name }}</p>
-    <!-- Display other fields as needed -->
-
+    
     <h2>Quotation Items</h2>
     <table class="table">
         <thead>
@@ -32,4 +31,6 @@
             {% endfor %}
         </tbody>
     </table>
+    <a href="{% url 'generate_invoice_pdf' request_quotation.id %}" class="btn btn-primary" target="_blank">Print Invoice as PDF</a>
+
 {% endblock %}

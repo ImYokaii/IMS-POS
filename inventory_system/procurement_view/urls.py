@@ -6,4 +6,5 @@ urlpatterns = [
     path('create_quotation_submission/', views.create_quotation_submission, name="create_quotation_submission"),
     path('request_quotation_list/', views.request_quotation_list, name="request_quotation_list"),  
     path('request_quotation_detail/<int:quotation_id>/', views.request_quotation_detail, name="request_quotation_detail"),
+    path('procurement/invoice_pdf/<int:quotation_id>/', views.generate_invoice_pdf, name='generate_invoice_pdf'),
 ]
