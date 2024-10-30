@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RequestQuotationForm, RequestQuotationItemFormSet, QuotationSubmissionForm, QuotationSubmissionItemFormSet
-from .models import RequestQuotation, RequestQuotationItem, QuotationSubmission, QuotationSubmissionItem
+from .forms import RequestQuotationForm, RequestQuotationItemFormSet, QuotationSubmissionForm, QuotationSubmissionItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet
+from .models import RequestQuotation, RequestQuotationItem, QuotationSubmission, QuotationSubmissionItem, PurchaseOrder, PurchaseOrderItem
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
@@ -21,7 +21,6 @@ def create_request_quotation(request):
                     request_quotation_item.request_quotation = request_quotation
                     request_quotation_item.save()
 
-            # Redirect to the list view after saving
             return redirect('request_quotation_list')
 
     else:
@@ -29,6 +28,7 @@ def create_request_quotation(request):
         formset = RequestQuotationItemFormSet(queryset=RequestQuotationItem.objects.none())
         
     return render(request, 'create_request_quotation.html', {'form': form, 'formset': formset})
+
 
 def create_quotation_submission(request):
     if request.method == "POST":
@@ -44,7 +44,6 @@ def create_quotation_submission(request):
                     quotation_submission_item.quotation_submission = quotation_submission
                     quotation_submission_item.save()
 
-            # Redirect to the list view after saving
             return redirect('request_quotation_list')
         
         else:
@@ -57,9 +56,38 @@ def create_quotation_submission(request):
         
     return render(request, 'create_quotation_submission.html', {'form': form, 'formset': formset})
 
+
+def create_purchase_request(request):
+    if request.method == "POST":
+        form = PurchaseOrderForm(request.POST)
+        formset = PurchaseOrderItemFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            purchase_order = form.save()
+
+            for form in formset:
+                if form.cleaned_data:
+                    purchase_order_item = form.save(commit=False)
+                    purchase_order_item.purchase_order = purchase_order
+                    purchase_order_item.save()
+
+            return redirect('request_quotation_list')
+        
+        else:
+            print("Form errors:", form.errors)
+            print("Formset errors:", [f.errors for f in formset.forms])
+
+    else:
+        form = PurchaseOrderForm()
+        formset = PurchaseOrderItemFormSet(queryset=PurchaseOrderItem.objects.none())
+        
+    return render(request, 'create_purchase_request.html', {'form': form, 'formset': formset})
+
+
 def request_quotation_list(request):
     quotations = RequestQuotation.objects.all()  # Fetch all quotations
     return render(request, 'request_quotation_list.html', {'quotations': quotations})
+
 
 def request_quotation_detail(request, quotation_id):  
     request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)  
@@ -69,6 +97,7 @@ def request_quotation_detail(request, quotation_id):
         'request_quotation': request_quotation,
         'items': items
     })
+
 
 def generate_invoice_pdf(request, quotation_id):
     # Retrieve the specified quotation and its items
