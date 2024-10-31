@@ -6,6 +6,17 @@
     <p class="h1">View Product: 
         <small class="text-muted">{{ product.name }}</small>
     </p>
+    <!-- QR Code Display -->
+    <div class="code-container-wrapper">
+        <div class="code-container">
+            <img src="{{ qr_code }}" alt="QR Code for {{ product.name }}" />
+            
+
+            <img src="{{ barcode }}" alt="Barcode for {{ product.name }}" />
+            
+        </div>
+    </div>
+
     
     <div class="mb-3">
         <div class="col-md-6 mb-3">
@@ -47,4 +58,25 @@
             <small class="text-muted">{{ product.brand }}</small>
         </div>
     </div>
+
+
+
 {% endblock %}
+
+<style>
+    .code-container-wrapper {
+        display: flex;
+        flex-direction: row;
+        gap: 10px; /* Adjust as needed to reduce or increase space */
+        justify-content: flex-start; /* Align items to the start, keeping them next to each other */
+        align-items: center; /* Vertically center if they have different heights */
+    }
+    .code-container {
+        text-align: center;
+        width: 120px; /* Set fixed width if you want both to be equal in size */
+    }
+    .code-container img {
+        max-width: 100px; /* Control the image size */
+        height: auto;
+    }
+</style>
