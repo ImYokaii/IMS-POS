@@ -3,7 +3,8 @@ from django.db import models
 from dotenv import load_dotenv
 from django.core.files import File
 from django.contrib.auth.models import User
-# from .utils import generate_digits
+from .utils import generate_unique_sku
+
 
 load_dotenv()
 
@@ -29,21 +30,19 @@ class Product(models.Model):
     def __str__(self):
         return f"Name: {self.name} (₱ {self.selling_price}) - {self.category}"
         
-    # def generate_sku_num(self):
-    #     category = self.category
+    def generate_sku_num(self):
+        if self.expiration_date:
+            type = True
         
-    #     if self.expiration_date:
-    #         type = True
-        
-    #     else:
-    #         type = False
+        else:
+            type = False
 
-    #     self.sku = generate_unique_sku(category, type)
+        self.sku = generate_unique_sku(self.name, self.cost_price, self.category, Product)
         
         
     def save(self):
-        # if not self.sku:
-        #     self.generate_sku_num()
+        if not self.sku:
+            self.generate_sku_num()
 
         super(Product, self).save()
     
