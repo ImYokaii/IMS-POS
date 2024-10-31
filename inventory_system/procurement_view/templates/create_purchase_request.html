@@ -1,0 +1,194 @@
+{% extends 'procurement_base.html' %}
+
+{% block title %}Create Purchase Request{% endblock %}
+
+{% block content %}
+    <style>
+        /* Input fields and button styling */
+        .form-control, .form-select {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .form-control:hover, .form-select:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #406183;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #406183;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: #0f1113;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #406183;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        /* Custom separator styling */
+        .custom-separator {
+            margin: 40px 0;
+            border-top: 2px solid #ddd;
+            text-align: center;
+            position: relative;
+        }
+
+        .custom-separator::before {
+            content: '• • •';
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+            background-color: #fff;
+            padding: 0 10px;
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-dark text-white">
+                <h2 class="mb-0">Create Purchase Request</h2>
+            </div>
+            
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <h4 class="text-muted mb-4">Purchase Request Details</h4>
+                    
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <label for="supplier" class="form-label fw-bold">Supplier</label>
+                            <select class="form-control {% if form.supplier.errors %}is-invalid{% endif %}" id="supplier" name="supplier">
+                                {% for value, label in form.supplier.field.widget.choices %}
+                                    <option value="{{ value }}" {% if value == form.supplier.value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.supplier.errors %}
+                                <div class="invalid-feedback">{{ form.supplier.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <label for="buyer_company_name" class="form-label fw-bold">Buyer Company Name</label>
+                            <input type="text" class="form-control {% if form.buyer_company_name.errors %}is-invalid{% endif %}" id="buyer_company_name" name="buyer_company_name" value="{{ form.buyer_company_name.value|default:'' }}">
+                            {% if form.buyer_company_name.errors %}
+                                <div class="invalid-feedback">{{ form.buyer_company_name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="buyer_address" class="form-label fw-bold">Buyer Address</label>
+                            <input type="text" class="form-control {% if form.buyer_address.errors %}is-invalid{% endif %}" id="buyer_address" name="buyer_address" value="{{ form.buyer_address.value|default:'' }}">
+                            {% if form.buyer_address.errors %}
+                                <div class="invalid-feedback">{{ form.buyer_address.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <label for="delivery_date" class="form-label fw-bold">Delivery Date</label>
+                            <input type="date" class="form-control {% if form.delivery_date.errors %}is-invalid{% endif %}" id="delivery_date" name="delivery_date" value="{{ form.delivery_date.value|default:'' }}">
+                            {% if form.delivery_date.errors %}
+                                <div class="invalid-feedback">{{ form.delivery_date.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="status" class="form-label fw-bold">Status</label>
+                            <select class="form-select {% if form.status.errors %}is-invalid{% endif %}" id="status" name="status">
+                                {% for value, label in form.status.field.widget.choices %}
+                                    <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.status.errors %}
+                                <div class="invalid-feedback">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <label for="total_amount" class="form-label fw-bold">Total Amount</label>
+                            <input type="text" class="form-control {% if form.total_amount.errors %}is-invalid{% endif %}" id="total_amount" name="total_amount" value="{{ form.total_amount.value|default:'' }}">
+                            {% if form.total_amount.errors %}
+                                <div class="invalid-feedback">{{ form.total_amount.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label for="approved_by" class="form-label fw-bold">Approved By</label>
+                            <input type="text" class="form-control {% if form.approved_by.errors %}is-invalid{% endif %}" id="approved_by" name="approved_by" value="{{ form.approved_by.value|default:'' }}">
+                            {% if form.approved_by.errors %}
+                                <div class="invalid-feedback">{{ form.approved_by.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="custom-separator"></div>
+
+                    <h4 class="text-muted mt-4 mb-4">Purchase Request Items</h4>
+                    {{ formset.management_form }}
+
+                    <div class="row g-4">
+                        {% for form in formset %}
+                            <div class="col-lg-4">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Item {{ forloop.counter }}</h5>
+
+                                        <div class="mb-3">
+                                            <label for="id_product_{{ forloop.counter0 }}" class="form-label fw-bold">Product</label>
+                                            <input type="text" class="form-control {% if form.product.errors %}is-invalid{% endif %}" id="id_product_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-product" value="{{ form.product.value|default:'' }}">
+                                            {% if form.product.errors %}
+                                                <div class="invalid-feedback">{{ form.product.errors }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="id_quantity_{{ forloop.counter0 }}" class="form-label fw-bold">Quantity</label>
+                                            <input type="number" class="form-control {% if form.quantity.errors %}is-invalid{% endif %}" id="id_quantity_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-quantity" value="{{ form.quantity.value|default:'' }}">
+                                            {% if form.quantity.errors %}
+                                                <div class="invalid-feedback">{{ form.quantity.errors }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="id_unit_price_{{ forloop.counter0 }}" class="form-label fw-bold">Unit Price</label>
+                                            <input type="number" class="form-control {% if form.unit_price.errors %}is-invalid{% endif %}" id="id_unit_price_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-unit_price" value="{{ form.unit_price.value|default:'' }}">
+                                            {% if form.unit_price.errors %}
+                                                <div class="invalid-feedback">{{ form.unit_price.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-4">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

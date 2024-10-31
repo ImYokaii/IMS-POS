@@ -62,16 +62,6 @@
                 </div>
                 
                 <div class="col-md-6 mb-3">
-                    <label for="supplier_name" class="form-label">Supplier Name</label>
-                    <input type="text" class="form-control {% if form.supplier_name.errors %}is-invalid{% endif %}" id="supplier_name" name="supplier_name" value="{{ form.supplier_name.value|default:'' }}">
-                    {% if form.supplier_name.errors %}
-                        <div class="invalid-feedback">
-                            Invalid supplier name.
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <div class="col-md-6 mb-3">
                     <label for="brand" class="form-label">Brand</label>
                     <input type="text" class="form-control {% if form.brand.errors %}is-invalid{% endif %}" id="brand" name="brand" value="{{ form.brand.value|default:'' }}">
                     {% if form.brand.errors %}

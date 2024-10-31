@@ -1,5 +1,7 @@
 from django.db import models
 from inventory_view.models import Product
+from procurement_view.models import PurchaseOrderItem
+from .utils import automatic_po_generator
 
 class ProductInstance(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='instances')
@@ -29,7 +31,7 @@ class ProductInstance(models.Model):
                 quantity=1,
                 brand=product.brand,
             )
-    
+        
     @classmethod
     def subtract_instance(cls, product):
         existing_instance = cls.objects.filter(name=product.name, category=product.category, brand=product.brand).first()
@@ -37,5 +39,13 @@ class ProductInstance(models.Model):
         if existing_instance:
             existing_instance.quantity -= 1
             existing_instance.save(update_fields=['quantity'])
+            
 
+        if existing_instance.quantity <= existing_instance.reorder_level:
+            existing_po = PurchaseOrderItem.objects.filter(product=product.name, purchase_order__status="Pending").exists()
+
+            if not existing_po:
+                automatic_po_generator(product)
+
+    
             
