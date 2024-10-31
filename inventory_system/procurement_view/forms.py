@@ -8,7 +8,7 @@ class RequestQuotationForm(forms.ModelForm):
         
         model = RequestQuotation
         
-        fields = ['employee', 'buyer_company_name', 'buyer_address', 'buyer_contact', 'quotation_no', 'prepared_by', 'quote_valid_until',
+        fields = ['employee', 'buyer_company_name', 'buyer_address', 'buyer_contact', 'prepared_by', 'quote_valid_until',
                 'terms_and_conditions', 'status',]
         
         widgets = {
@@ -55,7 +55,7 @@ class PurchaseOrderForm(forms.ModelForm):
         
         model = PurchaseOrder
         fields = [
-            'supplier', 'po_no', 'buyer_company_name', 'buyer_address', 
+            'supplier', 'buyer_company_name', 'buyer_address', 
             'delivery_date', 'notes', 'total_amount', 'approved_by', 'status'
         ]
         

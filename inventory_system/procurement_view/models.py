@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from .utils import generate_unique_procurement_no
 
 class RequestQuotation(models.Model):
     employee = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -15,6 +16,12 @@ class RequestQuotation(models.Model):
 
     def __str__(self):
         return f"Quotation {self.quotation_no} for {self.buyer_company_name}"
+    
+    def save(self):
+        if not self.quotation_no:
+            self.quotation_no = generate_unique_procurement_no("RQ", RequestQuotation)
+
+        super(RequestQuotation, self).save()
 
 class RequestQuotationItem(models.Model):
     request_quotation = models.ForeignKey(RequestQuotation, on_delete=models.CASCADE, related_name='items')
@@ -40,6 +47,12 @@ class QuotationSubmission(models.Model):
 
     def __str__(self):
         return f"{self.quotation_no} - {self.buyer_company_name}"
+    
+    def save(self):
+        if not self.quotation_no:
+            self.quotation_no = generate_unique_procurement_no("QS", QuotationSubmission)
+
+        super(QuotationSubmission, self).save()
 
 class QuotationSubmissionItem(models.Model):
     quotation_submission = models.ForeignKey(QuotationSubmission, on_delete=models.CASCADE, related_name='items')
@@ -64,6 +77,12 @@ class PurchaseOrder(models.Model):
 
     def __str__(self):
         return f"PO #{self.po_no} - {self.supplier}"
+    
+    def save(self):
+        if not self.po_no:
+            self.po_no = generate_unique_procurement_no("PO", PurchaseOrder)
+
+        super(QuotationSubmission, self).save()
 
 class PurchaseOrderItem(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)

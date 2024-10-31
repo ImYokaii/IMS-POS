@@ -125,14 +125,6 @@
 
                     <div class="row g-4">
                         <div class="col-lg-6">
-                            <label for="quotation_no" class="form-label fw-bold">Quotation No.</label>
-                            <input type="text" class="form-control {% if form.quotation_no.errors %}is-invalid{% endif %}" id="quotation_no" name="quotation_no" value="{{ form.quotation_no.value|default:'' }}">
-                            {% if form.quotation_no.errors %}
-                                <div class="invalid-feedback">{{ form.quotation_no.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6">
                             <label for="prepared_by" class="form-label fw-bold">Prepared By</label>
                             <input type="text" class="form-control {% if form.prepared_by.errors %}is-invalid{% endif %}" id="prepared_by" name="prepared_by" value="{{ form.prepared_by.value|default:'' }}">
                             {% if form.prepared_by.errors %}

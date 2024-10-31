@@ -85,14 +85,6 @@
                                 <div class="invalid-feedback">{{ form.supplier.errors }}</div>
                             {% endif %}
                         </div>
-
-                        <div class="col-lg-6">
-                            <label for="po_no" class="form-label fw-bold">PO No.</label>
-                            <input type="text" class="form-control {% if form.po_no.errors %}is-invalid{% endif %}" id="po_no" name="po_no" value="{{ form.po_no.value|default:'' }}">
-                            {% if form.po_no.errors %}
-                                <div class="invalid-feedback">{{ form.po_no.errors }}</div>
-                            {% endif %}
-                        </div>
                     </div>
 
                     <div class="row g-4">
