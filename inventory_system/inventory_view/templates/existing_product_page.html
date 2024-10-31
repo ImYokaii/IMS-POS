@@ -48,7 +48,7 @@
                 <th>SKU</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th>Price</th>
+                <th>Selling Price</th>
                 <th>Brand</th>
                 <th>Action</th>
             </tr>
@@ -59,7 +59,7 @@
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.sku }}</td>
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
-                <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.price }}</td>
+                <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.selling_price }}</td>
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.brand }}</td>
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">
                     <a href="{% url 'add_existing_product' product.id %}">
