@@ -17,11 +17,11 @@ class RequestQuotation(models.Model):
     def __str__(self):
         return f"Quotation {self.quotation_no} for {self.buyer_company_name}"
     
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.quotation_no:
             self.quotation_no = generate_unique_procurement_no("RQ", RequestQuotation)
 
-        super(RequestQuotation, self).save()
+        super(RequestQuotation, self).save(*args, **kwargs)
 
 class RequestQuotationItem(models.Model):
     request_quotation = models.ForeignKey(RequestQuotation, on_delete=models.CASCADE, related_name='items')
@@ -48,11 +48,11 @@ class QuotationSubmission(models.Model):
     def __str__(self):
         return f"{self.quotation_no} - {self.buyer_company_name}"
     
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.quotation_no:
             self.quotation_no = generate_unique_procurement_no("QS", QuotationSubmission)
 
-        super(QuotationSubmission, self).save()
+        super(QuotationSubmission, self).save(*args, **kwargs)
 
 class QuotationSubmissionItem(models.Model):
     quotation_submission = models.ForeignKey(QuotationSubmission, on_delete=models.CASCADE, related_name='items')
@@ -64,25 +64,25 @@ class QuotationSubmissionItem(models.Model):
         return f"{self.product_name} (Qty: {self.quantity})"
 
 class PurchaseOrder(models.Model):
-    supplier = models.ForeignKey(User, on_delete=models.CASCADE)
-    po_no = models.CharField(max_length=20, unique=True)
-    buyer_company_name = models.CharField(max_length=255)
-    buyer_address = models.TextField()
+    supplier = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    quotation_no = models.CharField(max_length=20, unique=True)
+    buyer_company_name = models.CharField(max_length=255, blank=True, null=True)
+    buyer_address = models.TextField(blank=True, null=True)
     date_ordered = models.DateField(auto_now_add=True)
-    delivery_date = models.DateField()
+    delivery_date = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     approved_by = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, default="Pending")
 
     def __str__(self):
-        return f"PO #{self.po_no} - {self.supplier}"
+        return f"PO #{self.quotation_no} - {self.supplier}"
     
-    def save(self):
-        if not self.po_no:
-            self.po_no = generate_unique_procurement_no("PO", PurchaseOrder)
+    def save(self, *args, **kwargs):
+        if not self.quotation_no:
+            self.quotation_no = generate_unique_procurement_no("PO", PurchaseOrder)
 
-        super(QuotationSubmission, self).save()
+        super(PurchaseOrder, self).save(*args, **kwargs)
 
 class PurchaseOrderItem(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)

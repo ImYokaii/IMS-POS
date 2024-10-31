@@ -6,14 +6,7 @@
     <p class="h1">View Product: 
         <small class="text-muted">{{ product.name }}</small>
     </p>
-
-    <div class="mb-3">
-        <div class="col-md-6 mb-3">
-            <p class="h3">Barcode:</p>
-            <img src="{{ product.barcode.url }}" alt="Image" style="width: 180px; height: 100px;">
-        </div>
-    </div>
-
+    
     <div class="mb-3">
         <div class="col-md-6 mb-3">
             <p class="h3">SKU:</p>
@@ -47,11 +40,6 @@
         <div class="col-md-6 mb-3">
             <p class="h3">Expiration Date:</p>
             <small class="text-muted">{{ product.expiration_date }}</small>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Supplier Name:</p>
-            <small class="text-muted">{{ product.supplier_name }}</small>
         </div>
 
         <div class="col-md-6 mb-3">

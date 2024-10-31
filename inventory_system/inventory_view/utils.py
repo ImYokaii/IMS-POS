@@ -136,6 +136,15 @@ def search_filter_products(sku, name, product_type, expiration_date, category, s
 # =============================================== #
 
 
+# ===== GENERATE ANOTHER UNIQUE PROCUREMENT NO. IF IT CATCHES AN EXISTING ONE  ===== #
+# def generate_unique_sku(category, type, ModelClass):
+#     while True:
+#         sku = generate_digits(category, type)
+#         if not ModelClass.objects.filter(sku=sku).exists():
+#             return sku
+# =============================================== #
+
+
 # ===== CREATE DUPLICATE INSTANCES OF A PRODUCT BEING RESTOCKED ===== #
 def duplicate_product(product, expiration_date=None):
     from .models import Product
@@ -143,11 +152,9 @@ def duplicate_product(product, expiration_date=None):
     if product.expiration_date:
         new_product = Product(
             name=product.name,
-            barcode=None,
             category=product.category,
             selling_price=product.selling_price,
             cost_price=product.cost_price,
-            supplier_name=product.supplier_name,
             brand=product.brand,
             expiration_date=expiration_date,
         )
@@ -155,11 +162,9 @@ def duplicate_product(product, expiration_date=None):
     else:
         new_product = Product(
             name=product.name,
-            barcode=None,
             category=product.category,
             selling_price=product.selling_price,
-            cost_price=product.cost_price, 
-            supplier_name=product.supplier_name,
+            cost_price=product.cost_price,
             brand=product.brand,
             expiration_date=None,
         )
