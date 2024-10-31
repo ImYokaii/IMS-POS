@@ -1,4 +1,9 @@
 import os
+import qrcode
+import barcode
+from barcode.writer import ImageWriter
+import base64
+from io import BytesIO
 from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib import messages
@@ -37,9 +42,46 @@ def product_list(request):
 # ===== VIEW PRODUCT DETAILS PAGE ===== #
 def product_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    
+    # Data for QR Code and Barcode
+    qr_data = f"Product ID: {product.id}, SKU: {product.sku}"
+    barcode_data = f"{product.sku}-{product.id}"
 
-    return render(request, 'product_view.html', {'product': product})
-# =============================================== #
+    # Generate QR Code as Data URI
+    qr = qrcode.QRCode(
+        version=1,  # QR code size (1 is the smallest)
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=5,  # Smaller box size to make the QR code smaller
+        border=1  # Smaller border size
+    )
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    qr_img = qr.make_image(fill='black', back_color='white')
+    qr_buffered = BytesIO()
+    qr_img.save(qr_buffered, format="PNG")
+    qr_data_uri = "data:image/png;base64," + base64.b64encode(qr_buffered.getvalue()).decode("utf-8")
+
+    # Generate Barcode as Data URI
+    barcode_cls = barcode.get_barcode_class('code128')
+    barcode_instance = barcode_cls(barcode_data, writer=ImageWriter())
+    barcode_writer_options = {
+        'module_width': 0.2,  # Width of a single barcode line
+        'module_height': 10,  # Height of the barcode
+        'font_size': 8,       # Font size for text
+        'text_distance': 3,   # Distance between text and barcode
+        'quiet_zone': 1       # Space around the barcode
+    }
+    barcode_buffered = BytesIO()
+    barcode_instance.write(barcode_buffered, options=barcode_writer_options)
+    barcode_data_uri = "data:image/png;base64," + base64.b64encode(barcode_buffered.getvalue()).decode("utf-8")
+
+
+    return render(request, 'product_view.html', {
+        'product': product,
+        'qr_code': qr_data_uri,
+        'barcode': barcode_data_uri
+    })
+# ============================================== #
 
 
 # ===== ADDING ITEM CHOICE PAGE ===== #
