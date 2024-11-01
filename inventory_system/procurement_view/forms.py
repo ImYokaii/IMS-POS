@@ -1,8 +1,18 @@
+import os
 from django import forms
 from django.forms import modelformset_factory
+from django.contrib.auth.models import User
 from .models import RequestQuotation, RequestQuotationItem, QuotationSubmission, QuotationSubmissionItem, PurchaseOrder, PurchaseOrderItem
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class RequestQuotationForm(forms.ModelForm):
+    USER_ROLE = os.environ.get('ROLE_2')
+
+    employee = forms.ModelChoiceField(queryset=User.objects.filter(userpermission__role=USER_ROLE), label=USER_ROLE)
+
     class Meta:
         STATUS_CHOICES = [('Ongoing', 'Ongoing'), ('Ended', 'Ended')]
         
@@ -25,6 +35,10 @@ RequestQuotationItemFormSet = modelformset_factory(RequestQuotationItem, form=Re
 
 
 class QuotationSubmissionForm(forms.ModelForm):
+    USER_ROLE = os.environ.get('ROLE_3')
+
+    supplier = forms.ModelChoiceField(queryset=User.objects.filter(userpermission__role=USER_ROLE), label=USER_ROLE)
+    
     class Meta:
         STATUS_CHOICES = [('Accept', 'Accept'), ('Pending', 'Pending')]
 
@@ -50,6 +64,10 @@ QuotationSubmissionItemFormSet = modelformset_factory(QuotationSubmissionItem, f
 
 
 class PurchaseOrderForm(forms.ModelForm):
+    USER_ROLE = os.environ.get('ROLE_3')
+
+    supplier = forms.ModelChoiceField(queryset=User.objects.filter(userpermission__role=USER_ROLE), label=USER_ROLE)
+
     class Meta:
         STATUS_CHOICES = [('Pending', 'Pending'), ('Approved', 'Approved'), ('Rejected', 'Rejected')]
         

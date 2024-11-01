@@ -8,9 +8,9 @@ load_dotenv()
 class UserPermission(models.Model):
     USER_ROLE_CHOICES = [
         (os.environ.get('ROLE_1'), os.environ.get('ROLE_1')),
-        (os.environ.get('ROLE_2'), os.environ.get('ROLE_1')),
-        (os.environ.get('ROLE_3'), os.environ.get('ROLE_1')),
-        (os.environ.get('ROLE_4'), os.environ.get('ROLE_1')),
+        (os.environ.get('ROLE_2'), os.environ.get('ROLE_2')),
+        (os.environ.get('ROLE_3'), os.environ.get('ROLE_3')),
+        (os.environ.get('ROLE_4'), os.environ.get('ROLE_4')),
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
