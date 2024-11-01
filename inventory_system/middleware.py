@@ -73,45 +73,49 @@ class PermissionMiddleware:
         self.LOGOUT_URL = os.environ.get('LOGOUT_URL')
         self.ROLE_1_URL = os.environ.get('ROLE_1_URL')
         self.ROLE_2_URL = os.environ.get('ROLE_2_URL')
-        self.ROLE_3_URL = os.environ.get('ROLE_3_URL')
+        self.ROLE_3_URL = os.environ.get('ROLE_3_URL').split(",")
         self.ROLE_1 = os.environ.get('ROLE_1')
         self.ROLE_2 = os.environ.get('ROLE_2')
         self.ROLE_3 = os.environ.get('ROLE_3')
 
     def __call__(self, request):
-        if request.user.is_authenticated:
+        path = request.path
 
+        if path == '/favicon.ico': # Prevent /favicon.co from intefering in url routing
+            return HttpResponse()
+        
+        if request.user.is_authenticated:
+            permission = request.user.userpermission
+
+            if path == self.LOGOUT_URL:
+                return self.get_response(request)
+        
             if request.user.is_superuser:
                 return self.get_response(request)
-            
-            permission = request.user.userpermission
-            path = request.path
+
+            print(f"Request path: {path}")
 
             if not permission.is_permitted:
-                if not (path.startswith(self.LOGOUT_URL)):  # Add more restricted url throughout development
+                if not (path.startswith(self.LOGOUT_URL)): # Add more restricted url throughout development
                     return HttpResponseForbidden("Wait for permission.")
 
             else:
                 if permission.role == self.ROLE_1:
-                    if not (path.startswith(self.ROLE_1_URL) or 
-                            path.startswith(self.LOGOUT_URL)):
-                        return HttpResponseForbidden("Role does not match.")
+                    if not path.startswith(self.ROLE_1_URL):
+                        return HttpResponse("Role does not match.")
 
                 elif permission.role == self.ROLE_2:
-                    if not (path.startswith(self.ROLE_2_URL) or 
-                            path.startswith(self.LOGOUT_URL)):
-                        return HttpResponseForbidden("Role does not match.")
-                    
+                    if not path.startswith(self.ROLE_2_URL):
+                        return HttpResponse("Role does not match.")
+
                 elif permission.role == self.ROLE_3:
-                    if not (path.startswith(self.ROLE_3_URL) or 
-                            path.startswith(self.LOGOUT_URL)):
-                        return HttpResponseForbidden("Role does not match.")
-                
+                    if not any(path.startswith(url.strip()) for url in self.ROLE_3_URL):
+                        return HttpResponse("Role does not match.")
+
                 else:
                     if not (path.startswith(self.LOGOUT_URL)):
                         return HttpResponse("Wait for role permission.")
                 
         response = self.get_response(request)
-
         return response
 # =============================================== #

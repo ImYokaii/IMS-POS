@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'inventory_view',
     'login_view',
     'procurement_view',
+    'supplier_view',
     'csp', # Content Security Policy
 ]
 
@@ -162,8 +163,11 @@ RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = (
     "'self'",
+    "'unsafe-inline'",
     "https://unpkg.com",
-    "https://cdn.jsdelivr.net"
+    "https://cdn.jsdelivr.net",
+    "https://www.google.com",       # Allow reCAPTCHA scripts
+    "https://www.gstatic.com"
 )
 CSP_STYLE_SRC = (
     "'self'",
@@ -171,10 +175,11 @@ CSP_STYLE_SRC = (
     "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
     "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
 )
-CSP_IMG_SRC = ("'self'", "data:")  # Adjust as needed for your image sources
+CSP_IMG_SRC = ("'self'", "data:")  # Image sources
 CSP_FONT_SRC = ("'self'", 
     "https://fonts.googleapis.com", 
     "https://fonts.gstatic.com",
-    "https://cdn.jsdelivr.net")  # Add font sources if necessary
-CSP_CONNECT_SRC = ("'self'",)  # Add your API sources if needed
-CSP_FRAME_SRC = ("'none'",)  # Prevent framing unless necessary
+    "https://cdn.jsdelivr.net"
+)  # Font sources
+CSP_CONNECT_SRC = ("'self'",)  # API sources
+CSP_FRAME_SRC = ("https://www.google.com")  # Prevent framing unless necessary

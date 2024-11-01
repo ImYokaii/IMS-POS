@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RequestQuotationForm, RequestQuotationItemFormSet, QuotationSubmissionForm, QuotationSubmissionItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet
-from .models import RequestQuotation, RequestQuotationItem, QuotationSubmission, QuotationSubmissionItem, PurchaseOrder, PurchaseOrderItem
+from .forms import RequestQuotationForm, RequestQuotationItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet
+from .models import RequestQuotation, RequestQuotationItem, PurchaseOrderItem
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
@@ -28,33 +28,6 @@ def create_request_quotation(request):
         formset = RequestQuotationItemFormSet(queryset=RequestQuotationItem.objects.none())
         
     return render(request, 'create_request_quotation.html', {'form': form, 'formset': formset})
-
-
-def create_quotation_submission(request):
-    if request.method == "POST":
-        form = QuotationSubmissionForm(request.POST)
-        formset = QuotationSubmissionItemFormSet(request.POST)
-
-        if form.is_valid() and formset.is_valid():
-            quotation_submission = form.save()
-
-            for form in formset:
-                if form.cleaned_data:
-                    quotation_submission_item = form.save(commit=False)
-                    quotation_submission_item.quotation_submission = quotation_submission
-                    quotation_submission_item.save()
-
-            return redirect('request_quotation_list')
-        
-        else:
-            print("Form errors:", form.errors)
-            print("Formset errors:", [f.errors for f in formset.forms])
-
-    else:
-        form = QuotationSubmissionForm()
-        formset = QuotationSubmissionItemFormSet(queryset=QuotationSubmissionItem.objects.none())
-        
-    return render(request, 'create_quotation_submission.html', {'form': form, 'formset': formset})
 
 
 def create_purchase_request(request):

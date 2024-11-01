@@ -1,0 +1,32 @@
+{% extends 'supplier_base.html' %}
+
+{% block title %}View Request Quotations{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4">Request Quotations</h2>
+    <div class="row">
+        {% for quotation in quotations %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ quotation.quotation_no }} - {{ quotation.buyer_company_name }}</h5>
+                        <p class="card-text"><strong>Contact:</strong> {{ quotation.buyer_contact }}</p>
+                        <p class="card-text"><strong>Address:</strong> {{ quotation.buyer_address }}</p>
+                        <p class="card-text"><strong>Prepared by:</strong> {{ quotation.prepared_by }}</p>
+                        <p class="card-text"><strong>Status:</strong> {{ quotation.status }}</p>
+                        <p class="card-text"><strong>Valid Until:</strong> {{ quotation.quote_valid_until }}</p>
+                        <p class="card-text"><strong>Date Prepared:</strong> {{ quotation.date_prepared }}</p>
+                        <p class="card-text"><strong>Terms:</strong> {{ quotation.terms_and_conditions|truncatewords:15 }}</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{% url 'request_quotations_detail' quotation.id %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No request quotations available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
