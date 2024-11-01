@@ -46,102 +46,90 @@ def search_filter_products(sku, name, product_type, expiration_date, category, s
 
 
 # ===== AUTOMATIC SKU GENERATOR ===== #
-# def generate_digits(category, type):
+def generate_digits(product_name, cost_price, category):
 
-#     def get_category(c):
-#         if c == "Concreting and Masonry":
-#             code = os.environ.get('CONCRETING_AND_MASONRY')
-#         elif c == "Rebars and Gi Wires":
-#             code = os.environ.get('REBARS_AND_GI_WIRES')
-#         elif c == "Roofing and Insulation":
-#             code = os.environ.get('ROOFING_AND_INSULATION')
-#         elif c == "Steel":
-#             code = os.environ.get('STEEL')
-#         elif c == "Water Proofing":
-#             code = os.environ.get('WATER_PROOFING')
-#         elif c == "Sealant and Adhesive":
-#             code = os.environ.get('SEALANT_AND_ADHESIVE')
-#         elif c == "Wood Products":
-#             code = os.environ.get('WOOD_PRODUCTS')
-#         elif c == "Dry Wall and Ceiling":
-#             code = os.environ.get('DRY_WALL_AND_CEILING')
-#         elif c == "Plumbing Pipes":
-#             code = os.environ.get('PLUMBING_PIPES')
-#         elif c == "Electrical Pipes":
-#             code = os.environ.get('ELECTRICAL_PIPES')
-#         elif c == "Wires and Cables":
-#             code = os.environ.get('WIRES_AND_CABLES')
-#         elif c == "Tiling Supplies":
-#             code = os.environ.get('TILING_SUPPLIES')
-#         elif c == "Painting Supplies":
-#             code = os.environ.get('PAINTING_SUPPLIES')
-#         elif c == "Door and Cabinet Hardwares":
-#             code = os.environ.get('DOOR_AND_CABINET_HARDWARES')
-#         elif c == "Electrical Fixtures and Devices":
-#             code = os.environ.get('ELECTRICAL_FIXTURES_AND_DEVICES')
-#         elif c == "Finishing Materials":
-#             code = os.environ.get('FINISHING_MATERIALS')
-#         elif c == "Power Tools and Equipments":
-#             code = os.environ.get('POWER_TOOLS_AND_EQUIPMENTS')
-#         elif c == "Nails and Screws":
-#             code = os.environ.get('NAILS_AND_SCREWS')
-#         elif c == "Screen and Covers":
-#             code = os.environ.get('SCREEN_AND_COVERS')
-#         elif c == "Chemicals":
-#             code = os.environ.get('CHEMICALS')
-#         else:
-#             code = os.environ.get('UNKNOWN_CATEGORY')
+    def get_product(product):
+        code = product[0]
+        code.upper()
+        return code
 
-#         return code
+    def get_rounded(price):
+        code = round(price)
+        return code
+
+    def get_category(c):
+        if c == "Concreting and Masonry":
+            code = os.environ.get('CONCRETING_AND_MASONRY')
+        elif c == "Rebars and Gi Wires":
+            code = os.environ.get('REBARS_AND_GI_WIRES')
+        elif c == "Roofing and Insulation":
+            code = os.environ.get('ROOFING_AND_INSULATION')
+        elif c == "Steel":
+            code = os.environ.get('STEEL')
+        elif c == "Water Proofing":
+            code = os.environ.get('WATER_PROOFING')
+        elif c == "Sealant and Adhesive":
+            code = os.environ.get('SEALANT_AND_ADHESIVE')
+        elif c == "Wood Products":
+            code = os.environ.get('WOOD_PRODUCTS')
+        elif c == "Dry Wall and Ceiling":
+            code = os.environ.get('DRY_WALL_AND_CEILING')
+        elif c == "Plumbing Pipes":
+            code = os.environ.get('PLUMBING_PIPES')
+        elif c == "Electrical Pipes":
+            code = os.environ.get('ELECTRICAL_PIPES')
+        elif c == "Wires and Cables":
+            code = os.environ.get('WIRES_AND_CABLES')
+        elif c == "Tiling Supplies":
+            code = os.environ.get('TILING_SUPPLIES')
+        elif c == "Painting Supplies":
+            code = os.environ.get('PAINTING_SUPPLIES')
+        elif c == "Door and Cabinet Hardwares":
+            code = os.environ.get('DOOR_AND_CABINET_HARDWARES')
+        elif c == "Electrical Fixtures and Devices":
+            code = os.environ.get('ELECTRICAL_FIXTURES_AND_DEVICES')
+        elif c == "Finishing Materials":
+            code = os.environ.get('FINISHING_MATERIALS')
+        elif c == "Power Tools and Equipments":
+            code = os.environ.get('POWER_TOOLS_AND_EQUIPMENTS')
+        elif c == "Nails and Screws":
+            code = os.environ.get('NAILS_AND_SCREWS')
+        elif c == "Screen and Covers":
+            code = os.environ.get('SCREEN_AND_COVERS')
+        elif c == "Chemicals":
+            code = os.environ.get('CHEMICALS')
+        else:
+            code = os.environ.get('UNKNOWN_CATEGORY')
+
+        return code
     
-#     def get_rand():
-#         min = int(os.environ.get('MINIMUM_INT'))
-#         max = int(os.environ.get('MAXIMUM_INT'))
+    def get_rand():
+        min = int(os.environ.get('MINIMUM_INT'))
+        max = int(os.environ.get('MAXIMUM_INT'))
 
-#         code = random.randint(min, max)
-
-#         return code
-
-#     def get_type(t):
-#         if t:
-#             code = os.environ.get('PERISHABLE_TYPE')
+        code = random.randint(min, max)
         
-#         else:
-#             code = os.environ.get('NON_PERISHABLE_TYPE')
+        print(code)
+        return code
 
-#         return code
-    
-#     def get_month():
-#         month = datetime.now()
-#         code = month.strftime("%m")
+    product_code = get_product(product_name)
+    cost_price_code = get_rounded(cost_price)
+    category_code = get_category(category)
+    rand_code = get_rand()
+    digit_arr = [product_code, cost_price_code, category_code, rand_code]
 
-#         return code
-    
-#     def get_year():
-#         year = datetime.now()
-#         code = year.strftime("%Y")
+    digits = ''.join(map(str, digit_arr))
 
-#         return code
-
-#     category_code = get_category(category)
-#     rand_code = get_rand()
-#     type_code = get_type(type)
-#     mont_code = get_month()
-#     year_code = get_year()
-#     digit_arr = [category_code, rand_code, type_code, mont_code, year_code]
-
-#     digits = int(''.join(map(str, digit_arr)))
-
-#     return digits
+    return digits
 # =============================================== #
 
 
 # ===== GENERATE ANOTHER UNIQUE PROCUREMENT NO. IF IT CATCHES AN EXISTING ONE  ===== #
-# def generate_unique_sku(category, type, ModelClass):
-#     while True:
-#         sku = generate_digits(category, type)
-#         if not ModelClass.objects.filter(sku=sku).exists():
-#             return sku
+def generate_unique_sku(product_name, cost_price, category, ModelClass):
+    while True:
+        sku = generate_digits(product_name, cost_price, category)
+        if not ModelClass.objects.filter(sku=sku).exists():
+            return sku
 # =============================================== #
 
 
