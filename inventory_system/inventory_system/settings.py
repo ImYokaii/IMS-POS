@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'inventory_view',
     'login_view',
     'procurement_view',
+    'csp', # Content Security Policy
 ]
 
 MIDDLEWARE = [
@@ -65,7 +66,10 @@ MIDDLEWARE = [
     'middleware.IPLockMiddleware',
 
     # Check user permission and role
-    'middleware.PermissionMiddleware'
+    'middleware.PermissionMiddleware',
+
+    # Content Security Policy
+    'csp.middleware.CSPMiddleware',
 ]
 
 ROOT_URLCONF = 'inventory_system.urls'
@@ -153,3 +157,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Documentation: https://pypi.org/project/django-recaptcha/
 RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
+
+# CONTENT SECURITY POLICY
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "https://unpkg.com",
+    "https://cdn.jsdelivr.net"
+)
+CSP_STYLE_SRC = (
+    "'self'",
+    "'unsafe-inline'",  # Needed for inline styles
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
+    "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+)
+CSP_IMG_SRC = ("'self'", "data:")  # Adjust as needed for your image sources
+CSP_FONT_SRC = ("'self'", 
+    "https://fonts.googleapis.com", 
+    "https://fonts.gstatic.com",
+    "https://cdn.jsdelivr.net")  # Add font sources if necessary
+CSP_CONNECT_SRC = ("'self'",)  # Add your API sources if needed
+CSP_FRAME_SRC = ("'none'",)  # Prevent framing unless necessary

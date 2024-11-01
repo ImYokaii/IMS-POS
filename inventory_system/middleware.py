@@ -70,16 +70,6 @@ class PermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-        # CSP variables
-        self.csp_header = (
-            "default-src 'self'; "
-            "script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "  # Allowing scripts from the specified CDNs
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/; "  # Allowing styles from the specified CDNs
-            "img-src 'self' data:; "
-            "connect-src 'self';"
-        )
-
-        # env variables:
         self.LOGOUT_URL = os.environ.get('LOGOUT_URL')
         self.ROLE_1_URL = os.environ.get('ROLE_1_URL')
         self.ROLE_2_URL = os.environ.get('ROLE_2_URL')
@@ -122,9 +112,6 @@ class PermissionMiddleware:
                         return HttpResponse("Wait for role permission.")
                 
         response = self.get_response(request)
-
-        # Add CSP header
-        response['Content-Security-Policy'] = self.csp_header
 
         return response
 # =============================================== #

@@ -50,9 +50,6 @@
         </tbody>
     </table>
 
-    <script src="https://unpkg.com/@zxing/library@latest"></script>
-    <script src="{% static 'js/qr-scanner.js' %}"></script> <!-- Include the QR scanner script -->
-
     <style>
         /* Style for the video container */
         .video-container {
@@ -74,4 +71,6 @@
             object-fit: cover; /* Maintain aspect ratio */
         }
     </style>
+
+    <script src="{% static 'dashboard-qr-scanner.js' %}"></script> <!-- Include the QR scanner script -->
 {% endblock %}
