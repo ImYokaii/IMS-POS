@@ -44,8 +44,8 @@ def product_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     
     # Data for QR Code and Barcode
-    qr_data = f"Product ID: {product.id}, SKU: {product.sku}"
-    barcode_data = f"{product.sku}-{product.id}"
+    qr_data = f"{product.sku}"
+    barcode_data = f"{product.sku}"
 
     # Generate QR Code as Data URI
     qr = qrcode.QRCode(
