@@ -4,23 +4,32 @@
 
 {% block content %}
 <div class="container my-4">
-    <h2 class="mb-4">Request Quotations</h2>
-    <div class="row">
-        {% for quotation in quotations %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ quotation.quotation_no }} - {{ quotation.buyer_company_name }}</h5>
-                        <p class="card-text"><strong>Contact:</strong> {{ quotation.buyer_contact }}</p>
-                        <p class="card-text"><strong>Address:</strong> {{ quotation.buyer_address }}</p>
-                        <p class="card-text"><strong>Prepared by:</strong> {{ quotation.prepared_by }}</p>
-                        <p class="card-text"><strong>Status:</strong> {{ quotation.status }}</p>
-                        <p class="card-text"><strong>Valid Until:</strong> {{ quotation.quote_valid_until }}</p>
-                        <p class="card-text"><strong>Date Prepared:</strong> {{ quotation.date_prepared }}</p>
-                        <p class="card-text"><strong>Terms:</strong> {{ quotation.terms_and_conditions|truncatewords:15 }}</p>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="{% url 'request_quotations_detail' quotation.id %}" class="btn btn-primary">View Details</a>
+    <h2 class="mb-4 text-center">Request Quotations</h2>
+    
+    <div class="row justify-content-center">
+        {% for quotation in request_quotations %}
+            <div class="col-lg-8 col-md-10 mb-3">
+                <div class="card flex-row p-3 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title"><strong>Quotation No:</strong> {{ quotation.quotation_no }}</h5>
+                            <p class="mb-1"><strong>Contact:</strong> {{ quotation.buyer_contact }}</p>
+                            <p class="mb-1"><strong>Address:</strong> {{ quotation.buyer_address }}</p>
+                            <p class="mb-1"><strong>Prepared by:</strong> {{ quotation.prepared_by }}</p>
+                            <p class="mb-1"><strong>Status:</strong>
+                                {% if quotation.status == "Ongoing" %}
+                                    <span class="badge bg-success">{{ quotation.status }}</span>
+                                {% elif quotation.status == "Danger" %}
+                                    <span class="badge bg-warning">{{ quotation.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                                {% endif %}
+                            </p>
+                            <p class="mb-1"><strong>Valid Until:</strong> {{ quotation.quote_valid_until }}</p>
+                        </div>
+                        <div class="text-end mt-3">
+                            <a href="{% url 'request_quotations_detail' quotation.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </div>
                     </div>
                 </div>
             </div>

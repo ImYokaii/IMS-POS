@@ -81,11 +81,12 @@ class PermissionMiddleware:
     def __call__(self, request):
         path = request.path
 
-        if path == '/favicon.ico': # Prevent /favicon.co from intefering in url routing
-            return HttpResponse()
+        if path == '/favicon.ico': # Prevent /favicon.co from intefering in url routing (bug)
+            return HttpResponse() # It just returns a blank page
         
+        print(f"User: {request.user.username}") # Check username (debugging)
+
         if request.user.is_authenticated:
-            permission = request.user.userpermission
 
             if path == self.LOGOUT_URL:
                 return self.get_response(request)
@@ -93,27 +94,34 @@ class PermissionMiddleware:
             if request.user.is_superuser:
                 return self.get_response(request)
 
-            print(f"Request path: {path}")
+            print(f"Request path: {path}") # Check requested path (debugging)
 
+            permission = request.user.userpermission
+            
             if not permission.is_permitted:
-                if not (path.startswith(self.LOGOUT_URL)): # Add more restricted url throughout development
+                if not (path.startswith(self.LOGOUT_URL)): # Unrestricted site for unpermitted users
+                    print(f"Path: {path}") 
                     return HttpResponseForbidden("Wait for permission.")
 
             else:
                 if permission.role == self.ROLE_1:
                     if not path.startswith(self.ROLE_1_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Role does not match.")
 
                 elif permission.role == self.ROLE_2:
                     if not path.startswith(self.ROLE_2_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Role does not match.")
 
                 elif permission.role == self.ROLE_3:
                     if not any(path.startswith(url.strip()) for url in self.ROLE_3_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Role does not match.")
 
                 else:
                     if not (path.startswith(self.LOGOUT_URL)):
+                        print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Wait for role permission.")
                 
         response = self.get_response(request)
