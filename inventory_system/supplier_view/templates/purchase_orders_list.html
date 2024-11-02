@@ -1,0 +1,41 @@
+{% extends 'supplier_base.html' %}
+
+{% block title %}View Purchase Orders{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Purchase Orders</h2>
+    
+    <div class="row justify-content-center">
+        {% for po in purchase_orders %}
+            <div class="col-lg-8 col-md-10 mb-3">
+                <div class="card flex-row p-3 shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div>
+                            <h5 class="card-title"><strong>Purchase Order No:</strong> {{ po.quotation_no }}</h5>
+                            <p class="mb-1"><strong>Date Ordered:</strong> {{ po.date_ordered }}</p>
+                            <p class="mb-1"><strong>Delivery Date:</strong> {{ po.delivery_date }}</p>
+                            <p class="mb-1"><strong>Status:</strong>
+                                {% if po.status == "Pending" %}
+                                    <span class="badge text-bg-warning">{{ po.status }}</span>
+                                {% elif po.status == "Accepted" %}
+                                    <span class="badge text-bg-success">{{ po.status }}</span>
+                                {% elif po.status == "Rejected" %}
+                                    <span class="badge text-bg-danger">{{ po.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="text-end mt-3">
+                            <a href="{% url 'purchase_orders_detail' po.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center">No request purchase orders available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

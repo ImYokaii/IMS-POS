@@ -18,11 +18,11 @@
                             <p class="mb-1"><strong>Prepared by:</strong> {{ quotation.prepared_by }}</p>
                             <p class="mb-1"><strong>Status:</strong>
                                 {% if quotation.status == "Ongoing" %}
-                                    <span class="badge bg-success">{{ quotation.status }}</span>
+                                    <span class="badge text-bg-success">{{ quotation.status }}</span>
                                 {% elif quotation.status == "Danger" %}
-                                    <span class="badge bg-warning">{{ quotation.status }}</span>
+                                    <span class="badge text-bg-warning">{{ quotation.status }}</span>
                                 {% else %}
-                                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                                    <span class="badge text-bg-light text-dark">{{ Unavailable }}</span>
                                 {% endif %}
                             </p>
                             <p class="mb-1"><strong>Valid Until:</strong> {{ quotation.quote_valid_until }}</p>

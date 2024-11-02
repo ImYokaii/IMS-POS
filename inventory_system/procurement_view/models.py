@@ -47,9 +47,15 @@ class PurchaseOrder(models.Model):
 
     def __str__(self):
         return f"PO #{self.quotation_no} - {self.supplier}"
+    
+    def save(self, *args, **kwargs):
+        if not self.quotation_no:
+            self.quotation_no = generate_unique_procurement_no("PO", PurchaseOrder)
+
+        super(PurchaseOrder, self).save(*args, **kwargs)
 
 class PurchaseOrderItem(models.Model):
-    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name='items')
     product = models.CharField(max_length=255)
     quantity = models.IntegerField()
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)

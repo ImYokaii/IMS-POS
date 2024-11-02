@@ -1,0 +1,66 @@
+{% extends 'supplier_base.html' %}
+
+{% block title %}View Purchase Order Details{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Purchase Order Details</h2>
+    
+    <!-- Quotation Details Section -->
+    <div class="card p-4 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title"><strong>Purchase Order No:</strong> {{ purchase_orders.quotation_no }}</h5>
+            <p><strong>Buyer Company Name:</strong> {{ purchase_orders.buyer_company_name }}</p>
+            <p><strong>Address:</strong> {{ purchase_orders.buyer_address }}</p>
+            <p><strong>Date Ordered:</strong> {{ purchase_orders.date_ordered }}</p>
+            <p><strong>Delivery Date:</strong> {{ purchase_orders.delivery_date }}</p>
+            <p><strong>Notes:</strong> {{ purchase_orders.notes }}</p>
+            <p><strong>Total Amount:</strong> {{ purchase_orders.total_amount }}</p>
+            <p><strong>Approved by:</strong> {{ purchase_orders.approved_by }}</p>
+            <p><strong>Status:</strong> 
+                {% if purchase_orders.status == "Pending" %}
+                    <span class="badge text-bg-warning">{{ purchase_orders.status }}</span>
+                {% elif purchase_orders.status == "Accepted" %}
+                    <span class="badge text-bg-success">{{ purchase_orders.status }}</span>
+                {% elif purchase_orders.status == "Rejected" %}
+                    <span class="badge text-bg-danger">{{ purchase_orders.status }}</span>
+                {% else %}
+                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Quotation Items Section -->
+    <h3 class="mb-3">Items in this Purchase Order</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchase_orders.items.all %}
+                    <tr>
+                        <td>{{ item.product }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unit_price }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No items found for this Purchase Order.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Back Button -->
+    <div class="text-end mt-3">
+        <a href="{% url 'purchase_orders_list' %}" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

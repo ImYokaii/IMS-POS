@@ -15,9 +15,13 @@
             <p><strong>Address:</strong> {{ quotation.buyer_address }}</p>
             <p><strong>Prepared by:</strong> {{ quotation.prepared_by }}</p>
             <p><strong>Status:</strong> 
-                <span class="{% if quotation.status == 'Ongoing' %}badge bg-success{% else %}badge bg-secondary{% endif %}">
-                    {{ quotation.status }}
-                </span>
+                {% if quotation.status == "Ongoing" %}
+                    <span class="badge text-bg-success">{{ quotation.status }}</span>
+                {% elif quotation.status == "Ended" %}
+                    <span class="badge text-bg-danger">{{ quotation.status }}</span>
+                {% else %}
+                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                {% endif %}
             </p>
             <p><strong>Valid Until:</strong> {{ quotation.quote_valid_until }}</p>
             <p><strong>Date Prepared:</strong> {{ quotation.date_prepared }}</p>
