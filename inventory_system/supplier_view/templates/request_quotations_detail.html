@@ -1,0 +1,70 @@
+{% extends 'supplier_base.html' %}
+
+{% block title %}View Request Quotation Details{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Request Quotation Details</h2>
+    
+    <!-- Quotation Details Section -->
+    <div class="card p-4 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title"><strong>Quotation No:</strong> {{ quotation.quotation_no }}</h5>
+            <p><strong>Buyer Company Name:</strong> {{ quotation.buyer_company_name }}</p>
+            <p><strong>Contact:</strong> {{ quotation.buyer_contact }}</p>
+            <p><strong>Address:</strong> {{ quotation.buyer_address }}</p>
+            <p><strong>Prepared by:</strong> {{ quotation.prepared_by }}</p>
+            <p><strong>Status:</strong> 
+                {% if quotation.status == "Ongoing" %}
+                    <span class="badge text-bg-success">{{ quotation.status }}</span>
+                {% elif quotation.status == "Ended" %}
+                    <span class="badge text-bg-danger">{{ quotation.status }}</span>
+                {% else %}
+                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                {% endif %}
+            </p>
+            <p><strong>Valid Until:</strong> {{ quotation.quote_valid_until }}</p>
+            <p><strong>Date Prepared:</strong> {{ quotation.date_prepared }}</p>
+            <p><strong>Terms and Conditions:</strong></p>
+            <p>{{ quotation.terms_and_conditions }}</p>
+        </div>
+    </div>
+
+    <!-- Quotation Items Section -->
+    <h3 class="mb-3">Items in this Quotation</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in quotation.items.all %}
+                    <tr>
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unit_price }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No items found for this quotation.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+
+    <a href="{% url 'create_quotation_submission' quotation.id %}" class="btn btn-primary">
+        Create Quotation Submission
+    </a>
+
+    <div class="text-end mt-3">
+        <a href="{% url 'request_quotations_list' %}" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

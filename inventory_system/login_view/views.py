@@ -13,7 +13,7 @@ from .utils import check_logging_user_role, get_client_ip, increment_failed_logi
 # ===== LOGIN PAGE ===== #
 def login_page(request):
     if request.user.is_authenticated:
-        return render(request, "dashboard")
+        return HttpResponse("gege")
     
     if request.method == "POST":
         form = LoginForm(request, data=request.POST)
@@ -35,9 +35,9 @@ def login_page(request):
         
 
                 permission = UserPermission.objects.get(user=user)
-                dummy_landing_page = check_logging_user_role(permission.role)
+                landing_page = check_logging_user_role(permission.role)
 
-                return HttpResponse(dummy_landing_page)
+                return redirect(landing_page)
             
         else:
             username = request.POST.get('username')
@@ -95,4 +95,8 @@ def employee_page(request):
 @login_required(login_url=settings.LOGIN_URL)
 def supplier_page(request):
     return HttpResponse("You are indeed a Supplier!")
+
+@login_required(login_url=settings.LOGIN_URL)
+def unknown_page(request):
+    return HttpResponse("You are Unknown...")
 # =============================================== #

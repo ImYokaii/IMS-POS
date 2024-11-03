@@ -70,61 +70,60 @@ class PermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-        # CSP variables
-        self.csp_header = (
-            "default-src 'self'; "
-            "script-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "  # Allowing scripts from the specified CDNs
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/; "  # Allowing styles from the specified CDNs
-            "img-src 'self' data:; "
-            "connect-src 'self';"
-        )
-
-        # env variables:
         self.LOGOUT_URL = os.environ.get('LOGOUT_URL')
         self.ROLE_1_URL = os.environ.get('ROLE_1_URL')
         self.ROLE_2_URL = os.environ.get('ROLE_2_URL')
-        self.ROLE_3_URL = os.environ.get('ROLE_3_URL')
+        self.ROLE_3_URL = os.environ.get('ROLE_3_URL').split(",")
         self.ROLE_1 = os.environ.get('ROLE_1')
         self.ROLE_2 = os.environ.get('ROLE_2')
         self.ROLE_3 = os.environ.get('ROLE_3')
 
     def __call__(self, request):
+        path = request.path
+
+        if path == '/favicon.ico': # Prevent /favicon.co from intefering in url routing (bug)
+            return HttpResponse() # It just returns a blank page
+        
+        print(f"User: {request.user.username}") # Check username (debugging)
+
         if request.user.is_authenticated:
 
+            if path == self.LOGOUT_URL:
+                return self.get_response(request)
+        
             if request.user.is_superuser:
                 return self.get_response(request)
-            
-            permission = request.user.userpermission
-            path = request.path
 
+            print(f"Request path: {path}") # Check requested path (debugging)
+
+            permission = request.user.userpermission
+            
             if not permission.is_permitted:
-                if not (path.startswith(self.LOGOUT_URL)):  # Add more restricted url throughout development
+                if not (path.startswith(self.LOGOUT_URL)): # Unrestricted site for unpermitted users
+                    print(f"Path: {path}") 
                     return HttpResponseForbidden("Wait for permission.")
 
             else:
                 if permission.role == self.ROLE_1:
-                    if not (path.startswith(self.ROLE_1_URL) or 
-                            path.startswith(self.LOGOUT_URL)):
-                        return HttpResponseForbidden("Role does not match.")
+                    if not path.startswith(self.ROLE_1_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return HttpResponse("Role does not match.")
 
                 elif permission.role == self.ROLE_2:
-                    if not (path.startswith(self.ROLE_2_URL) or 
-                            path.startswith(self.LOGOUT_URL)):
-                        return HttpResponseForbidden("Role does not match.")
-                    
+                    if not path.startswith(self.ROLE_2_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return HttpResponse("Role does not match.")
+
                 elif permission.role == self.ROLE_3:
-                    if not (path.startswith(self.ROLE_3_URL) or 
-                            path.startswith(self.LOGOUT_URL)):
-                        return HttpResponseForbidden("Role does not match.")
-                
+                    if not any(path.startswith(url.strip()) for url in self.ROLE_3_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return HttpResponse("Role does not match.")
+
                 else:
                     if not (path.startswith(self.LOGOUT_URL)):
+                        print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Wait for role permission.")
                 
         response = self.get_response(request)
-
-        # Add CSP header
-        response['Content-Security-Policy'] = self.csp_header
-
         return response
 # =============================================== #

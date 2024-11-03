@@ -54,10 +54,11 @@
         <button type="submit" class="btn btn-primary btn-sm">Filter</button>
     </form>
     
-        <button id="startScanButton" class="btn btn-secondary mt-3">Start Scanning</button>
-        <button id="stopScanButton" class="btn btn-danger d-none mt-3">Stop Scanning</button>
+    
+    <button id="startScanButton" class="btn btn-secondary mt-3">Start Scanning</button>
+    <button id="stopScanButton" class="btn btn-danger d-none mt-3">Stop Scanning</button>
 
-        <!-- Responsive video container -->
+    <!-- Responsive video container -->
     <div class="video-container mt-3" style="display: none;">
         <video id="videoElement" autoplay playsinline></video>
         <div id="videoError" style="display: none; color: red;">Could not access the camera. Please check permissions.</div>
@@ -97,8 +98,7 @@
             </tbody>
         </table>
     </div>
-    <script src="https://unpkg.com/@zxing/library@latest"></script>
-    <script src="{% static 'js/qr-scanner.js' %}"></script> <!-- Include the QR scanner script -->
+
 
     <style>
         /* Style for the video container */
@@ -121,4 +121,6 @@
             object-fit: cover; /* Maintain aspect ratio */
         }
     </style>
+
+    <script src="{% static 'inventory-qr-scanner.js' %}"></script>
 {% endblock %}

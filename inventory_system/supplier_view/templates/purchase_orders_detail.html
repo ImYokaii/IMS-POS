@@ -1,0 +1,86 @@
+{% extends 'supplier_base.html' %}
+
+{% block title %}View Purchase Order Details{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Purchase Order Details</h2>
+    
+    <!-- Quotation Details Section -->
+    <div class="card p-4 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title"><strong>Purchase Order No:</strong> {{ purchase_order.quotation_no }}</h5>
+            <p><strong>Buyer Company Name:</strong> {{ purchase_order.buyer_company_name }}</p>
+            <p><strong>Address:</strong> {{ purchase_order.buyer_address }}</p>
+            <p><strong>Date Ordered:</strong> {{ purchase_order.date_ordered }}</p>
+            <p><strong>Delivery Date:</strong> {{ purchase_order.delivery_date }}</p>
+            <p><strong>Notes:</strong> {{ purchase_order.notes }}</p>
+            <p><strong>Total Amount:</strong> {{ purchase_order.total_amount }}</p>
+            <p><strong>Approved by:</strong> {{ purchase_order.approved_by }}</p>
+            <p><strong>Order Status:</strong> 
+                {% if purchase_order.status == STATUS_0 %}
+                    <span class="badge text-bg-warning">{{ purchase_order.status }}</span>
+                {% elif purchase_order.status == STATUS_1 %}
+                    <span class="badge text-bg-success">{{ purchase_order.status }}</span>
+                {% elif purchase_order.status == STATUS_2 %}
+                    <span class="badge text-bg-danger">{{ purchase_order.status }}</span>
+                {% else %}
+                    <span class="badge bg-light text-dark">Unavailable</span>
+                {% endif %}
+            </p>
+
+            <!-- Status Update Form -->
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="status" class="form-label"><strong>Update Status</strong></label>
+                    <select class="form-select .custom-status-select {% if form.status.errors %}is-invalid{% endif %}" id="status" name="status" style="width: 150px;">
+                        {% for value, label in form.status.field.widget.choices %}
+                            <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if form.status.errors %}
+                        <div class="invalid-feedback">
+                            Invalid status.
+                        </div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">Update Status</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quotation Items Section -->
+    <h3 class="mb-3">Items in this Purchase Order</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchase_order.items.all %}
+                    <tr>
+                        <td>{{ item.product }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.unit_price }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center">No items found for this Purchase Order.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Back Button -->
+    <div class="text-end mt-3">
+        <a href="{% url 'generate_invoice_pdf' purchase_order.id %}" class="btn btn-primary">Download Invoice PDF</a>
+        <a href="{% url 'purchase_orders_list' %}" class="btn btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+{% endblock %}

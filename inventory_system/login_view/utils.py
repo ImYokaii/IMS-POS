@@ -9,17 +9,19 @@ load_dotenv()
 
 # ===== CHECK USER'S ROLE AFTER LOGIN ===== #
 def check_logging_user_role(role):
+    ROLE_3_URL = os.environ.get('ROLE_3_URL').split(",")
+
     if role == os.environ.get('ROLE_1'):
-        return "Hi Manager" # dummy page message
+        return "managers" # dummy page message
     
     elif role == os.environ.get('ROLE_2'):
-        return "Hi Employee" # dummy page message
+        return "employees" # dummy page message
     
     elif role == os.environ.get('ROLE_3'):
-        return "Hi Supplier" # dummy page message
+        return ROLE_3_URL[0]
     
     else:
-        return "Wait for role permission" # dummy page message
+        return "unknowns"
 # =============================================== #
     
 

@@ -38,7 +38,7 @@ async function startScanning() {
 
 function handleScannedValue(scannedValue) {
     scannedValueDisplay.textContent = `Scanned Value: ${scannedValue}`;
-    filterForm.querySelector('[name="name"]').value = scannedValue; // Populate input
+    filterForm.querySelector('[name="sku"]').value = scannedValue; // Populate input
     filterForm.submit(); // Submit the form
     stopScanning(); // Stop scanning after successful scan
 }

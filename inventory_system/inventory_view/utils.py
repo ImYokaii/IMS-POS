@@ -109,7 +109,6 @@ def generate_digits(product_name, cost_price, category):
 
         code = random.randint(min, max)
         
-        print(code)
         return code
 
     product_code = get_product(product_name)

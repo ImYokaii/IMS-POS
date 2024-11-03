@@ -1,4 +1,4 @@
-{% extends 'procurement_base.html' %}
+{% extends 'supplier_base.html' %}
 
 {% block title %}Create Quotation Submission{% endblock %}
 
@@ -64,7 +64,7 @@
     <div class="container mt-5">
         <div class="card shadow-lg border-0">
             <div class="card-header bg-dark text-white">
-                <h2 class="mb-0">Create Quotation Submission</h2>
+                <h2 class="mb-0">Quotation Submission</h2>
             </div>
             
             <div class="card-body">
@@ -72,7 +72,27 @@
                     {% csrf_token %}
                     
                     <h4 class="text-muted mb-4">Quotation Details</h4>
+
+                    <div class="col-lg-6">
+                        <label class="form-label fw-bold">Quotation No.:</label>
+                        <p class="form-control-plaintext">{{ quotation_request.quotation_no }}</p>
+                        <input type="hidden" name="quotation_no" value="{{ form.quotation_no.value|default:quotation_request.quotation_no }}">
+                    </div>
                     
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <label class="form-label fw-bold">Buyer Company Name</label>
+                            <p class="form-control-plaintext">{{ quotation_request.buyer_company_name }}</p>
+                            <input type="hidden" name="buyer_company_name" value="{{ form.buyer_company_name.value|default:quotation_request.buyer_company_name }}">
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label class="form-label fw-bold">Buyer Address</label>
+                            <p class="form-control-plaintext">{{ quotation_request.buyer_address }}</p>
+                            <input type="hidden" name="buyer_address" value="{{ form.buyer_address.value|default:quotation_request.buyer_address }}">
+                        </div>
+                    </div>
+
                     <div class="row g-4">
                         <div class="col-lg-6">
                             <label for="supplier" class="form-label fw-bold">Supplier</label>
@@ -87,29 +107,9 @@
                         </div>
 
                         <div class="col-lg-6">
-                            <label for="buyer_company_name" class="form-label fw-bold">Buyer Company Name</label>
-                            <input type="text" class="form-control {% if form.buyer_company_name.errors %}is-invalid{% endif %}" id="buyer_company_name" name="buyer_company_name" value="{{ form.buyer_company_name.value|default:'' }}">
-                            {% if form.buyer_company_name.errors %}
-                                <div class="invalid-feedback">{{ form.buyer_company_name.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-lg-6">
-                            <label for="buyer_address" class="form-label fw-bold">Buyer Address</label>
-                            <input type="text" class="form-control {% if form.buyer_address.errors %}is-invalid{% endif %}" id="buyer_address" name="buyer_address" value="{{ form.buyer_address.value|default:'' }}">
-                            {% if form.buyer_address.errors %}
-                                <div class="invalid-feedback">{{ form.buyer_address.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6">
-                            <label for="buyer_contact" class="form-label fw-bold">Buyer Contact</label>
-                            <input type="text" class="form-control {% if form.buyer_contact.errors %}is-invalid{% endif %}" id="buyer_contact" name="buyer_contact" value="{{ form.buyer_contact.value|default:'' }}">
-                            {% if form.buyer_contact.errors %}
-                                <div class="invalid-feedback">{{ form.buyer_contact.errors }}</div>
-                            {% endif %}
+                            <label class="form-label fw-bold">Buyer Contact</label>
+                            <p class="form-control-plaintext">{{ quotation_request.buyer_contact }}</p>
+                            <input type="hidden" name="buyer_contact" value="{{ form.buyer_contact.value|default:quotation_request.buyer_contact }}">
                         </div>
                     </div>
 
@@ -131,9 +131,7 @@
                                 <div class="invalid-feedback">{{ form.prepared_by.errors }}</div>
                             {% endif %}
                         </div>
-                    </div>
 
-                    <div class="row g-4">
                         <div class="col-lg-6">
                             <label for="quote_valid_until" class="form-label fw-bold">Quote Valid Until</label>
                             <input type="date" class="form-control {% if form.quote_valid_until.errors %}is-invalid{% endif %}" id="quote_valid_until" name="quote_valid_until" value="{{ form.quote_valid_until.value|default:'' }}">
@@ -141,29 +139,8 @@
                                 <div class="invalid-feedback">{{ form.quote_valid_until.errors }}</div>
                             {% endif %}
                         </div>
-
-                        <div class="col-lg-6">
-                            <label for="status" class="form-label fw-bold">Status</label>
-                            <select class="form-select {% if form.status.errors %}is-invalid{% endif %}" id="status" name="status">
-                                {% for value, label in form.status.field.widget.choices %}
-                                    <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.status.errors %}
-                                <div class="invalid-feedback">{{ form.status.errors }}</div>
-                            {% endif %}
-                        </div>
                     </div>
 
-                    <div class="row g-4">
-                        <div class="col-lg-6">
-                            <label for="total_amount" class="form-label fw-bold">Total Amount</label>
-                            <input type="text" class="form-control {% if form.total_amount.errors %}is-invalid{% endif %}" id="total_amount" name="total_amount" value="{{ form.total_amount.value|default:'' }}">
-                            {% if form.total_amount.errors %}
-                                <div class="invalid-feedback">{{ form.total_amount.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
 
                     <div class="custom-separator"></div>
 
@@ -171,14 +148,14 @@
                     {{ formset.management_form }}
 
                     <div class="row g-4">
-                        {% for form in formset %}
+                        {% for form in formset.forms %}
                             <div class="col-lg-4">
                                 <div class="card h-100 shadow-sm border-0">
                                     <div class="card-body">
                                         <h5 class="card-title">Item {{ forloop.counter }}</h5>
 
                                         <div class="mb-3">
-                                            <label for="id_product_name_{{ forloop.counter0 }}" class="form-label fw-bold">Product Name</label>
+                                            <label for="id_product_name_{{ forloop.counter0 }}" class="form-label fw-bold">Product</label>
                                             <input type="text" class="form-control {% if form.product_name.errors %}is-invalid{% endif %}" id="id_product_name_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-product_name" value="{{ form.product_name.value|default:'' }}">
                                             {% if form.product_name.errors %}
                                                 <div class="invalid-feedback">{{ form.product_name.errors }}</div>
@@ -194,7 +171,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="id_unit_price_{{ forloop.counter0 }}" class="form-label fw-bold">Unit Price</label>
+                                            <label for="id_unit_price_{{ forloop.counter0 }}" class="form-label fw-bold">Proposed Price</label>
                                             <input type="number" class="form-control {% if form.unit_price.errors %}is-invalid{% endif %}" id="id_unit_price_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-unit_price" value="{{ form.unit_price.value|default:'' }}">
                                             {% if form.unit_price.errors %}
                                                 <div class="invalid-feedback">{{ form.unit_price.errors }}</div>
