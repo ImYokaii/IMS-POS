@@ -16,11 +16,11 @@
                             <p class="mb-1"><strong>Date Ordered:</strong> {{ po.date_ordered }}</p>
                             <p class="mb-1"><strong>Delivery Date:</strong> {{ po.delivery_date }}</p>
                             <p class="mb-1"><strong>Status:</strong>
-                                {% if po.status == "Pending" %}
+                                {% if po.status == STATUS_0 %}
                                     <span class="badge text-bg-warning">{{ po.status }}</span>
-                                {% elif po.status == "Accepted" %}
+                                {% elif po.status == STATUS_1 %}
                                     <span class="badge text-bg-success">{{ po.status }}</span>
-                                {% elif po.status == "Rejected" %}
+                                {% elif po.status == STATUS_2 %}
                                     <span class="badge text-bg-danger">{{ po.status }}</span>
                                 {% else %}
                                     <span class="badge bg-light text-dark">{{ Unavailable }}</span>

@@ -58,7 +58,11 @@
         </table>
     </div>
     
-    <!-- Back Button -->
+
+    <a href="{% url 'create_quotation_submission' quotation.id %}" class="btn btn-primary">
+        Create Quotation Submission
+    </a>
+
     <div class="text-end mt-3">
         <a href="{% url 'request_quotations_list' %}" class="btn btn-outline-secondary">Back to List</a>
     </div>

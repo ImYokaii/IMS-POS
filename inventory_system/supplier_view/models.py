@@ -11,8 +11,7 @@ class QuotationSubmission(models.Model):
     quote_valid_until = models.DateField()
     date_submitted = models.DateField(auto_now_add=True)
     terms_and_conditions = models.TextField()
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, default="Pending")
 
     def __str__(self):
         return f"{self.quotation_no} - {self.buyer_company_name}"
