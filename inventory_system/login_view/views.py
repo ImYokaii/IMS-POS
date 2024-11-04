@@ -11,6 +11,11 @@ from .utils import check_logging_user_role, get_client_ip, increment_failed_logi
 
 
 # ===== LOGIN PAGE ===== #
+def landing_page(Request):
+    return HttpResponse("A Landing Page")
+
+
+# ===== LOGIN PAGE ===== #
 def login_page(request):
     if request.user.is_authenticated:
         return HttpResponse("gege")

@@ -72,7 +72,7 @@ class PermissionMiddleware:
 
         self.LOGOUT_URL = os.environ.get('LOGOUT_URL')
         self.ROLE_1_URL = os.environ.get('ROLE_1_URL')
-        self.ROLE_2_URL = os.environ.get('ROLE_2_URL')
+        self.ROLE_2_URL = os.environ.get('ROLE_2_URL').split(",")
         self.ROLE_3_URL = os.environ.get('ROLE_3_URL').split(",")
         self.ROLE_1 = os.environ.get('ROLE_1')
         self.ROLE_2 = os.environ.get('ROLE_2')
@@ -104,13 +104,14 @@ class PermissionMiddleware:
                     return HttpResponseForbidden("Wait for permission.")
 
             else:
+                print(f"Role: {permission.role}")
                 if permission.role == self.ROLE_1:
                     if not path.startswith(self.ROLE_1_URL):
                         print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Role does not match.")
 
                 elif permission.role == self.ROLE_2:
-                    if not path.startswith(self.ROLE_2_URL):
+                    if not any(path.startswith(url.strip()) for url in self.ROLE_2_URL):
                         print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Role does not match.")
 
