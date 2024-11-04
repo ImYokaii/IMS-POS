@@ -15,12 +15,6 @@ from dashboard_view.models import ProductInstance
 load_dotenv()
 
 
-# ===== DUMMY PAGE FOR TESTING ===== #
-def dummy_page(request):
-    return HttpResponse("Welcome to a page.")
-# ============================================= #
-
-
 # ===== ALL PRODUCTS PAGE ===== #
 def product_list(request):
     form = ProductFilterForm(request.GET)

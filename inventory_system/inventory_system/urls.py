@@ -24,9 +24,9 @@ from django.conf import settings
 
 urlpatterns = [
     path(os.environ.get('ADMIN_URL','admin/'), admin.site.urls),
-    path('authentication/', include("login_view.urls")),
+    path('', include("login_view.urls")),
     path('inventory/', include("inventory_view.urls")),
-    path('', include("dashboard_view.urls")),
+    path('dashboard/', include("dashboard_view.urls")),
     path('procurement/', include("procurement_view.urls")),
     path('supplier/', include("supplier_view.urls")),
     
