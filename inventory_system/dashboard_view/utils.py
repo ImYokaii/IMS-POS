@@ -5,7 +5,7 @@ def search_filter_product_list(name, category):
     product_instance = ProductInstance.objects.all()
 
     if name:
-        product_instance = product_instance.filter(name=name)
+        product_instance = product_instance.filter(name__icontains=name)
 
     if category:
         product_instance = product_instance.filter(category=category)
