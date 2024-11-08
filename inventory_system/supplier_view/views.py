@@ -1,5 +1,7 @@
 import os
 from dotenv import load_dotenv
+from django.contrib import messages
+from django.utils import timezone
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .forms import PurchaseOrderStatusForm, QuotationSubmissionForm, QuotationSubmissionItemForm, QuotationSubmissionItemFormSet
 from .models import QuotationSubmission, QuotationSubmissionItem
@@ -15,7 +17,8 @@ load_dotenv()
 
 def request_quotations_list(request):
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
-    request_quotations = RequestQuotation.objects.filter(status=STATUS[0])
+    due_date = timezone.now().date().strftime('%Y-%m-%d')
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS[0])
 
     return render(request, 'request_quotations_list.html', {'request_quotations': request_quotations})
 
@@ -68,15 +71,7 @@ def purchase_orders_detail(request, po_id):
         )
 
 
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import inch
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-
 def generate_invoice_pdf(request, po_id):
-    # Retrieve the specified purchase order and its items
     purchase_order = get_object_or_404(PurchaseOrder, id=po_id)
     items = PurchaseOrderItem.objects.filter(purchase_order=purchase_order)
 
@@ -146,6 +141,14 @@ def create_quotation_submission(request, quotation_id):
     quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
 
+    logged_user = request.user
+    quotation_no = quotation_request.quotation_no[2:]
+    has_pending_submission = QuotationSubmission.objects.filter(supplier=logged_user, quotation_no__endswith=quotation_no, status__in=["Pending","Accepted"]).exists()
+    if has_pending_submission:
+        messages.error(request, "You have already submitted a quotation submission for this request.")
+        return redirect("request_quotations_list")
+    
+    
     initial_submission_data = {
         'buyer_company_name': quotation_request.buyer_company_name,
         'buyer_address': quotation_request.buyer_address,
@@ -161,6 +164,7 @@ def create_quotation_submission(request, quotation_id):
         }
         for item in quotation_request_items
     ]
+
 
     if request.method == "POST":
         form = QuotationSubmissionForm(request.POST, initial=initial_submission_data)
