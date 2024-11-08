@@ -6,4 +6,6 @@ urlpatterns = [
     path('create_purchase_request/', views.create_purchase_request, name="create_purchase_request"),
     path('request_quotation_list/', views.request_quotation_list, name="request_quotation_list"),  
     path('request_quotation_detail/<int:quotation_id>/', views.request_quotation_detail, name="request_quotation_detail"),
+    path('view_supplier_quotations/<str:quotation_no>/', views.view_supplier_quotations, name="view_supplier_quotations"),
+    path('quotation_submission_detail/<int:submission_id>/', views.view_quotation_submission_detail, name="quotation_submission_detail"),
 ]
