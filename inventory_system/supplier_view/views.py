@@ -1,8 +1,11 @@
 import os
 from dotenv import load_dotenv
+from django.contrib import messages
+from django.utils import timezone
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
-from .forms import PurchaseOrderStatusForm, QuotationSubmissionForm, QuotationSubmissionItemForm, QuotationSubmissionItemFormSet
-from .models import QuotationSubmission, QuotationSubmissionItem
+from .utils import create_digital_invoice
+from .forms import PurchaseOrderStatusForm, QuotationSubmissionForm, QuotationSubmissionItemForm, QuotationSubmissionItemFormSet, PurchaseInvoiceForm
+from .models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from procurement_view.models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
@@ -15,13 +18,13 @@ load_dotenv()
 
 def request_quotations_list(request):
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
-    request_quotations = RequestQuotation.objects.filter(status=STATUS[0])
+    due_date = timezone.now().date().strftime('%Y-%m-%d')
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS[0])
 
     return render(request, 'request_quotations_list.html', {'request_quotations': request_quotations})
 
 
 def request_quotations_detail(request, quotation_id):
-    STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     quotation = get_object_or_404(RequestQuotation, id=quotation_id)
     
     return render(request, 'request_quotations_detail.html', {'quotation': quotation})
@@ -39,8 +42,7 @@ def purchase_orders_list(request):
         {'purchase_orders': purchase_orders,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
-         'STATUS_2': STATUS_2}
-        )
+         'STATUS_2': STATUS_2})
 
 
 def purchase_orders_detail(request, po_id):
@@ -55,7 +57,20 @@ def purchase_orders_detail(request, po_id):
         form = PurchaseOrderStatusForm(request.POST, instance=purchase_order)
         if form.is_valid():
             form.save()
-            return redirect('purchase_orders_detail', po_id=po_id)  # Redirect to the same page to see the updated status
+
+            if purchase_order.status == STATUS_1:
+                logged_user = request.user
+                quotation_no = purchase_order.quotation_no[2:]
+                has_pending_submission = PurchaseInvoice.objects.filter(supplier=logged_user, invoice_no__endswith=quotation_no, status__in=["Pending","Paid"]).exists()
+                
+                if has_pending_submission:
+                    messages.error(request, "A digital invoice for this purchase order already exists.")
+                
+                else:
+                    create_digital_invoice(purchase_order)
+                    print(f"Purchase Invoice Created: PI{quotation_no}")
+
+            return redirect('purchase_orders_detail', po_id=po_id)
     else:
         form = PurchaseOrderStatusForm(instance=purchase_order)
 
@@ -68,28 +83,50 @@ def purchase_orders_detail(request, po_id):
         )
 
 
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import inch
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+def purchase_invoices_list(request):
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
+    purchase_invoices = PurchaseInvoice.objects.filter(supplier=request.user)
+
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+
+    return render(request, 'purchase_invoices_list.html', 
+        {'purchase_invoices': purchase_invoices,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2})
+
+
+def purchase_invoices_detail(request, pi_id):
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
+
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+    
+    return render(request, 'purchase_invoices_detail.html', 
+        {'purchase_invoice': purchase_invoice,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2})
+
 
 def generate_invoice_pdf(request, po_id):
-    # Retrieve the specified purchase order and its items
-    purchase_order = get_object_or_404(PurchaseOrder, id=po_id)
-    items = PurchaseOrderItem.objects.filter(purchase_order=purchase_order)
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=po_id)
+    items = PurchaseInvoiceItem.objects.filter(purchase_invoice=purchase_invoice)
 
     # Calculate the total price
     total_amount = sum(item.quantity * item.unit_price for item in items)
 
     # Set up PDF response
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="Invoice_{purchase_order.quotation_no}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="Invoice_{purchase_invoice.invoice_no}.pdf"'
 
     # Create PDF document
     pdf_canvas = canvas.Canvas(response, pagesize=A4)
-    pdf_canvas.setTitle(f"Invoice for Quotation {purchase_order.quotation_no}")
+    pdf_canvas.setTitle(f"Invoice for Quotation {purchase_invoice.invoice_no}")
 
     # Draw a header box
     pdf_canvas.setStrokeColor(colors.black)
@@ -97,17 +134,15 @@ def generate_invoice_pdf(request, po_id):
     pdf_canvas.rect(0.5 * inch, 9.5 * inch, 7 * inch, 1 * inch)
 
     # Write header information with improved spacing
-    pdf_canvas.drawString(1 * inch, 10 * inch, f"Invoice for Quotation: {purchase_order.quotation_no}")
+    pdf_canvas.drawString(1 * inch, 10 * inch, f"Invoice for Quotation: {purchase_invoice.invoice_no}")
     
     # General details in two columns
-    pdf_canvas.drawString(1 * inch, 9 * inch, f"Buyer: {purchase_order.buyer_company_name}")
-    pdf_canvas.drawString(4 * inch, 9 * inch, f"Date Ordered: {purchase_order.date_ordered.strftime('%Y-%m-%d')}")
+    pdf_canvas.drawString(1 * inch, 9 * inch, f"Supplier: {purchase_invoice.supplier_company_name}")
+    pdf_canvas.drawString(4 * inch, 9 * inch, f"Date Issued: {purchase_invoice.date_issued.strftime('%Y-%m-%d')}")
     
-    pdf_canvas.drawString(1 * inch, 8.5 * inch, f"Buyer Address: {purchase_order.buyer_address}")
-    pdf_canvas.drawString(4 * inch, 8.5 * inch, f"Delivery Date: {purchase_order.delivery_date.strftime('%Y-%m-%d')}")
+    pdf_canvas.drawString(1 * inch, 8.5 * inch, f"Supplier Address: {purchase_invoice.supplier_address}")
 
-    pdf_canvas.drawString(1 * inch, 8 * inch, f"Approved By: {purchase_order.approved_by}")
-    pdf_canvas.drawString(4 * inch, 8 * inch, f"Order Status: {purchase_order.status}")
+    pdf_canvas.drawString(4 * inch, 8 * inch, f"Invoice Status: {purchase_invoice.status}")
 
     # Draw item headers with better alignment
     pdf_canvas.drawString(1 * inch, 7 * inch, "Product Name")
@@ -123,7 +158,7 @@ def generate_invoice_pdf(request, po_id):
 
     # List each item in the purchase order
     for item in items:
-        pdf_canvas.drawString(1 * inch, y, item.product)
+        pdf_canvas.drawString(1 * inch, y, item.product_name)
         pdf_canvas.drawString(3 * inch, y, str(item.quantity))
         pdf_canvas.drawString(4.5 * inch, y, f"${item.unit_price:.2f}")
         pdf_canvas.drawString(6 * inch, y, f"${item.quantity * item.unit_price:.2f}")
@@ -141,11 +176,18 @@ def generate_invoice_pdf(request, po_id):
     return response
 
 
-
 def create_quotation_submission(request, quotation_id):
     quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
 
+    logged_user = request.user
+    quotation_no = quotation_request.quotation_no[2:]
+    has_pending_submission = QuotationSubmission.objects.filter(supplier=logged_user, quotation_no__endswith=quotation_no, status__in=["Pending","Accepted"]).exists()
+    if has_pending_submission:
+        messages.error(request, "You have already submitted a quotation submission for this request.")
+        return redirect("request_quotations_list")
+    
+    
     initial_submission_data = {
         'buyer_company_name': quotation_request.buyer_company_name,
         'buyer_address': quotation_request.buyer_address,
@@ -161,6 +203,7 @@ def create_quotation_submission(request, quotation_id):
         }
         for item in quotation_request_items
     ]
+
 
     if request.method == "POST":
         form = QuotationSubmissionForm(request.POST, initial=initial_submission_data)

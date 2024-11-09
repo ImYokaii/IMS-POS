@@ -1,0 +1,42 @@
+{% extends 'procurement_base.html' %}
+
+{% block title %}Quotation Submission Details{% endblock %}
+
+{% block content %}
+    <h1>Quotation Submission Details</h1>
+
+    <h3>Quotation Information</h3>
+    <p><strong>Quotation No:</strong> {{ quotation_submission.quotation_no }}</p>
+    <p><strong>Buyer Company:</strong> {{ quotation_submission.buyer_company_name }}</p>
+    <p><strong>Buyer Address:</strong> {{ quotation_submission.buyer_address }}</p>
+    <p><strong>Contact:</strong> {{ quotation_submission.buyer_contact }}</p>
+    <p><strong>Prepared By:</strong> {{ quotation_submission.prepared_by }}</p>
+    <p><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
+    <p><strong>Status:</strong> {{ quotation_submission.status }}</p>
+
+    <h3>Items</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit_price }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No items in this submission.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'view_supplier_quotations' quotation_submission.quotation_no %}" class="btn btn-secondary">Go Back</a>
+{% endblock %}

@@ -9,6 +9,14 @@
             <div class="alert alert-success" role="alert">
                 {{message}}
             </div>
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            {{message}}
+        </div>
         {% endif %}
 
     {% endfor %}

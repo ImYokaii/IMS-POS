@@ -31,6 +31,6 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'generate_invoice_pdf' request_quotation.id %}" class="btn btn-primary" target="_blank">Print Invoice as PDF</a>
+    <a href="{% url 'request_quotation_list' %}" class="btn btn-primary">Go Back</a>
 
 {% endblock %}
