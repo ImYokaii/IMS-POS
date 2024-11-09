@@ -1,9 +1,13 @@
+import os
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RequestQuotationForm, RequestQuotationItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet
+from .forms import RequestQuotationForm, RequestQuotationItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
 from .models import RequestQuotation, RequestQuotationItem, PurchaseOrderItem
-from supplier_view.models import QuotationSubmission, QuotationSubmissionItem
+from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from django.http import HttpResponse
 from django.utils import timezone
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def create_request_quotation(request):
@@ -105,10 +109,52 @@ def view_quotation_submission_detail(request, submission_id):
 
     if not request.session.get('can_view_quotation_submission_detail'):
         return redirect('request_quotation_list')
-    
+
     del request.session['can_view_quotation_submission_detail']
 
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
     items = quotation_submission.items.all()
 
     return render(request, 'quotation_submission_detail.html', {'quotation_submission': quotation_submission, 'items': items})
+
+
+def purchase_invoice_list(request):
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
+    purchase_invoices = PurchaseInvoice.objects.all()
+
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+
+    return render(request, 'purchase_invoice_list.html', 
+        {'purchase_invoices': purchase_invoices,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2})
+
+
+def purchase_invoice_detail(request, pi_id):
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
+
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+
+    if request.method == "POST":
+        form = PurchaseInvoiceForm(request.POST, instance=purchase_invoice)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect('purchase_invoice_detail', pi_id)
+
+    else:
+        form = PurchaseInvoiceForm()
+    
+    return render(request, 'purchase_invoice_detail.html', 
+        {'purchase_invoice': purchase_invoice,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2,
+         'form': form})

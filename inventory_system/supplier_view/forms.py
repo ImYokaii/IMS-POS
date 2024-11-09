@@ -2,7 +2,7 @@ import os
 from django import forms
 from django.forms import modelformset_factory
 from django.contrib.auth.models import User
-from .models import QuotationSubmission, QuotationSubmissionItem
+from .models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice
 from procurement_view.models import PurchaseOrder
 from dotenv import load_dotenv
 
@@ -46,3 +46,9 @@ class QuotationSubmissionItemForm(forms.ModelForm):
         fields = ['product_name', 'quantity', 'unit_price']
 
 QuotationSubmissionItemFormSet = modelformset_factory(QuotationSubmissionItem, form=QuotationSubmissionItemForm, extra=5)
+
+
+class PurchaseInvoiceForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseInvoice
+        fields = ['supplier', 'supplier_company_name', 'supplier_address', 'status']

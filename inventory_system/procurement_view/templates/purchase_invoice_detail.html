@@ -1,52 +1,46 @@
-{% extends 'supplier_base.html' %}
+{% extends 'procurement_base.html' %}
 
-{% block title %}View Purchase Order Details{% endblock %}
+{% block title %}View Purchase Invoice Details{% endblock %}
 
 {% block content %}
     {% for message in messages %}
-
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
             <div class="alert alert-success" role="alert">
-                {{message}}
+                {{ message }}
             </div>
         {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
             <div class="alert alert-danger" role="alert">
-                {{message}}
+                {{ message }}
             </div>
         {% else %}
             <div class="alert alert-warning" role="alert">
-                {{message}}
+                {{ message }}
             </div>
         {% endif %}
-
     {% endfor %}
 
     <div class="container my-4">
-        <h2 class="mb-4 text-center">Purchase Order Details</h2>
+        <h2 class="mb-4 text-center">Purchase Invoice Details</h2>
         
         <div class="card p-4 shadow-sm mb-4">
             <div class="card-body">
-                <h5 class="card-title"><strong>Purchase Order No:</strong> {{ purchase_order.quotation_no }}</h5>
-                <p><strong>Buyer Company Name:</strong> {{ purchase_order.buyer_company_name }}</p>
-                <p><strong>Address:</strong> {{ purchase_order.buyer_address }}</p>
-                <p><strong>Date Ordered:</strong> {{ purchase_order.date_ordered }}</p>
-                <p><strong>Delivery Date:</strong> {{ purchase_order.delivery_date }}</p>
-                <p><strong>Notes:</strong> {{ purchase_order.notes }}</p>
-                <p><strong>Total Amount:</strong> {{ purchase_order.total_amount }}</p>
-                <p><strong>Approved by:</strong> {{ purchase_order.approved_by }}</p>
-                <p><strong>Order Status:</strong> 
-                    {% if purchase_order.status == STATUS_0 %}
-                        <span class="badge text-bg-warning">{{ purchase_order.status }}</span>
-                    {% elif purchase_order.status == STATUS_1 %}
-                        <span class="badge text-bg-success">{{ purchase_order.status }}</span>
-                    {% elif purchase_order.status == STATUS_2 %}
-                        <span class="badge text-bg-danger">{{ purchase_order.status }}</span>
+                <h5 class="card-title"><strong>Invoice No:</strong> {{ purchase_invoice.invoice_no }}</h5>
+                <p><strong>Supplier Company Name:</strong> {{ purchase_invoice.supplier_company_name }}</p>
+                <p><strong>Date Issued:</strong> {{ purchase_invoice.date_issued }}</p>
+                <p><strong>Total Payable Amount:</strong> ₱ {{ purchase_invoice.total_amount_payable }}</p>
+                <p><strong>Invoice Status:</strong> 
+                    {% if purchase_invoice.status == STATUS_0 %}
+                        <span class="badge text-bg-warning">{{ purchase_invoice.status }}</span>
+                    {% elif purchase_invoice.status == STATUS_1 %}
+                        <span class="badge text-bg-success">{{ purchase_invoice.status }}</span>
+                    {% elif purchase_invoice.status == STATUS_2 %}
+                        <span class="badge text-bg-danger">{{ purchase_invoice.status }}</span>
                     {% else %}
                         <span class="badge bg-light text-dark">Unavailable</span>
                     {% endif %}
                 </p>
 
-                {% if purchase_order.status == STATUS_0 %}
+                {% if purchase_invoice.status == STATUS_0 %}
                     <form method="post" class="mt-4">
                         {% csrf_token %}
                         <div class="mb-3">
@@ -68,7 +62,7 @@
             </div>
         </div>
 
-        <h3 class="mb-3">Items in this Purchase Order</h3>
+        <h3 class="mb-3">Items in this Invoice</h3>
         <div class="table-responsive">
             <table class="table table-bordered shadow-sm">
                 <thead class="table-light">
@@ -79,23 +73,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in purchase_order.items.all %}
+                    {% for item in purchase_invoice.items.all %}
                         <tr>
-                            <td>{{ item.product }}</td>
+                            <td>{{ item.product_name }}</td>
                             <td>{{ item.quantity }}</td>
-                            <td>{{ item.unit_price }}</td>
+                            <td>₱ {{ item.unit_price }}</td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="3" class="text-center">No items found for this Purchase Order.</td>
+                            <td colspan="4" class="text-center">No items found for this Invoice.</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        
+
         <div class="text-end mt-3">
-            <a href="{% url 'purchase_orders_list' %}" class="btn btn-outline-secondary">Back to List</a>
+            <a href="{% url 'purchase_invoice_list' %}" class="btn btn-outline-secondary">Back to List</a>
         </div>
     </div>
 {% endblock %}
