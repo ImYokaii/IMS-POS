@@ -1,7 +1,7 @@
 import os
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RequestQuotationForm, RequestQuotationItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
-from .models import RequestQuotation, RequestQuotationItem, PurchaseOrderItem
+from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
 from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from django.http import HttpResponse
 from django.utils import timezone
@@ -84,6 +84,45 @@ def request_quotation_detail(request, quotation_id):
     })
 
 
+def purchase_request_list(request):
+    request.session['can_view_purchase_request_detail'] = True
+
+    STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+
+    purchase_request = PurchaseOrder.objects.all()
+
+    return render(request, 'purchase_request_list.html', 
+        {'purchase_request': purchase_request,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2})
+
+
+def purchase_request_detail(request, pr_id):
+    request.session['can_go_back_purchase_request_list'] = True
+    
+    if not request.session.get('can_view_purchase_request_detail'):
+        return redirect('purchase_request_list')
+    
+    del request.session['can_view_purchase_request_detail']
+
+    STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+
+    purchase_request = get_object_or_404(PurchaseOrder, id=pr_id)
+
+    return render(request, 'purchase_request_detail.html', 
+        {'purchase_request': purchase_request,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2})
+
+
 def view_supplier_quotations(request, quotation_no):
     request.session['can_view_quotation_submission_detail'] = True
 
@@ -119,9 +158,9 @@ def view_quotation_submission_detail(request, submission_id):
 
 
 def purchase_invoice_list(request):
-    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     purchase_invoices = PurchaseInvoice.objects.all()
 
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
@@ -134,9 +173,9 @@ def purchase_invoice_list(request):
 
 
 def purchase_invoice_detail(request, pi_id):
-    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
 
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
