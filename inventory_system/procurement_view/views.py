@@ -143,7 +143,7 @@ def view_supplier_quotations(request, quotation_no):
     return render(request, 'view_supplier_quotations.html', {'supplier_quotations': supplier_quotations,})
 
 
-def view_quotation_submission_detail(request, submission_id):
+def supplier_quotation_submission_detail(request, submission_id):
     request.session['can_go_back_supplier_quotations'] = True
 
     if not request.session.get('can_view_quotation_submission_detail'):
@@ -154,7 +154,7 @@ def view_quotation_submission_detail(request, submission_id):
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
     items = quotation_submission.items.all()
 
-    return render(request, 'quotation_submission_detail.html', {'quotation_submission': quotation_submission, 'items': items})
+    return render(request, 'supplier_quotation_submission_detail.html', {'quotation_submission': quotation_submission, 'items': items})
 
 
 def purchase_invoice_list(request):

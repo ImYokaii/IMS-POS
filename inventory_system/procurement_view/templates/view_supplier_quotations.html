@@ -25,7 +25,7 @@
                     <td>{{ quotation.quote_valid_until }}</td>
                     <td>{{ quotation.status }}</td>
                     <td>
-                        <a href="{% url 'quotation_submission_detail' submission_id=quotation.id %}" class="btn btn-info">View Details</a>
+                        <a href="{% url 'supplier_quotation_submission_detail' submission_id=quotation.id %}" class="btn btn-info">View Details</a>
                     </td>
                 </tr>
             {% empty %}

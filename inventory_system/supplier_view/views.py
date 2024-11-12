@@ -31,9 +31,9 @@ def request_quotations_detail(request, quotation_id):
 
 
 def purchase_orders_list(request):
-    STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     purchase_orders = PurchaseOrder.objects.all()
 
+    STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
@@ -84,9 +84,9 @@ def purchase_orders_detail(request, po_id):
 
 
 def purchase_invoices_list(request):
-    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     purchase_invoices = PurchaseInvoice.objects.filter(supplier=request.user)
 
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
@@ -99,9 +99,9 @@ def purchase_invoices_list(request):
 
 
 def purchase_invoices_detail(request, pi_id):
-    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
 
+    STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
@@ -231,3 +231,34 @@ def create_quotation_submission(request, quotation_id):
         formset = QuotationSubmissionItemFormSet(queryset=QuotationSubmissionItem.objects.none(), initial=initial_items_data)
 
     return render(request, 'create_quotation_submission.html', {'form': form, 'formset': formset, 'quotation_request': quotation_request, 'quotation_request_items': quotation_request_items})
+
+
+def quotation_submission_list(request):
+    logged_user = request.user
+    quotation_submission = QuotationSubmission.objects.filter(supplier=logged_user)
+
+    STATUS = os.environ.get('QS_STATUS_CHOICES', '').split(',')
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+
+    return render(request, 'quotation_submission_list.html', 
+        {'quotation_submission': quotation_submission,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2})
+
+
+def quotation_submission_detail(request, qs_id):
+    quotation_submission = get_object_or_404(QuotationSubmission, id=qs_id)
+
+    STATUS = os.environ.get('QS_STATUS_CHOICES', '').split(',')
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+    STATUS_2 = STATUS[2]
+
+    return render(request, 'quotation_submission_detail.html', 
+        {'quotation_submission': quotation_submission,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'STATUS_2': STATUS_2})

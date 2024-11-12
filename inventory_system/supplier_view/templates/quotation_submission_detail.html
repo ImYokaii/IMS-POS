@@ -1,0 +1,81 @@
+{% extends 'supplier_base.html' %}
+
+{% block title %}View Submitted Quotation Details{% endblock %}
+
+{% block content %}
+    {% for message in messages %}
+
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="alert alert-success" role="alert">
+                {{message}}
+            </div>
+        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert">
+                {{message}}
+            </div>
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                {{message}}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+    <div class="container my-4">
+        <h2 class="mb-4 text-center">Submitted Quotation Details</h2>
+        
+        <div class="card p-4 shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title"><strong>Quotation No:</strong> {{ quotation_submission.quotation_no }}</h5>
+                <p><strong>Buyer Company Name:</strong> {{ quotation_submission.buyer_company_name }}</p>
+                <p><strong>Buyer Address:</strong> {{ quotation_submission.buyer_address }}</p>
+                <p><strong>Buyer Contact:</strong> {{ quotation_submission.buyer_contact }}</p>
+                <p><strong>Date Submitted:</strong> {{ quotation_submission.date_submitted }}</p>
+                <p><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
+                <p><strong>Terms and Conditions:</strong> {{ quotation_submission.terms_and_conditions }}</p>
+                <p><strong>Prepared by:</strong> {{ quotation_submission.prepared_by }}</p>
+                <p><strong>Status:</strong> 
+                    {% if quotation_submission.status == STATUS_0 %}
+                        <span class="badge text-bg-warning">{{ quotation_submission.status }}</span>
+                    {% elif quotation_submission.status == STATUS_1 %}
+                        <span class="badge text-bg-success">{{ quotation_submission.status }}</span>
+                    {% elif quotation_submission.status == STATUS_2 %}
+                        <span class="badge text-bg-danger">{{ quotation_submission.status }}</span>
+                    {% else %}
+                        <span class="badge bg-light text-dark">Unavailable</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <h3 class="mb-3">Items in this Submitted Quotation</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered shadow-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in quotation_submission.items.all %}
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.unit_price }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">No items found for this Submitted Quotation.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="text-end mt-3">
+            <a href="{% url 'quotation_submission_list' %}" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    </div>
+{% endblock %}
