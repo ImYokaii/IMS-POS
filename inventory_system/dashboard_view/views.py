@@ -16,6 +16,7 @@ import cv2
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 load_dotenv()
 matplotlib.use('agg')
@@ -69,9 +70,10 @@ def dashboard(request):
     pie_chart = base64.b64encode(pie_chart_img)
     pie_chart = pie_chart.decode('utf-8')
 
-    return render(request, 'dashboard.html', {'total_products': total_products,
-                                              'low_stock_products': low_stock_products,
-                                              'pie_chart': pie_chart})
+    return render(request, 'dashboard.html', 
+        {'total_products': total_products,
+         'low_stock_products': low_stock_products,
+         'pie_chart': pie_chart})
 # =============================================== #
 
 
@@ -86,7 +88,9 @@ def product_levels(request):
 
         product_instance = search_filter_product_list(name, category)
 
-    return render(request, 'product_levels.html', {'product_instance': product_instance, 'form': form})
+    return render(request, 'product_levels.html', 
+        {'product_instance': product_instance, 
+         'form': form})
 # =============================================== #
 
 
@@ -100,12 +104,16 @@ def edit_reorder_levels(request, product_id):
 
         if form.is_valid():
             form.save()
+            messages.success("Reorder level was successfully edited.")
+
             return redirect('product_levels')
         
     else:
         form = ReorderLevelForm(instance=product)
 
-    return render(request, 'edit_reorder_levels.html', {'product': product, 'form': form})
+    return render(request, 'edit_reorder_levels.html', 
+        {'product': product, 
+         'form': form})
 # =============================================== #
 
 

@@ -8,6 +8,7 @@ from django.utils import timezone
 from dotenv import load_dotenv
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 load_dotenv()
@@ -27,6 +28,8 @@ def create_request_quotation(request):
                     request_quotation_item = form.save(commit=False)
                     request_quotation_item.request_quotation = request_quotation
                     request_quotation_item.save()
+            
+            messages.success("Request quotation was successfully submitted!")
 
             return redirect('request_quotation_list')
 
@@ -34,7 +37,9 @@ def create_request_quotation(request):
         form = RequestQuotationForm()
         formset = RequestQuotationItemFormSet(queryset=RequestQuotationItem.objects.none())
         
-    return render(request, 'create_request_quotation.html', {'form': form, 'formset': formset})
+    return render(request, 'create_request_quotation.html', 
+        {'form': form, 
+         'formset': formset})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -52,6 +57,8 @@ def create_purchase_request(request):
                     purchase_order_item.purchase_order = purchase_order
                     purchase_order_item.save()
 
+            messages.success("Purchase request was successfully submitted")
+
             return redirect('request_quotation_list')
         
         else:
@@ -62,7 +69,9 @@ def create_purchase_request(request):
         form = PurchaseOrderForm()
         formset = PurchaseOrderItemFormSet(queryset=PurchaseOrderItem.objects.none())
         
-    return render(request, 'create_purchase_request.html', {'form': form, 'formset': formset})
+    return render(request, 'create_purchase_request.html', 
+        {'form': form, 
+         'formset': formset})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -165,7 +174,9 @@ def supplier_quotation_submission_detail(request, submission_id):
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
     items = quotation_submission.items.all()
 
-    return render(request, 'supplier_quotation_submission_detail.html', {'quotation_submission': quotation_submission, 'items': items})
+    return render(request, 'supplier_quotation_submission_detail.html', 
+        {'quotation_submission': quotation_submission, 
+         'items': items})
 
 
 @login_required(login_url=settings.LOGIN_URL)

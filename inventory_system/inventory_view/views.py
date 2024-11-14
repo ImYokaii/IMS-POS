@@ -76,11 +76,10 @@ def product_view(request, product_id):
     barcode_data_uri = "data:image/png;base64," + base64.b64encode(barcode_buffered.getvalue()).decode("utf-8")
 
 
-    return render(request, 'product_view.html', {
-        'product': product,
-        'qr_code': qr_data_uri,
-        'barcode': barcode_data_uri
-    })
+    return render(request, 'product_view.html', 
+        {'product': product,
+         'qr_code': qr_data_uri,
+         'barcode': barcode_data_uri})
 # ============================================== #
 
 

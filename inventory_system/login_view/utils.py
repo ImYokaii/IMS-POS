@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, redirect
+from django.contrib import messages
 
 
 load_dotenv()
@@ -12,6 +13,7 @@ def check_logging_user_role(role):
     ROLE_1_URL = os.environ.get('ROLE_1_URL').split(",")
     ROLE_2_URL = os.environ.get('ROLE_2_URL').split(",")
     ROLE_3_URL = os.environ.get('ROLE_3_URL').split(",")
+    ROLE_4_URL = os.environ.get('ROLE_4_URL').split(",")
 
     if role == os.environ.get('ROLE_1'):
         return ROLE_1_URL[0]
@@ -23,7 +25,7 @@ def check_logging_user_role(role):
         return ROLE_3_URL[0]
     
     else:
-        return ""
+        return ROLE_4_URL[0]
 # =============================================== #
     
 

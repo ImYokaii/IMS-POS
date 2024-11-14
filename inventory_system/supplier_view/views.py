@@ -85,8 +85,7 @@ def purchase_orders_detail(request, po_id):
          'form': form,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
-         'STATUS_2': STATUS_2}
-        )
+         'STATUS_2': STATUS_2})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -229,6 +228,8 @@ def create_quotation_submission(request, quotation_id):
                     quotation_submission_item = form.save(commit=False)
                     quotation_submission_item.quotation_submission = quotation_submission
                     quotation_submission_item.save()
+
+            messages.success("Quotation was successfully submitted!")
 
             return redirect('request_quotations_list')
         

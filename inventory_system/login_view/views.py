@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, UserRegistrationForm
 from .models import UserPermission
@@ -17,8 +18,8 @@ def landing_page(request):
 
 # ===== WAIT FOR PERMISSION PAGE ===== #
 @login_required(login_url=settings.LOGIN_URL)
-def wait_for_permission(request):
-    return HttpResponse("Please wait for permission...")
+def wait_for_permission(request):            
+    return render(request, "wait_for_permission.html")
 # =============================================== #
 
 
@@ -48,6 +49,8 @@ def login_page(request):
 
                 permission = UserPermission.objects.get(user=user)
                 landing_page = check_logging_user_role(permission.role)
+
+                messages.success(request, f"Welcome back {request.user.username}!")
 
                 return redirect(landing_page)
             
