@@ -11,11 +11,15 @@ from .forms import PerishableProductForm, NonPerishableProductForm, ProductFilte
 from .models import Product
 from .utils import search_filter_products, duplicate_product, transfer_to_waste
 from dashboard_view.models import ProductInstance
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+
 
 load_dotenv()
 
 
 # ===== ALL PRODUCTS PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def product_list(request):
     form = ProductFilterForm(request.GET)
     PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
@@ -33,7 +37,9 @@ def product_list(request):
     return render(request, 'product_list.html', {'form': form, 'products': products})
 # =============================================== #
 
+
 # ===== VIEW PRODUCT DETAILS PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def product_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     
@@ -79,18 +85,21 @@ def product_view(request, product_id):
 
 
 # ===== ADDING ITEM CHOICE PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def add_item_choice(request):
     return render(request, 'add_item_choice.html')
 # =============================================== #
 
 
 # ===== ADDING PRODUCT TYPE PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def add_product_type(request):
     return render(request, 'add_product_type.html')
 # =============================================== #
 
 
 # ===== EXISTING PRODUCT PAGE (For Restocking) ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def existing_product_page(request):
     form = ProductFilterForm(request.GET)
     PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
@@ -110,6 +119,7 @@ def existing_product_page(request):
 
 
 # ===== RESTOCKING EXISTING PRODUCT PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def add_existing_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -151,6 +161,7 @@ def add_existing_product(request, product_id):
 
 
 # ===== ADDING PERISHABLE PRODUCT PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def add_perishable(request):
     if request.method == "POST":
         form = PerishableProductForm(request.POST)
@@ -170,6 +181,7 @@ def add_perishable(request):
 
 
 # ===== ADDING NON-PERISHABLE PRODUCT PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def add_nonperishable(request):
     if request.method == "POST":
         form = NonPerishableProductForm(request.POST)
@@ -193,6 +205,7 @@ def add_nonperishable(request):
 
 
 # ===== VIEW PRODUCT WASTE PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def wasted_product_list(request):
     form = ProductFilterForm(request.GET)
     PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
@@ -212,6 +225,7 @@ def wasted_product_list(request):
 
 
 # ===== ADD PRODUCT WASTE PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def add_product_waste(request):
     form = ProductFilterForm(request.GET)
     PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
@@ -231,6 +245,7 @@ def add_product_waste(request):
 
 
 # ===== ADD PRODUCT TO WASTE PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def add_to_waste(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 

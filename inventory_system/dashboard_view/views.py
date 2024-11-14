@@ -15,11 +15,14 @@ from django.shortcuts import render
 import cv2
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 load_dotenv()
 matplotlib.use('agg')
 
+
 # ===== Dashboard Page ===== #
+@login_required(login_url="/login/")
 def dashboard(request):
     total_products = Product.objects.all().count()
 
@@ -73,6 +76,7 @@ def dashboard(request):
 
 
 # ===== Product Levels Page ===== #
+@login_required(login_url="/login/")
 def product_levels(request):
     form = SearchFilterForm(request.POST)
     
@@ -87,6 +91,7 @@ def product_levels(request):
 
 
 # ===== Dashboard Page ===== #
+@login_required(login_url="/login/")
 def edit_reorder_levels(request, product_id):
     product = get_object_or_404(ProductInstance, id=product_id)
 
@@ -105,11 +110,13 @@ def edit_reorder_levels(request, product_id):
 
 
 # ===== Low Stock Products Page ===== #
+@login_required(login_url="/login/")
 def low_stock_products(request):
     product_instance = ProductInstance.objects.filter(quantity__lte=F('reorder_level'))
 
     return render(request, 'low_stock_products.html', {'product_instance': product_instance})
 # =============================================== #
+
 
 # ===== QR Scanner ===== #
 class QRCodeScanner:
