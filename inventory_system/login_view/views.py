@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, UserRegistrationForm
 from .models import UserPermission
@@ -11,14 +12,21 @@ from .utils import check_logging_user_role, get_client_ip, increment_failed_logi
 
 
 # ===== LOGIN PAGE ===== #
-def landing_page(Request):
+def landing_page(request):
     return HttpResponse("A Landing Page")
+
+
+# ===== WAIT FOR PERMISSION PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
+def wait_for_permission(request):            
+    return render(request, "wait_for_permission.html")
+# =============================================== #
 
 
 # ===== LOGIN PAGE ===== #
 def login_page(request):
     if request.user.is_authenticated:
-        return HttpResponse("gege")
+        return redirect("logout")
     
     if request.method == "POST":
         form = LoginForm(request, data=request.POST)
@@ -41,6 +49,8 @@ def login_page(request):
 
                 permission = UserPermission.objects.get(user=user)
                 landing_page = check_logging_user_role(permission.role)
+
+                messages.success(request, f"Welcome back {request.user.username}!")
 
                 return redirect(landing_page)
             
@@ -81,27 +91,9 @@ def signup_page(request):
 
 
 # ===== LOGOUT PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
 def logout_page(request):
     logout(request)
     
     return HttpResponse("Logged out...")
-# =============================================== #
-
-
-# ===== DUMMY PAGES FOR TESTING ===== #
-@login_required(login_url=settings.LOGIN_URL)
-def manager_page(request):
-    return HttpResponse("You are indeed a Manager!")
-
-@login_required(login_url=settings.LOGIN_URL)
-def employee_page(request):
-    return HttpResponse("You are indeed an Employee!")
-
-@login_required(login_url=settings.LOGIN_URL)
-def supplier_page(request):
-    return HttpResponse("You are indeed a Supplier!")
-
-@login_required(login_url=settings.LOGIN_URL)
-def unknown_page(request):
-    return HttpResponse("You are Unknown...")
 # =============================================== #

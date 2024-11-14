@@ -6,10 +6,15 @@ from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, P
 from django.http import HttpResponse
 from django.utils import timezone
 from dotenv import load_dotenv
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 
 load_dotenv()
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def create_request_quotation(request):
     if request.method == "POST":
         form = RequestQuotationForm(request.POST)
@@ -23,6 +28,8 @@ def create_request_quotation(request):
                     request_quotation_item = form.save(commit=False)
                     request_quotation_item.request_quotation = request_quotation
                     request_quotation_item.save()
+            
+            messages.success("Request quotation was successfully submitted!")
 
             return redirect('request_quotation_list')
 
@@ -30,9 +37,12 @@ def create_request_quotation(request):
         form = RequestQuotationForm()
         formset = RequestQuotationItemFormSet(queryset=RequestQuotationItem.objects.none())
         
-    return render(request, 'create_request_quotation.html', {'form': form, 'formset': formset})
+    return render(request, 'create_request_quotation.html', 
+        {'form': form, 
+         'formset': formset})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def create_purchase_request(request):
     if request.method == "POST":
         form = PurchaseOrderForm(request.POST)
@@ -47,6 +57,8 @@ def create_purchase_request(request):
                     purchase_order_item.purchase_order = purchase_order
                     purchase_order_item.save()
 
+            messages.success("Purchase request was successfully submitted")
+
             return redirect('request_quotation_list')
         
         else:
@@ -57,9 +69,12 @@ def create_purchase_request(request):
         form = PurchaseOrderForm()
         formset = PurchaseOrderItemFormSet(queryset=PurchaseOrderItem.objects.none())
         
-    return render(request, 'create_purchase_request.html', {'form': form, 'formset': formset})
+    return render(request, 'create_purchase_request.html', 
+        {'form': form, 
+         'formset': formset})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def request_quotation_list(request):
     request.session['can_view_request_quotation_detail'] = True
     request.session['can_view_supplier_quotations'] = True
@@ -69,6 +84,7 @@ def request_quotation_list(request):
     return render(request, 'request_quotation_list.html', {'quotations': quotations})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def request_quotation_detail(request, quotation_id):
     if not request.session.get('can_view_request_quotation_detail'):
         return redirect('request_quotation_list')
@@ -84,6 +100,7 @@ def request_quotation_detail(request, quotation_id):
     })
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_request_list(request):
     request.session['can_view_purchase_request_detail'] = True
 
@@ -101,6 +118,7 @@ def purchase_request_list(request):
          'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_request_detail(request, pr_id):
     request.session['can_go_back_purchase_request_list'] = True
     
@@ -123,6 +141,7 @@ def purchase_request_detail(request, pr_id):
          'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def view_supplier_quotations(request, quotation_no):
     request.session['can_view_quotation_submission_detail'] = True
 
@@ -143,6 +162,7 @@ def view_supplier_quotations(request, quotation_no):
     return render(request, 'view_supplier_quotations.html', {'supplier_quotations': supplier_quotations,})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def supplier_quotation_submission_detail(request, submission_id):
     request.session['can_go_back_supplier_quotations'] = True
 
@@ -154,9 +174,12 @@ def supplier_quotation_submission_detail(request, submission_id):
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
     items = quotation_submission.items.all()
 
-    return render(request, 'supplier_quotation_submission_detail.html', {'quotation_submission': quotation_submission, 'items': items})
+    return render(request, 'supplier_quotation_submission_detail.html', 
+        {'quotation_submission': quotation_submission, 
+         'items': items})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_invoice_list(request):
     purchase_invoices = PurchaseInvoice.objects.all()
 
@@ -172,6 +195,7 @@ def purchase_invoice_list(request):
          'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_invoice_detail(request, pi_id):
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
 

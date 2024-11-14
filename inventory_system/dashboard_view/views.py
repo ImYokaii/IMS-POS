@@ -15,11 +15,15 @@ from django.shortcuts import render
 import cv2
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 load_dotenv()
 matplotlib.use('agg')
 
+
 # ===== Dashboard Page ===== #
+@login_required(login_url="/login/")
 def dashboard(request):
     total_products = Product.objects.all().count()
 
@@ -66,13 +70,15 @@ def dashboard(request):
     pie_chart = base64.b64encode(pie_chart_img)
     pie_chart = pie_chart.decode('utf-8')
 
-    return render(request, 'dashboard.html', {'total_products': total_products,
-                                              'low_stock_products': low_stock_products,
-                                              'pie_chart': pie_chart})
+    return render(request, 'dashboard.html', 
+        {'total_products': total_products,
+         'low_stock_products': low_stock_products,
+         'pie_chart': pie_chart})
 # =============================================== #
 
 
 # ===== Product Levels Page ===== #
+@login_required(login_url="/login/")
 def product_levels(request):
     form = SearchFilterForm(request.POST)
     
@@ -82,11 +88,14 @@ def product_levels(request):
 
         product_instance = search_filter_product_list(name, category)
 
-    return render(request, 'product_levels.html', {'product_instance': product_instance, 'form': form})
+    return render(request, 'product_levels.html', 
+        {'product_instance': product_instance, 
+         'form': form})
 # =============================================== #
 
 
 # ===== Dashboard Page ===== #
+@login_required(login_url="/login/")
 def edit_reorder_levels(request, product_id):
     product = get_object_or_404(ProductInstance, id=product_id)
 
@@ -95,21 +104,27 @@ def edit_reorder_levels(request, product_id):
 
         if form.is_valid():
             form.save()
+            messages.success("Reorder level was successfully edited.")
+
             return redirect('product_levels')
         
     else:
         form = ReorderLevelForm(instance=product)
 
-    return render(request, 'edit_reorder_levels.html', {'product': product, 'form': form})
+    return render(request, 'edit_reorder_levels.html', 
+        {'product': product, 
+         'form': form})
 # =============================================== #
 
 
 # ===== Low Stock Products Page ===== #
+@login_required(login_url="/login/")
 def low_stock_products(request):
     product_instance = ProductInstance.objects.filter(quantity__lte=F('reorder_level'))
 
     return render(request, 'low_stock_products.html', {'product_instance': product_instance})
 # =============================================== #
+
 
 # ===== QR Scanner ===== #
 class QRCodeScanner:

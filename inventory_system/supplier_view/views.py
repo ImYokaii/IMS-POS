@@ -11,11 +11,14 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 
 load_dotenv()
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def request_quotations_list(request):
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
     due_date = timezone.now().date().strftime('%Y-%m-%d')
@@ -24,12 +27,14 @@ def request_quotations_list(request):
     return render(request, 'request_quotations_list.html', {'request_quotations': request_quotations})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def request_quotations_detail(request, quotation_id):
     quotation = get_object_or_404(RequestQuotation, id=quotation_id)
     
     return render(request, 'request_quotations_detail.html', {'quotation': quotation})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_orders_list(request):
     purchase_orders = PurchaseOrder.objects.all()
 
@@ -45,6 +50,7 @@ def purchase_orders_list(request):
          'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_orders_detail(request, po_id):
     STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     purchase_order = get_object_or_404(PurchaseOrder, id=po_id)
@@ -79,10 +85,10 @@ def purchase_orders_detail(request, po_id):
          'form': form,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
-         'STATUS_2': STATUS_2}
-        )
+         'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_invoices_list(request):
     purchase_invoices = PurchaseInvoice.objects.filter(supplier=request.user)
 
@@ -98,6 +104,7 @@ def purchase_invoices_list(request):
          'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_invoices_detail(request, pi_id):
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
 
@@ -113,6 +120,7 @@ def purchase_invoices_detail(request, pi_id):
          'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def generate_invoice_pdf(request, po_id):
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=po_id)
     items = PurchaseInvoiceItem.objects.filter(purchase_invoice=purchase_invoice)
@@ -176,6 +184,7 @@ def generate_invoice_pdf(request, po_id):
     return response
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def create_quotation_submission(request, quotation_id):
     quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
@@ -220,6 +229,8 @@ def create_quotation_submission(request, quotation_id):
                     quotation_submission_item.quotation_submission = quotation_submission
                     quotation_submission_item.save()
 
+            messages.success("Quotation was successfully submitted!")
+
             return redirect('request_quotations_list')
         
         else:
@@ -233,6 +244,7 @@ def create_quotation_submission(request, quotation_id):
     return render(request, 'create_quotation_submission.html', {'form': form, 'formset': formset, 'quotation_request': quotation_request, 'quotation_request_items': quotation_request_items})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def quotation_submission_list(request):
     logged_user = request.user
     quotation_submission = QuotationSubmission.objects.filter(supplier=logged_user)
@@ -249,6 +261,7 @@ def quotation_submission_list(request):
          'STATUS_2': STATUS_2})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def quotation_submission_detail(request, qs_id):
     quotation_submission = get_object_or_404(QuotationSubmission, id=qs_id)
 

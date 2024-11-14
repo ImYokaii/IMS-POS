@@ -1,16 +1,6 @@
 {% extends "inventory_base.html" %}
 
 {% block content %}
-    {% for message in messages %}
-
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <div class="alert alert-danger" role="alert">
-                {{message}}
-            </div>
-        {% endif %}
-
-    {% endfor %}
-
     <a href="{% url 'existing_product_page' %}" class="btn btn-secondary mb-3">
         <i class="bi bi-arrow-bar-left"></i>
         Back

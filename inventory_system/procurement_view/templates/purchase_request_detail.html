@@ -3,22 +3,6 @@
 {% block title %}View Purchase Request Details{% endblock %}
 
 {% block content %}
-    {% for message in messages %}
-        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-            <div class="alert alert-success" role="alert">
-                {{ message }}
-            </div>
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            <div class="alert alert-danger" role="alert">
-                {{ message }}
-            </div>
-        {% else %}
-            <div class="alert alert-warning" role="alert">
-                {{ message }}
-            </div>
-        {% endif %}
-    {% endfor %}
-
     <div class="container my-4">
         <h2 class="mb-4 text-center">Purchase Request Details</h2>
         
