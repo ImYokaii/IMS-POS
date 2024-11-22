@@ -16,15 +16,6 @@
                 <label for="id_name" class="form-label">Name</label>
                 <input type="text" class="form-control" id="id_name" name="name">
             </div>
-    
-            <div class="mb-3">
-                <label for="id_product_type" class="form-label">Product Type</label>
-                <select class="form-control" name="product_type">
-                    {% for value, label in form.product_type.field.widget.choices %}
-                        <option value="{{ value }}" {% if value == form.product_type.value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-            </div>
         
             <div class="mb-3">
                 <label for="id_category" class="form-label">Category</label>
@@ -33,11 +24,6 @@
                         <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
-            </div>
-        
-            <div class="mb-3">
-                <label for="id_expiration_date" class="form-label">Expiration Date</label>
-                <input type="date" class="form-control" id="id_expiration_date" name="expiration_date">
             </div>
         </div>
     
@@ -65,9 +51,10 @@
                     <th class="text-truncate" style="max-width: 50px;">SKU</th>
                     <th class="text-truncate" style="max-width: 150px;">Name</th>
                     <th class="text-truncate" style="max-width: 100px;">Category</th>
-                    <th class="text-truncate" style="max-width: 50px;">Selling Price</th>
-                    <th class="text-truncate" style="max-width: 50px;">Expiration</th>
-                    <th class="text-truncate" style="max-width: 30px;">Action</th>
+                    <th class="text-truncate" style="max-width: 20px;">Qty.</th>
+                    <th class="text-truncate" style="max-width: 30px;">Selling Price</th>
+                    <th class="text-truncate" style="max-width: 30px;">Cost Price</th>
+                    <th class="text-truncate" style="max-width: 20px;">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,9 +63,10 @@
                     <td class="text-truncate" style="max-width: 50px;">{{ product.sku }}</td>
                     <td class="text-truncate" style="max-width: 150px;">{{ product.name }}</td>
                     <td class="text-truncate" style="max-width: 100px;">{{ product.category }}</td>
-                    <td class="text-truncate" style="max-width: 50px;">₱{{ product.selling_price }}</td>
-                    <td class="text-truncate" style="max-width: 50px;">{{ product.expiration_date }}</td>
-                    <td class="text-truncate" style="max-width: 30px;">
+                    <td class="text-truncate" style="max-width: 100px;">{{ product.quantity }}</td>
+                    <td class="text-truncate" style="max-width: 30px;">₱{{ product.selling_price }}</td>
+                    <td class="text-truncate" style="max-width: 30px;">₱{{ product.cost_price }}</td>
+                    <td class="text-truncate" style="max-width: 20px;">
                         <a href="{% url 'product_view' product.id %}">
                             <i class="bi bi-eye"> View</i>
                         </a>

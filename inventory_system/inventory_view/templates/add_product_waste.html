@@ -9,12 +9,12 @@
         <div class="d-flex flex-wrap gap-3">
             <div class="mb-3">
                 <label for="id_sku" class="form-label">SKU</label>
-                <input type="text" class="form-control" id="id_sku" name="sku"">
+                <input type="text" class="form-control" id="id_sku" name="sku">
             </div>
         
             <div class="mb-3">
                 <label for="id_name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="id_name" name="name"">
+                <input type="text" class="form-control" id="id_name" name="name">
             </div>
 
             <div class="mb-3">
@@ -34,15 +34,11 @@
                     {% endfor %}
                 </select>
             </div>
-        
-            <div class="mb-3">
-                <label for="id_expiration_date" class="form-label">Expiration Date</label>
-                <input type="date" class="form-control" id="id_expiration_date" name="expiration_date">
-            </div>
         </div>
 
         <button type="submit" class="btn btn-primary btn-sm">Filter</button>
     </form>
+
 
     <table class="table table-striped">
         <thead>
@@ -50,7 +46,8 @@
                 <th>SKU</th>
                 <th>Name</th>
                 <th>Category</th>
-                <th>Expiration</th>
+                <th>Quantity</th>
+                <th>Action</th>
             </tr>
         </thead>
 
@@ -60,7 +57,7 @@
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.sku }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.expiration_date }}</td>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.quantity }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">
                         <a href="{% url 'add_to_waste' product.id %}">
                             <i class="bi bi-trash3-fill" style="color: red; font-size: 20px;"></i>
@@ -69,6 +66,5 @@
                 </tr>
             {% endfor %}
         </tbody>
-
     </table>
 {% endblock %}

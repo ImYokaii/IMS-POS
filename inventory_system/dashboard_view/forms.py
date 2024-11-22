@@ -14,4 +14,4 @@ class ReorderLevelForm(forms.ModelForm):
 
 class SearchFilterForm(forms.Form):
     name = forms.CharField(max_length=100, required=False)
-    category = forms.ChoiceField(choices=[("", "All Categories")] + [(category, category) for category in PRODUCT_CATEGORIES], required=False)
+    category = forms.ChoiceField(choices=[(category, category) for category in PRODUCT_CATEGORIES], required=False)

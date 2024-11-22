@@ -7,21 +7,12 @@
         <div class="d-flex flex-wrap gap-3">
             <div class="mb-3">
                 <label for="id_sku" class="form-label">SKU</label>
-                <input type="text" class="form-control" id="id_sku" name="sku"">
+                <input type="text" class="form-control" id="id_sku" name="sku">
             </div>
         
             <div class="mb-3">
                 <label for="id_name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="id_name" name="name"">
-            </div>
-
-            <div class="mb-3">
-                <label for="id_product_type" class="form-label">Product Type</label>
-                <select class="form-control" name="product_type">
-                    {% for value, label in form.product_type.field.widget.choices %}
-                        <option value="{{ value }}" {% if value == form.product_type.value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
+                <input type="text" class="form-control" id="id_name" name="name">
             </div>
         
             <div class="mb-3">
@@ -31,11 +22,6 @@
                         <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
                     {% endfor %}
                 </select>
-            </div>
-        
-            <div class="mb-3">
-                <label for="id_expiration_date" class="form-label">Expiration Date</label>
-                <input type="date" class="form-control" id="id_expiration_date" name="expiration_date">
             </div>
         </div>
 
@@ -49,7 +35,7 @@
                 <th>Name</th>
                 <th>Category</th>
                 <th>Selling Price</th>
-                <th>Brand</th>
+                <th>Cost Price</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -59,11 +45,11 @@
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.sku }}</td>
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
-                <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.selling_price }}</td>
-                <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.brand }}</td>
+                <td class="text-truncate" style="max-width: 150px; height: 50px;">₱{{ product.selling_price }}</td>
+                <td class="text-truncate" style="max-width: 150px; height: 50px;">₱{{ product.cost_price }}</td>
                 <td class="text-truncate" style="max-width: 150px; height: 50px;">
                     <a href="{% url 'add_existing_product' product.id %}">
-                        Create Variant
+                        Restock
                     </a>
                 </td>
             </tr>

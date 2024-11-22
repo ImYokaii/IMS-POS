@@ -10,6 +10,7 @@ class ProductInstance(models.Model):
     quantity = models.PositiveIntegerField()
     brand = models.CharField(max_length=100, blank=True, null=True)
     reorder_level = models.PositiveIntegerField(blank=True, null=True, default=0)
+    is_favorite = models.BooleanField(default=False)
 
 
     def __str__(self):
@@ -46,6 +47,3 @@ class ProductInstance(models.Model):
 
             if not existing_po:
                 automatic_po_generator(product)
-
-    
-            

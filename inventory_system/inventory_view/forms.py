@@ -28,31 +28,16 @@ CATEGORY_CHOICES = [
     ('Screen and Covers', 'Screen and Covers'),
     ('Chemicals', 'Chemicals'),
 ]
-
 PRODUCT_CATEGORIES = os.environ.get('PRODUCT_CATEGORIES', '').split(',')
 PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
 
 
-class PerishableProductForm(forms.ModelForm):
+class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
 
         fields = [
-            'name', 'category', 'selling_price', 'cost_price', 'expiration_date', 'brand'
-        ]
-
-        widgets = {
-            'expiration_date': forms.DateInput(attrs={'type': 'date'}),
-            'category': forms.Select(choices=CATEGORY_CHOICES),
-        }
-
-
-class NonPerishableProductForm(forms.ModelForm):
-    class Meta:
-        model = Product
-
-        fields = [
-            'name', 'category', 'selling_price', 'cost_price', 'brand'
+            'name', 'category', 'quantity', 'selling_price', 'cost_price'
         ]
 
         widgets = {
@@ -60,20 +45,23 @@ class NonPerishableProductForm(forms.ModelForm):
         }
 
 
-class ExistingPerishableProductForm(forms.Form):
-    expiration_date = DateField(required=True)
-
-
-class ExistingNonPerishableProductForm(forms.Form):
+class RestockProductForm(forms.Form):
     quantity = forms.IntegerField(required=True, min_value=1)
+
+
+class WasteProductForm(forms.Form):
+    quantity = forms.IntegerField(required=True, min_value=1)
+    reason = forms.CharField(required=True)
 
 
 class ProductFilterForm(forms.Form):
     sku = forms.CharField(max_length=50, required=False)
     name = forms.CharField(max_length=100, required=False)
-    product_type = forms.ChoiceField(choices=[("", "All Products")] + [(ptype, ptype) for ptype in PRODUCT_TYPES], required=False)
-    category = forms.ChoiceField(choices=[("", "All Categories")] + [(category, category) for category in PRODUCT_CATEGORIES], required=False)
-    expiration_date = forms.DateField(required=False, widget=forms.TextInput(attrs={'type': 'date'}))
+    category = forms.ChoiceField(choices=[(category, category) for category in PRODUCT_CATEGORIES], required=False)
 
 
-
+class WasteProductFilterForm(forms.Form):
+    sku = forms.CharField(required=False)
+    name = forms.CharField(required=False)
+    category = forms.ChoiceField(choices=[(category, category) for category in PRODUCT_CATEGORIES], required=False)
+    date_wasted = forms.DateField(required=False)

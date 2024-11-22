@@ -3,12 +3,12 @@
 {% block title %}Add Stock Choice{% endblock %}
 
 {% block content %}
-    <a href="{% url 'add_product_type' %}" class="btn btn-secondary mb-3">
+    <a href="{% url 'add_item_choice' %}" class="btn btn-secondary mb-3">
         <i class="bi bi-arrow-bar-left"></i>
         Back
     </a>
 
-    <h1>ADD PERISHABLE PRODUCT</h1>
+    <h1>ADD NEW PRODUCT</h1>
 
     <form method="post">
         {% csrf_token %}
@@ -36,6 +36,16 @@
                 </div>
             {% endif %}
         </div>
+
+        <div class="mb-3">
+            <label for="quantity" class="form-label">Quantity</label>
+            <input type="text" class="form-control {% if form.quantity.errors %}is-invalid{% endif %}" id="quantity" name="quantity" value="{{ form.quantity.value|default:'' }}">
+            {% if form.quantity.errors %}
+                <div class="invalid-feedback">
+                    Invalid Quantity.
+                </div>
+            {% endif %}
+        </div>
         
         <div class="row">
             <div class="col-md-6 mb-3">
@@ -54,25 +64,6 @@
                 {% if form.cost_price.errors %}
                     <div class="invalid-feedback">
                         Invalid cost price.
-                    </div>
-                {% endif %}
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="expiration_date" class="form-label">Expiration Date</label>
-                <input type="date" class="form-control {% if form.expiration_date.errors %}is-invalid{% endif %}" id="expiration_date" name="expiration_date" value="{{ form.expiration_date.value|default:'' }}">
-                {% if form.expiration_date.errors %}
-                    <div class="invalid-feedback">
-                        Invalid expiration date.
-                {% endif %}
-            </div>
-            
-            <div class="col-md-6 mb-3">
-                <label for="brand" class="form-label">Brand</label>
-                <input type="text" class="form-control {% if form.brand.errors %}is-invalid{% endif %}" id="brand" name="brand" value="{{ form.brand.value|default:'' }}">
-                {% if form.brand.errors %}
-                    <div class="invalid-feedback">
-                        Invalid brand name.
                     </div>
                 {% endif %}
             </div>
