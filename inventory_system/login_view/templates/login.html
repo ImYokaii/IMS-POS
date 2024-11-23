@@ -2,23 +2,53 @@
 
 {% block title %}Login Page{% endblock %}
 
-{% block content %}  
-    <h1>Log In</h1>
+{% block content %}
+    <!-- Background Style -->
+    <div class="container-fluid" style="height: 100vh;">
+        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+            <div class="card shadow-lg" style="width: 380px; border-radius: 12px;">
+                <div class="card-body p-4">
+                    <h1 class="card-title text-center mb-4" style="font-size: 2rem; color: #333;">Log In</h1>
 
-    <form method="post">
-        {% csrf_token %}
+                    <form method="post">
+                        {% csrf_token %}
 
-        <h4>Username:</h4>
-        {{ form.username }}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}">
+                            {% if form.username.errors %}
+                                <div class="invalid-feedback">
+                                    Invalid username.
+                                </div>
+                            {% endif %}
+                        </div>
 
-        <h4>Password:</h4>
-        {{ form.password }}
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" id="password" name="password" value="{{ form.password.value|default:'' }}">
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback">
+                                    Invalid password.
+                                </div>
+                            {% endif %}
+                        </div>
 
-        <h4>Captcha:</h4>
-        {{ form.captcha }}
-        
-        <div class="btn-container">
-            <button type="submit">Login</button>
+                        <div class="mb-3">
+                            <label for="captcha" class="form-label">Captcha</label>
+                            {{ form.captcha }}
+                            {% if form.captcha.errors %}
+                                <div class="invalid-feedback">
+                                    Invalid captcha.
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="btn-container text-center">
+                            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; border-radius: 8px; background-color: #2575fc; border: none;">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
 {% endblock %}

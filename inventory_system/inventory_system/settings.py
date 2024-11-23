@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'login_view',
     'procurement_view',
     'supplier_view',
+    'pos_view',
     'csp', # Content Security Policy
 ]
 

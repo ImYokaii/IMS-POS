@@ -98,32 +98,32 @@ class PermissionMiddleware:
 
             permission = request.user.userpermission
             
-            if not permission.is_permitted:
-                if not (path.startswith(self.LOGOUT_URL)): # Unrestricted site for unpermitted users
-                    print(f"Path: {path}") 
-                    return HttpResponseForbidden("Wait for permission.")
+            # if not permission.is_permitted:
+            #     if not (path.startswith(self.LOGOUT_URL)): # Unrestricted site for unpermitted users
+            #         print(f"Path: {path}") 
+            #         return HttpResponseForbidden("Wait for permission.")
 
-            else:
-                print(f"Role: {permission.role}")
-                if permission.role == self.ROLE_1:
-                    if not path.startswith(self.ROLE_1_URL):
-                        print(f"Path: {path}") # Check visited path (debugging)
-                        return HttpResponse("Role does not match.")
+            # else:
+            #     print(f"Role: {permission.role}")
+            #     if permission.role == self.ROLE_1:
+            #         if not path.startswith(self.ROLE_1_URL):
+            #             print(f"Path: {path}") # Check visited path (debugging)
+            #             return HttpResponse("Role does not match.")
 
-                elif permission.role == self.ROLE_2:
-                    if not any(path.startswith(url.strip()) for url in self.ROLE_2_URL):
-                        print(f"Path: {path}") # Check visited path (debugging)
-                        return HttpResponse("Role does not match.")
+            #     elif permission.role == self.ROLE_2:
+            #         if not any(path.startswith(url.strip()) for url in self.ROLE_2_URL):
+            #             print(f"Path: {path}") # Check visited path (debugging)
+            #             return HttpResponse("Role does not match.")
 
-                elif permission.role == self.ROLE_3:
-                    if not any(path.startswith(url.strip()) for url in self.ROLE_3_URL):
-                        print(f"Path: {path}") # Check visited path (debugging)
-                        return HttpResponse("Role does not match.")
+            #     elif permission.role == self.ROLE_3:
+            #         if not any(path.startswith(url.strip()) for url in self.ROLE_3_URL):
+            #             print(f"Path: {path}") # Check visited path (debugging)
+            #             return HttpResponse("Role does not match.")
 
-                else:
-                    if not (path.startswith(self.LOGOUT_URL)):
-                        print(f"Path: {path}") # Check visited path (debugging)
-                        return HttpResponse("Wait for role permission.")
+            #     else:
+            #         if not (path.startswith(self.LOGOUT_URL)):
+            #             print(f"Path: {path}") # Check visited path (debugging)
+            #             return HttpResponse("Wait for role permission.")
                 
         response = self.get_response(request)
         return response

@@ -3,38 +3,48 @@
 {% block title %}Supplier Quotations{% endblock %}
 
 {% block content %}
-    <h1>Supplier Quotations</h1>
+    <div class="container mt-4">
+        <h3 class=" mb-3">List of Supplier Quotations</h3>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Quotation No</th>
+                        <th>Buyer Company</th>
+                        <th>Prepared By</th>
+                        <th>Quote Valid Until</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quotation in supplier_quotations %}
+                        <tr>
+                            <td>{{ quotation.quotation_no }}</td>
+                            <td>{{ quotation.buyer_company_name }}</td>
+                            <td>{{ quotation.prepared_by }}</td>
+                            <td>{{ quotation.quote_valid_until }}</td>
+                            <td>
+                                <span class="badge {% if quotation.status == 'Pending' %}bg-warning{% elif quotation.status == 'Approved' %}bg-success{% else %}bg-danger{% endif %}">
+                                    {{ quotation.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'supplier_quotation_submission_detail' submission_id=quotation.id %}" class="btn btn-info btn-sm">View Details</a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No supplier quotations found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Quotation No</th>
-                <th>Buyer Company</th>
-                <th>Prepared By</th>
-                <th>Quote Valid Until</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for quotation in supplier_quotations %}
-                <tr>
-                    <td>{{ quotation.quotation_no }}</td>
-                    <td>{{ quotation.buyer_company_name }}</td>
-                    <td>{{ quotation.prepared_by }}</td>
-                    <td>{{ quotation.quote_valid_until }}</td>
-                    <td>{{ quotation.status }}</td>
-                    <td>
-                        <a href="{% url 'supplier_quotation_submission_detail' submission_id=quotation.id %}" class="btn btn-info">View Details</a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="6">No supplier quotations found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    <a href="{% url 'request_quotation_list' %}" class="btn btn-info">Go Back</a>
+        <!-- Go Back Button -->
+        <div class="text-center">
+            <a href="{% url 'request_quotation_list' %}" class="btn btn-secondary btn-lg">Go Back</a>
+        </div>
+    </div>
 {% endblock %}

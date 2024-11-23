@@ -71,38 +71,8 @@
                     {% csrf_token %}
                     
                     <h4 class="text-muted mb-4">Quotation Details</h4>
-                    
-                    <div class="row g-4">
-                        <div class="col-lg-6">
-                            <label for="employee" class="form-label fw-bold">Employee</label>
-                            <select class="form-select {% if form.employee.errors %}is-invalid{% endif %}" id="employee" name="employee">
-                                {% for value, label in form.employee.field.widget.choices %}
-                                    <option value="{{ value }}" {% if value == form.employee.value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.employee.errors %}
-                                <div class="invalid-feedback">{{ form.employee.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6">
-                            <label for="buyer_company_name" class="form-label fw-bold">Buyer Company Name</label>
-                            <input type="text" class="form-control {% if form.buyer_company_name.errors %}is-invalid{% endif %}" id="buyer_company_name" name="buyer_company_name" value="{{ form.buyer_company_name.value|default:'' }}">
-                            {% if form.buyer_company_name.errors %}
-                                <div class="invalid-feedback">{{ form.buyer_company_name.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
 
                     <div class="row g-4">
-                        <div class="col-lg-6">
-                            <label for="buyer_address" class="form-label fw-bold">Buyer Address</label>
-                            <input type="text" class="form-control {% if form.buyer_address.errors %}is-invalid{% endif %}" id="buyer_address" name="buyer_address" value="{{ form.buyer_address.value|default:'' }}">
-                            {% if form.buyer_address.errors %}
-                                <div class="invalid-feedback">{{ form.buyer_address.errors }}</div>
-                            {% endif %}
-                        </div>
-
                         <div class="col-lg-6">
                             <label for="buyer_contact" class="form-label fw-bold">Buyer Contact</label>
                             <input type="text" class="form-control {% if form.buyer_contact.errors %}is-invalid{% endif %}" id="buyer_contact" name="buyer_contact" value="{{ form.buyer_contact.value|default:'' }}">
@@ -124,32 +94,10 @@
 
                     <div class="row g-4">
                         <div class="col-lg-6">
-                            <label for="prepared_by" class="form-label fw-bold">Prepared By</label>
-                            <input type="text" class="form-control {% if form.prepared_by.errors %}is-invalid{% endif %}" id="prepared_by" name="prepared_by" value="{{ form.prepared_by.value|default:'' }}">
-                            {% if form.prepared_by.errors %}
-                                <div class="invalid-feedback">{{ form.prepared_by.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-lg-6">
                             <label for="quote_valid_until" class="form-label fw-bold">Quote Valid Until</label>
                             <input type="date" class="form-control {% if form.quote_valid_until.errors %}is-invalid{% endif %}" id="quote_valid_until" name="quote_valid_until" value="{{ form.quote_valid_until.value|default:'' }}">
                             {% if form.quote_valid_until.errors %}
                                 <div class="invalid-feedback">{{ form.quote_valid_until.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6">
-                            <label for="status" class="form-label fw-bold">Status</label>
-                            <select class="form-select {% if form.status.errors %}is-invalid{% endif %}" id="status" name="status">
-                                {% for value, label in form.status.field.widget.choices %}
-                                    <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.status.errors %}
-                                <div class="invalid-feedback">{{ form.status.errors }}</div>
                             {% endif %}
                         </div>
                     </div>

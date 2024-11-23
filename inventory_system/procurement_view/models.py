@@ -2,17 +2,20 @@ from django.db import models
 from django.contrib.auth.models import User
 from .utils import generate_unique_procurement_no
 
+STORE_COMPANY_NAME = "AR. DJ Hardware Trading"
+STORE_ADDRESS = "street bergal maligaya park, 77 Bautista, Caloocan, Metro Manila"
+
 class RequestQuotation(models.Model):
-    employee = models.ForeignKey(User, on_delete=models.CASCADE)
-    buyer_company_name = models.CharField(max_length=255)
-    buyer_address = models.CharField(max_length=255)
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    buyer_company_name = models.CharField(max_length=255, default=STORE_COMPANY_NAME, null=True, blank=True)
+    buyer_address = models.CharField(max_length=255, default=STORE_ADDRESS, null=True, blank=True)
     buyer_contact = models.CharField(max_length=100)
     quotation_no = models.CharField(max_length=50, unique=True)
-    prepared_by = models.CharField(max_length=100)
+    approved_by = models.CharField(max_length=100, null=True, blank=True)
     quote_valid_until = models.DateField()
     date_prepared = models.DateField(auto_now_add=True)
-    terms_and_conditions = models.TextField()
-    status = models.CharField(max_length=50)
+    terms_and_conditions = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=50, default="Pending Approval", null=True, blank=True)
 
     def __str__(self):
         return f"Quotation {self.quotation_no} for {self.buyer_company_name}"
@@ -34,10 +37,10 @@ class RequestQuotationItem(models.Model):
 
 
 class PurchaseOrder(models.Model):
-    supplier = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    supplier = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     quotation_no = models.CharField(max_length=20, unique=True)
-    buyer_company_name = models.CharField(max_length=255, blank=True, null=True)
-    buyer_address = models.TextField(blank=True, null=True)
+    buyer_company_name = models.CharField(max_length=255, default=STORE_COMPANY_NAME, null=True, blank=True)
+    buyer_address = models.TextField(default=STORE_ADDRESS, null=True, blank=True)
     date_ordered = models.DateField(auto_now_add=True)
     delivery_date = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)

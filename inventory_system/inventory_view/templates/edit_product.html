@@ -1,0 +1,77 @@
+{% extends 'inventory_base.html' %}
+
+{% block title %}Edit Product - {{ product.name }}{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">Edit Product: <strong>{{ product.name }}</strong></h1>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" id="name" name="name" value="{{ form.name.value|default:'' }}">
+            {% if form.name.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.name.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="measurement" class="form-label">Measurement</label>
+            <input type="text" class="form-control {% if form.measurement.errors %}is-invalid{% endif %}" id="measurement" name="measurement" value="{{ form.measurement.value|default:'' }}">
+            {% if form.measurement.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.measurement.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="reorder_level" class="form-label">Reorder Level</label>
+            <input type="number" class="form-control {% if form.reorder_level.errors %}is-invalid{% endif %}" id="reorder_level" name="reorder_level" value="{{ form.reorder_level.value|default:'' }}">
+            {% if form.reorder_level.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.reorder_level.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="selling_price" class="form-label">Selling Price</label>
+                <input type="number" class="form-control {% if form.selling_price.errors %}is-invalid{% endif %}" id="selling_price" name="selling_price" value="{{ form.selling_price.value|default:'' }}">
+                {% if form.selling_price.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.selling_price.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label for="cost_price" class="form-label">Cost Price</label>
+                <input type="number" class="form-control {% if form.cost_price.errors %}is-invalid{% endif %}" id="cost_price" name="cost_price" value="{{ form.cost_price.value|default:'' }}">
+                {% if form.cost_price.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.cost_price.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+
+    <a href="{% url 'edit_product_list' %}" class="btn btn-secondary mt-3">Cancel</a>
+{% endblock %}

@@ -10,21 +10,14 @@ load_dotenv()
 
 
 class RequestQuotationForm(forms.ModelForm):
-    USER_ROLE = os.environ.get('ROLE_2')
-
-    employee = forms.ModelChoiceField(queryset=User.objects.filter(userpermission__role=USER_ROLE), label=USER_ROLE)
-
     class Meta:
-        STATUS_CHOICES = [(status, status) for status in os.environ.get('RQ_STATUS_CHOICES', '').split(',')]
-        
         model = RequestQuotation
         
-        fields = ['employee', 'buyer_company_name', 'buyer_address', 'buyer_contact', 'prepared_by', 'quote_valid_until',
+        fields = ['buyer_contact', 'quote_valid_until',
                 'terms_and_conditions', 'status',]
         
         widgets = {
-            'quote_valid_until': forms.DateInput(attrs={'type': 'date'}),
-            'status': forms.Select(choices=STATUS_CHOICES),
+            'quote_valid_until': forms.DateInput(attrs={'type': 'date'})
         }
 
 class RequestQuotationItemForm(forms.ModelForm):
@@ -48,8 +41,7 @@ class PurchaseOrderForm(forms.ModelForm):
         model = PurchaseOrder
 
         fields = [
-            'supplier', 'buyer_company_name', 'buyer_address', 
-            'delivery_date', 'notes', 'total_amount', 'approved_by', 'status'
+            'supplier', 'delivery_date', 'notes'
         ]
         
         widgets = {

@@ -1,0 +1,133 @@
+{% extends 'inventory_base.html' %}
+{% load static %}
+{% block title %}Product List{% endblock %}
+
+{% block content %}
+    <h1>Restock Product</h1>
+
+    <form method="get" id="filterForm" class="mb-3">
+        <div class="d-flex flex-wrap gap-3">
+            <div class="mb-3">
+                <label for="id_sku" class="form-label">SKU</label>
+                <input type="text" class="form-control" id="id_sku" name="sku">
+            </div>
+        
+            <div class="mb-3">
+                <label for="id_name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="id_name" name="name">
+            </div>
+        
+            <div class="mb-3">
+                <label for="id_category" class="form-label">Category</label>
+                <select class="form-control" id="id_category" name="category">
+                    {% for value, label in form.category.field.widget.choices %}
+                        <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+    </form>
+
+
+    <button id="startScanButton" class="btn btn-secondary mt-3">Start Scanning</button>
+    <button id="stopScanButton" class="btn btn-danger d-none mt-3">Stop Scanning</button>
+
+    <!-- Responsive video container -->
+    <div class="video-container mt-3" style="display: none;">
+        <video id="videoElement" autoplay playsinline></video>
+        <div id="videoError" style="display: none; color: red;">Could not access the camera. Please check permissions.</div>
+    </div>
+
+    <p id="scannedValue" class="mt-3"></p>
+
+
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'product_list' %}">
+            <button class="btn btn-info btn-sm me-2">
+                <i class="bi bi-eye"></i> View
+            </button>
+        </a>
+
+        <a href="{% url 'restock_product_list' %}">
+            <button class="btn btn-success btn-sm me-2">
+                <i class="bi bi-plus-circle"></i> Restock
+            </button>
+        </a>
+
+        <a href="{% url 'to_waste_product_list' %}">
+            <button class="btn btn-danger btn-sm me-2">
+                <i class="bi bi-trash"></i> To Waste
+            </button>
+        </a>
+
+        <a href="{% url 'edit_product_list' %}">
+            <button class="btn btn-warning btn-sm">
+                <i class="bi bi-pencil-square"></i> Edit
+            </button>
+        </a>
+    </div>
+    
+
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover table-sm table-custom">
+            <thead>
+                <tr>
+                    <th class="text-truncate" style="max-width: 35px;">SKU</th>
+                    <th class="text-truncate" style="max-width: 100px;">Name</th>
+                    <th class="text-truncate" style="max-width: 50px;">Category</th>
+                    <th class="text-truncate" style="max-width: 20px;">Qty.</th>
+                    <th class="text-truncate" style="max-width: 25px;">Measurement</th>
+                    <th class="text-truncate" style="max-width: 30px;">reorder_level</th>
+                    <th class="text-truncate" style="max-width: 10px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td class="text-truncate" style="max-width: 35px;">{{ product.sku }}</td>
+                    <td class="text-truncate" style="max-width: 100px;">{{ product.name }}</td>
+                    <td class="text-truncate" style="max-width: 50px;">{{ product.category }}</td>
+                    <td class="text-truncate" style="max-width: 20px;">{{ product.quantity }}</td>
+                    <td class="text-truncate" style="max-width: 25px;">{{ product.measurement }}</td>
+                    <td class="text-truncate" style="max-width: 30px;">{{ product.reorder_level }}</td>
+                    <td class="text-truncate" style="max-width: 10px;">
+                        <a href="{% url 'restock_product_quantity' product.id %}">
+                            <button class="btn btn-success btn-sm me-2">
+                                <i class="bi bi-plus-circle"></i>
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+    <style>
+        /* Style for the video container */
+        .video-container {
+            position: relative;
+            width: 200px; /* Fixed width */
+            height: 200px; /* Fixed height to make it square */
+            margin-top: 20px; /* Add top margin */
+            overflow: hidden;
+            border: 1px solid black;
+        }
+
+        /* Responsive video */
+        video {
+            position: absolute;
+            top: 0; /* Align to top */
+            left: 0; /* Align to left */
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+    </style>
+
+    <script src="{% static 'inventory-qr-scanner.js' %}"></script>
+{% endblock %}

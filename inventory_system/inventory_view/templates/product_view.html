@@ -3,6 +3,11 @@
 {% block title %}Product View{% endblock %}
 
 {% block content %}
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> 
+        Back
+    </a>
+
     <p class="h1">View Product: 
         <small class="text-muted">{{ product.name }}</small>
     </p>
@@ -14,7 +19,6 @@
             
 
             <img src="{{ barcode }}" alt="Barcode for {{ product.name }}" />
-            
         </div>
     </div>
 
@@ -27,11 +31,24 @@
     </div>
     
     <div class="row">
-        <div class="mb-3">
-            <div class="col-md-6 mb-3">
-                <p class="h3">Category:</p>
-                <small class="text-muted">{{ product.category }}</small>
-            </div>
+        <div class="col-md-6 mb-4">
+            <p class="h3">Category:</p>
+            <small class="text-muted">{{ product.category }}</small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Quantity:</p>
+            <small class="text-muted">{{ product.quantity }}</small>
+        </div>
+    
+        <div class="col-md-6 mb-3">
+            <p class="h3">Measurement:</p>
+            <small class="text-muted">{{ product.measurement }}</small>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <p class="h3">Reorder Level:</p>
+            <small class="text-muted">{{ product.reorder_level }}</small>
         </div>
 
         <div class="col-md-6 mb-3">
@@ -43,26 +60,9 @@
             <p class="h3">Cost Price:</p>
             <small class="text-muted">₱{{ product.cost_price }}</small>
         </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Date Added:</p>
-            <small class="text-muted">{{ product.date_added }}</small>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Expiration Date:</p>
-            <small class="text-muted">{{ product.expiration_date }}</small>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Brand Name:</p>
-            <small class="text-muted">{{ product.brand }}</small>
-        </div>
     </div>
-
-
-
 {% endblock %}
+
 
 <style>
     .code-container-wrapper {

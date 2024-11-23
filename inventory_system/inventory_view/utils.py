@@ -1,47 +1,62 @@
 import os
 import random
 from datetime import datetime
+from django.core.exceptions import ValidationError
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # ===== FILTER PRODUCT SEARCH RESULTS ===== #
-def search_filter_products(sku, name, product_type, expiration_date, category, status):
+def search_filter_products(sku, name, category, status):
     from .models import Product
+    
+    products = Product.objects.filter(status=status)
 
-    def filter(product_status):
-        products = Product.objects.filter(status=product_status)
-        
-        if sku:
-            products = products.filter(sku=sku)
+    if sku:
+        products = products.filter(sku=sku)
 
-        if name:
-            products = products.filter(name__icontains=name)
+    if name:
+        products = products.filter(name__icontains=name)
 
-        if product_type:
-            PRODUCT_TYPES = os.environ.get('PRODUCT_TYPES', '').split(',')
+    if category:
+        if category == "All Categories":
+            products = products.all()
 
-            PERISHABLE_TYPE = PRODUCT_TYPES[0].strip()
-            NON_PERISHABLE_TYPE = PRODUCT_TYPES[1].strip()
-
-            if product_type == PERISHABLE_TYPE:
-                products = products.filter(expiration_date__isnull=False)
-
-            elif product_type == NON_PERISHABLE_TYPE:
-                products = products.filter(expiration_date__isnull=True)
-
-        if category:
+        else:
             products = products.filter(category=category)
 
-        if expiration_date:
-            products = products.filter(expiration_date=expiration_date)
-
-        return products
+    return products
 
     product_status = status
     results = filter(product_status)
 
     return results
+# =============================================== #
+
+
+# ===== FILTER WASTE PRODUCT SEARCH RESULTS ===== #
+def search_filter_waste_products(sku, name, category, date_wasted):
+    from .models import WasteProduct
+
+    products = WasteProduct.objects.all()
+    
+    if sku:
+        products = products.filter(product__sku=sku)
+
+    if name:
+        products = products.filter(product__name__icontains=name)
+
+    if category:
+        if category == "All Categories":
+            products = products.all()
+
+        else:
+            products = products.filter(product__category=category)
+
+    if date_wasted:
+        products = products.filter(date_wasted=date_wasted)
+
+    return products
 # =============================================== #
 
 
@@ -133,38 +148,28 @@ def generate_unique_sku(product_name, cost_price, category, ModelClass):
 
 
 # ===== CREATE DUPLICATE INSTANCES OF A PRODUCT BEING RESTOCKED ===== #
-def duplicate_product(product, expiration_date=None):
-    from .models import Product
-
-    if product.expiration_date:
-        new_product = Product(
-            name=product.name,
-            category=product.category,
-            selling_price=product.selling_price,
-            cost_price=product.cost_price,
-            brand=product.brand,
-            expiration_date=expiration_date,
-        )
+def restock_product(product, quantity):
+    if quantity > 0:
+        product.quantity += quantity
+        product.save()
 
     else:
-        new_product = Product(
-            name=product.name,
-            category=product.category,
-            selling_price=product.selling_price,
-            cost_price=product.cost_price,
-            brand=product.brand,
-            expiration_date=None,
-        )
-
-    new_product.save()
-    return new_product
+        raise ValidationError("WARNING: Quantity must be a positive number.")
 # =============================================== #
 
 
 # ===== CREATE DUPLICATE INSTANCES OF A PRODUCT BEING RESTOCKED ===== #
-def transfer_to_waste(product):
-    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
+def product_transfer_to_waste(product, quantity, reason, employee):
+    from .models import WasteProduct
 
-    product.status = PRODUCT_STATUS[2].strip()
+    if quantity <= 0:
+        raise ValidationError("Quantity must be greater than 0.")
+
+    if product.quantity < quantity:
+        raise ValidationError("Not enough stock to transfer to waste.")
+
+    product.quantity -= quantity
     product.save()
+
+    WasteProduct.objects.create(product=product, quantity=quantity, reason=reason, user=employee)
 # =============================================== #
