@@ -21,6 +21,8 @@ class Product(models.Model):
     name = models.CharField(max_length=100, null=True)
     category = models.CharField(max_length=50, null=True)
     quantity = models.IntegerField(null=True)
+    measurement = models.CharField(max_length=50, null=True)
+    reorder_level = models.PositiveIntegerField(null=True, default=1)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Selling price
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Purchase price
     status = models.CharField(max_length=50, choices=PRODUCT_STATUS_CHOICES, default="Active") # Active, Inactive
@@ -43,7 +45,7 @@ class WasteProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="waste_records")
     quantity = models.PositiveIntegerField()
     reason = models.TextField(null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date_wasted = models.DateField(auto_now_add=True)
     
 

@@ -1,19 +1,3 @@
-# ===== FILTER PRODUCT LIST RESULT ===== #
-def search_filter_product_list(name, category):
-    from .models import ProductInstance
-
-    product_instance = ProductInstance.objects.all()
-
-    if name:
-        product_instance = product_instance.filter(name__icontains=name)
-
-    if category:
-        product_instance = product_instance.filter(category=category)
-
-    return product_instance
-# =============================================== #
-
-
 # ===== AUTOMATIC PO GENERATOR (WHEN LOW STOCK) ===== #
 def automatic_po_generator(product):
     from procurement_view.models import PurchaseOrder, PurchaseOrderItem

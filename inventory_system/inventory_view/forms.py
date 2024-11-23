@@ -37,7 +37,7 @@ class ProductForm(forms.ModelForm):
         model = Product
 
         fields = [
-            'name', 'category', 'quantity', 'selling_price', 'cost_price'
+            'name', 'category', 'quantity', 'measurement', 'reorder_level', 'selling_price', 'cost_price'
         ]
 
         widgets = {
@@ -65,3 +65,17 @@ class WasteProductFilterForm(forms.Form):
     name = forms.CharField(required=False)
     category = forms.ChoiceField(choices=[(category, category) for category in PRODUCT_CATEGORIES], required=False)
     date_wasted = forms.DateField(required=False)
+
+
+class EditProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+
+        fields = ['name', 'measurement', 'reorder_level', 'selling_price', 'cost_price']
+
+    name = forms.CharField(required=True)
+    measurement = forms.CharField(required=True)
+    reorder_level = forms.IntegerField(required=True)
+    selling_price = forms.IntegerField(required=True)
+    cost_price = forms.IntegerField(required=True)
+        

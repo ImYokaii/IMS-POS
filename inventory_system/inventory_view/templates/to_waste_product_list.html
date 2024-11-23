@@ -3,7 +3,7 @@
 {% block title %}Product List{% endblock %}
 
 {% block content %}
-    <h1>View Product List</h1>
+    <h1>Product To Waste</h1>
 
     <form method="get" id="filterForm" class="mb-3">
         <div class="d-flex flex-wrap gap-3">
@@ -94,9 +94,9 @@
                     <td class="text-truncate" style="max-width: 25px;">{{ product.measurement }}</td>
                     <td class="text-truncate" style="max-width: 30px;">{{ product.reorder_level }}</td>
                     <td class="text-truncate" style="max-width: 10px;">
-                        <a href="{% url 'product_view' product.id %}">
-                            <button class="btn btn-info btn-sm me-2">
-                                <i class="bi bi-eye"></i>
+                        <a href="{% url 'transfer_to_waste' product.id %}">
+                            <button class="btn btn-danger btn-sm me-2">
+                                <i class="bi bi-trash"></i>
                             </button>
                         </a>
                     </td>

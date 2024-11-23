@@ -10,7 +10,7 @@
         {% csrf_token %}
         
         <p class="mb-4">
-            How many units of <strong>{{ product.name }}</strong> do you want to transfer to waste?
+            How many units of <strong>{{ product.name }}</strong> in <strong>{{ product.measurement }}</strong> do you want to transfer to waste?
         </p>
 
         <div class="mb-3">
@@ -20,11 +20,11 @@
 
         <div class="mb-3">
             <label for="reason" class="form-label fw-bold">Reason</label>
-            <textarea id="reason" name="reason" class="form-control" placeholder="Enter reason for transfer" rows="3" required></textarea>
+            <input type="text" id="reason" name="reason" class="form-control" placeholder="Enter reason for transfer" rows="3" required>
         </div>
 
         <div class="d-flex justify-content-between">
-            <a href="{% url 'wasted_product_list' %}" class="btn btn-secondary">
+            <a href="{% url 'to_waste_product_list' %}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Cancel
             </a>
             

@@ -46,6 +46,7 @@
                     <th>Name</th>
                     <th>Category</th>
                     <th>Qty</th>
+                    <th>Measurement</th>
                     <th>Date Wasted</th>
                     <th>Wasted by</th>
                 </tr>
@@ -58,6 +59,7 @@
                             <td>{{ p.product.name }}</td>
                             <td>{{ p.product.category }}</td>
                             <td>{{ p.quantity }}</td>
+                            <td>{{ p.product.measurement }}</td>
                             <td>{{ p.date_wasted|date:"d/m/Y" }}</td>
                             <td>{{ p.user.username }}</td>
                         </tr>

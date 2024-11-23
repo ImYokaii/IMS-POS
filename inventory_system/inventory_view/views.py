@@ -8,10 +8,9 @@ from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.core.exceptions import ValidationError
 from django.contrib import messages
-from .forms import ProductForm, RestockProductForm, WasteProductForm, ProductFilterForm, WasteProductFilterForm
+from .forms import ProductForm, RestockProductForm, WasteProductForm, ProductFilterForm, WasteProductFilterForm, EditProductForm
 from .models import Product, WasteProduct
-from .utils import search_filter_products, search_filter_waste_products, restock_product, transfer_to_waste
-from dashboard_view.models import ProductInstance
+from .utils import search_filter_products, search_filter_waste_products, restock_product, product_transfer_to_waste
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
@@ -84,16 +83,9 @@ def product_view(request, product_id):
 # ============================================== #
 
 
-# ===== ADDING ITEM CHOICE PAGE ===== #
-@login_required(login_url=settings.LOGIN_URL)
-def add_item_choice(request):
-    return render(request, 'add_item_choice.html')
-# =============================================== #
-
-
 # ===== EXISTING PRODUCT PAGE (For Restocking) ===== #
 @login_required(login_url=settings.LOGIN_URL)
-def existing_product_page(request):
+def restock_product_list(request):
     form = ProductFilterForm(request.GET)
     PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
 
@@ -105,13 +97,13 @@ def existing_product_page(request):
 
         products = search_filter_products(sku, name, category, status)
 
-    return render(request, 'existing_product_page.html', {'form': form, 'products': products})
+    return render(request, 'restock_product_list.html', {'form': form, 'products': products})
 # =============================================== #
 
 
 # ===== RESTOCKING EXISTING PRODUCT PAGE ===== #
 @login_required(login_url=settings.LOGIN_URL)
-def add_existing_product(request, product_id):
+def restock_product_quantity(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
     if request.method == 'POST':
@@ -127,16 +119,122 @@ def add_existing_product(request, product_id):
             
             except ValidationError as error_message:
                 messages.error(request, str(error_message))
-                return redirect('add_existing_product', product_id=product_id)
+                return redirect('restock_product_quantity', product_id=product_id)
             
         else:
             messages.error(request, "Invalid data!")
-            return redirect('add_existing_product', product_id=product_id)
+            return redirect('restock_product_quantity', product_id=product_id)
             
     else:
         form = RestockProductForm()
 
-    return render(request, 'add_existing_product.html', {'form': form, 'product': product})
+    return render(request, 'restock_product_quantity.html', {'form': form, 'product': product})
+# =============================================== #
+
+
+# ===== TRANSFER PRODUCT TO WASTE PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
+def to_waste_product_list(request):
+    form = ProductFilterForm(request.GET)
+    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
+
+    if form.is_valid():
+        sku = form.cleaned_data.get('sku')
+        name = form.cleaned_data.get('name')
+        category = form.cleaned_data.get('category')
+        status = PRODUCT_STATUS[0].strip()
+
+        products = search_filter_products(sku, name, category, status)
+
+    return render(request, 'to_waste_product_list.html', {'form': form, 'products': products})
+# =============================================== #
+
+
+# ===== TRANSFER PRODUCT TO WASTE PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
+def transfer_to_waste(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    if request.method == 'POST':
+        form = WasteProductForm(request.POST)
+
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            reason = form.cleaned_data['reason']
+            employee = request.user
+
+            try:
+                product_transfer_to_waste(product, quantity, reason, employee)
+                messages.success(request, f"{product.name} product transferred to waste")
+                return redirect('to_waste_product_list')
+            
+            except ValidationError as error_message:
+                messages.error(request, str(error_message))
+                return redirect('restock_product_quantity', product_id=product_id)
+
+            except ValueError as error_message:
+                messages.error(request, "Invalid quantity input. Please enter a valid number.")
+                return redirect('transfer_to_waste', product_id=product_id)
+            
+        else:
+            messages.error(request, "Invalid data!")
+            return redirect('transfer_to_waste', product_id=product_id)
+    
+    else:
+        form = WasteProductForm()
+    
+    return render(request, 'transfer_to_waste.html', {'product': product})
+# =============================================== #
+
+
+# ===== EDIT PRODUCT PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
+def edit_product_list(request):
+    form = ProductFilterForm(request.GET)
+    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
+
+    if form.is_valid():
+        sku = form.cleaned_data.get('sku')
+        name = form.cleaned_data.get('name')
+        category = form.cleaned_data.get('category')
+        status = PRODUCT_STATUS[0].strip()
+
+        products = search_filter_products(sku, name, category, status)
+
+    return render(request, 'edit_product_list.html', {'form': form, 'products': products})
+# =============================================== #
+
+
+# ===== SUBMIT EDIT PRODUCT PAGE ===== #
+@login_required(login_url=settings.LOGIN_URL)
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == 'POST':
+        form = EditProductForm(request.POST, instance=product)
+
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, f"Product '{product.name}' has been updated successfully.")
+                return redirect('edit_product_list')
+
+            except ValidationError as error_message:
+                messages.error(request, f"Error: {error_message}")
+                return redirect('edit_product', product_id=product_id)
+
+            except Exception as e:
+                messages.error(request, f"An unexpected error occurred: {e}")
+                return redirect('edit_product', product_id=product_id)
+
+        else:
+            messages.error(request, "Error. Make sure inputs are correct.")
+            return redirect('edit_product', product_id=product_id)
+    
+    else:
+        form = EditProductForm(instance=product)
+    
+    return render(request, 'edit_product.html', {'form': form, 'product': product})
 # =============================================== #
 
 
@@ -186,59 +284,4 @@ def wasted_product_list(request):
         products = search_filter_waste_products(sku, name, category, date_wasted)
 
     return render(request, 'wasted_product_list.html', {'form': form, 'products': products})
-# =============================================== #
-
-
-# ===== ADD PRODUCT WASTE PAGE ===== #
-@login_required(login_url=settings.LOGIN_URL)
-def add_product_waste(request):
-    form = ProductFilterForm(request.GET)
-    PRODUCT_STATUS = os.environ.get('PRODUCT_STATUS', '').split(',')
-
-    if form.is_valid():
-        sku = form.cleaned_data.get('sku')
-        name = form.cleaned_data.get('name')
-        category = form.cleaned_data.get('category')
-        status = PRODUCT_STATUS[0].strip()
-
-        products = search_filter_products(sku, name, category, status)
-
-    return render(request, 'add_product_waste.html', {'form': form, 'products': products})
-# =============================================== #
-
-
-# ===== ADD PRODUCT TO WASTE PAGE ===== #
-@login_required(login_url=settings.LOGIN_URL)
-def add_to_waste(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    if request.method == 'POST':
-        form = WasteProductForm(request.POST)
-
-        if form.is_valid():
-            quantity = form.cleaned_data['quantity']
-            reason = form.cleaned_data['reason']
-            employee = request.user
-        
-            try:
-                transfer_to_waste(product, quantity, reason, employee)
-                messages.success(request, f"{product.name} product transferred to waste")
-                return redirect('add_product_waste')
-            
-            except ValidationError as error_message:
-                messages.error(request, str(error_message))
-                return redirect('add_existing_product', product_id=product_id)
-
-            except ValueError as error_message:
-                messages.error(request, "Invalid quantity input. Please enter a valid number.")
-                return redirect('add_to_waste', product_id=product_id)
-            
-        else:
-            messages.error(request, "Invalid data!")
-            return redirect('add_to_waste', product_id=product_id)
-    
-    else:
-        form = WasteProductForm()
-    
-    return render(request, 'add_to_waste.html', {'product': product})
 # =============================================== #

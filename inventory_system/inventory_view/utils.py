@@ -159,7 +159,7 @@ def restock_product(product, quantity):
 
 
 # ===== CREATE DUPLICATE INSTANCES OF A PRODUCT BEING RESTOCKED ===== #
-def transfer_to_waste(product, quantity, reason, user):
+def product_transfer_to_waste(product, quantity, reason, employee):
     from .models import WasteProduct
 
     if quantity <= 0:
@@ -171,5 +171,5 @@ def transfer_to_waste(product, quantity, reason, user):
     product.quantity -= quantity
     product.save()
 
-    WasteProduct.objects.create(product=product, quantity=quantity, reason=reason, user=user)
+    WasteProduct.objects.create(product=product, quantity=quantity, reason=reason, user=employee)
 # =============================================== #
