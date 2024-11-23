@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
+from procurement_view.models import PurchaseOrder
 from inventory_view.models import Product
 from django.db.models import Sum, F
 import matplotlib.pyplot as plt
@@ -23,7 +24,7 @@ matplotlib.use('agg')
 @login_required(login_url="/login/")
 def dashboard(request):
     total_products = Product.objects.all().count()
-
+    pending_orders = PurchaseOrder.objects.filter(status="Pending").count()
     low_stock_products = Product.objects.filter(quantity__lte=F('reorder_level')).count()
 
     categories = os.environ.get('PRODUCT_CATEGORIES').split(',')
@@ -69,55 +70,16 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', 
         {'total_products': total_products,
+         'pending_orders': pending_orders,
          'low_stock_products': low_stock_products,
          'pie_chart': pie_chart})
-# =============================================== #
-
-
-# ===== Product Levels Page ===== #
-@login_required(login_url="/login/")
-def product_levels(request):
-    form = SearchFilterForm(request.POST)
-    
-    if form.is_valid():
-        name = form.cleaned_data.get('name')
-        category = form.cleaned_data.get('category')
-
-        product_instance = search_filter_product_list(name, category)
-
-    return render(request, 'product_levels.html', 
-        {'product_instance': product_instance, 
-         'form': form})
-# =============================================== #
-
-
-# ===== Dashboard Page ===== #
-@login_required(login_url="/login/")
-def edit_reorder_levels(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    if request.method == "POST":
-        form = ReorderLevelForm(request.POST)
-
-        if form.is_valid():
-            form.save()
-            messages.success("Reorder level was successfully edited.")
-
-            return redirect('product_levels')
-        
-    else:
-        form = ReorderLevelForm(instance=product)
-
-    return render(request, 'edit_reorder_levels.html', 
-        {'product': product, 
-         'form': form})
 # =============================================== #
 
 
 # ===== Low Stock Products Page ===== #
 @login_required(login_url="/login/")
 def low_stock_products(request):
-    product_instance = ProductInstance.objects.filter(quantity__lte=F('reorder_level'))
+    product_instance = Product.objects.filter(quantity__lte=F('reorder_level'))
 
     return render(request, 'low_stock_products.html', {'product_instance': product_instance})
 # =============================================== #

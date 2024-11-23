@@ -9,8 +9,8 @@
                 <th>Name</th>
                 <th>Category</th>
                 <th>Quantity</th>
+                <th>Measurement</th>
                 <th>Reorder Level</th>
-                <th>Brand</th>
             </tr>
         </thead>
 
@@ -20,8 +20,8 @@
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.quantity }}</td>
+                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.measurement }}</td>
                     <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.reorder_level }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.brand }}</td>
                 </tr>
             {% endfor %}
         </tbody>

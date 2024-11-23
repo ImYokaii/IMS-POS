@@ -1,29 +1,83 @@
 <div class="nav-bar">
-    <nav class="navbar navbar-expand-lg navbar-light bg-secondary" style="top: 0; height: 7vh;">
-        <a class="navbar-brand" href="">My Hardware Store</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark shadow-sm" style="top: 0; height: 7vh; z-index: 10;">
+        <!-- Branding -->
+        <a class="navbar-brand text-light font-weight-bold" href="#">
+            My Hardware Store
+        </a>
 
+        <!-- Toggler for mobile view -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Navbar Links -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="">POS</a>
+                    <a class="nav-link text-light" href="" style="transition: color 0.3s ease;">
+                        <i class="bi bi-cart"></i> POS
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                    <a class="nav-link text-light" href="{% url 'dashboard' %}" style="transition: color 0.3s ease;">
+                        <i class="bi bi-house-door"></i> Dashboard
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'product_list' %}">Inventory</a>
+                    <a class="nav-link text-light" href="{% url 'product_list' %}" style="transition: color 0.3s ease;">
+                        <i class="bi bi-box"></i> Inventory
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'create_request_quotation' %}">Purchase Order</a>
+                    <a class="nav-link text-light" href="{% url 'create_request_quotation' %}" style="transition: color 0.3s ease;">
+                        <i class="bi bi-file-earmark-plus"></i> Purchase Order
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    <a class="nav-link text-light" href="{% url 'logout' %}" style="transition: color 0.3s ease;">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
                 </li>
             </ul>
         </div>
     </nav>
 </div>
+
+<!-- Custom CSS for hover and animation effects -->
+<style>
+    /* Ensures navbar stays on top of the sidebar */
+    .nav-bar {
+        z-index: 10;
+    }
+
+    .navbar-brand:hover {
+        transform: scale(1.1); /* Slightly enlarge brand name on hover */
+    }
+
+    .nav-link:hover {
+        color: #f0ad4e !important; /* Highlight color for links */
+        text-decoration: underline; /* Underline text on hover */
+    }
+
+    /* Mobile navbar collapse animations */
+    .navbar-collapse {
+        transition: max-height 0.5s ease-in-out;
+    }
+
+    .navbar-toggler-icon {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .navbar-toggler.collapsed .navbar-toggler-icon {
+        transform: rotate(0deg);
+    }
+
+    .navbar-toggler:not(.collapsed) .navbar-toggler-icon {
+        transform: rotate(90deg);
+    }
+
+    /* Optional: Add icons size adjustments */
+    .nav-link i {
+        margin-right: 8px; /* Space between icon and text */
+    }
+</style>

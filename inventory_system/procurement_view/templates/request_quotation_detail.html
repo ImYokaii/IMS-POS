@@ -3,34 +3,73 @@
 {% block title %}Request Quotation Detail{% endblock %}
 
 {% block content %}
-    <h1>Request Quotation Detail</h1>
+    <div class="container mt-4">
+        <h1 class="text-center mb-5">Request Quotation Detail</h1>
 
-    <h2>Quotation Information</h2>
-    <p>Buyer Company Name: {{ request_quotation.buyer_company_name }}</p>
-    
-    <h2>Quotation Items</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-                <tr>
-                    <td>{{ item.product_name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.unit_price }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="3">No items available for this quotation.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'request_quotation_list' %}" class="btn btn-primary">Go Back</a>
+        <!-- Quotation Information Card -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 mb-4 bg-light">
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="mb-0">Quotation Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Buyer Company Name:</strong> <span class="text-dark">{{ request_quotation.buyer_company_name }}</span></p>
+                        <p><strong>Buyer Address:</strong> <span class="text-dark">{{ request_quotation.buyer_address }}</span></p>
+                        <p><strong>Buyer Contact:</strong> <span class="text-dark">{{ request_quotation.buyer_contact }}</span></p>
+                        <p><strong>Quotation Number:</strong> <span class="text-dark">{{ request_quotation.quotation_no }}</span></p>
+                        <p><strong>Approved By:</strong> <span class="text-dark">{{ request_quotation.approved_by }}</span></p>
+                        <p><strong>Quote Valid Until:</strong> <span class="text-dark">{{ request_quotation.quote_valid_until }}</span></p>
+                        <p><strong>Date Prepared:</strong> <span class="text-dark">{{ request_quotation.date_prepared }}</span></p>
+                        <p><strong>Status:</strong> 
+                            <span class="badge {% if request_quotation.status == 'Pending Approval' %}bg-warning{% elif request_quotation.status == 'Approved' %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ request_quotation.status }}
+                            </span>
+                        </p>
+                        <p><strong>Terms and Conditions:</strong> <span class="text-dark">{{ request_quotation.terms_and_conditions|default:"N/A" }}</span></p>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Quotation Items Card -->
+            <div class="col-md-6">
+                <div class="card shadow-sm border-0 mb-4 bg-light">
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="mb-0">Quotation Items</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in request_quotation.items.all %}
+                                        <tr>
+                                            <td>{{ item.product_name }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ item.unit_price }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">No items available for this quotation.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Go Back Button -->
+        <div class="text-center mt-4">
+            <a href="{% url 'request_quotation_list' %}" class="btn btn-primary btn-lg">Go Back</a>
+        </div>
+    </div>
 {% endblock %}

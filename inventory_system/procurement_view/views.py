@@ -5,6 +5,7 @@ from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, Purch
 from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from django.http import HttpResponse
 from django.utils import timezone
+from decimal import Decimal
 from dotenv import load_dotenv
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -21,6 +22,8 @@ def create_request_quotation(request):
         formset = RequestQuotationItemFormSet(request.POST)
 
         if form.is_valid() and formset.is_valid():
+            request_quotation = form.save(commit=False)
+            request_quotation.employee = request.user
             request_quotation = form.save()
 
             for form in formset:
@@ -29,9 +32,12 @@ def create_request_quotation(request):
                     request_quotation_item.request_quotation = request_quotation
                     request_quotation_item.save()
             
-            messages.success("Request quotation was successfully submitted!")
-
+            messages.success(request, "Request quotation was successfully submitted!")
             return redirect('request_quotation_list')
+        
+        else:
+            print("Form Errors:", form.errors)
+            print("Formset Errors:", formset.errors)
 
     else:
         form = RequestQuotationForm()
@@ -49,7 +55,19 @@ def create_purchase_request(request):
         formset = PurchaseOrderItemFormSet(request.POST)
 
         if form.is_valid() and formset.is_valid():
-            purchase_order = form.save()
+            purchase_order = form.save(commit=False)
+            total_amount = Decimal('0.00')
+
+            for form in formset:
+                if form.cleaned_data:
+                    unit_price = form.cleaned_data.get('unit_price')
+                    quantity = form.cleaned_data.get('quantity')
+
+                    if unit_price and quantity:
+                        total_amount += unit_price * quantity
+
+            purchase_order.total_amount = total_amount
+            purchase_order.save()
 
             for form in formset:
                 if form.cleaned_data:
@@ -57,13 +75,8 @@ def create_purchase_request(request):
                     purchase_order_item.purchase_order = purchase_order
                     purchase_order_item.save()
 
-            messages.success("Purchase request was successfully submitted")
-
-            return redirect('request_quotation_list')
-        
-        else:
-            print("Form errors:", form.errors)
-            print("Formset errors:", [f.errors for f in formset.forms])
+            messages.success(request, "Purchase request was successfully submitted")
+            return redirect('purchase_request_list')
 
     else:
         form = PurchaseOrderForm()

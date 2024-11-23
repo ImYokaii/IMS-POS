@@ -11,7 +11,8 @@
                 <h5 class="card-title"><strong>Purchase Request No:</strong> {{ purchase_request.quotation_no }}</h5>
                 <p><strong>Buyer Company Name:</strong> {{ purchase_request.buyer_company_name }}</p>
                 <p><strong>Date Ordered:</strong> {{ purchase_request.date_ordered }}</p>
-                <p><strong>Delivery Date:</strong> {{ purchase_request.deliver_date }}</p>
+                <p><strong>Delivery Date:</strong> {{ purchase_request.delivery_date }}</p>
+                <p><strong>Total Amount:</strong> {{ purchase_request.total_amount }}</p>
                 <p><strong>Status:</strong> 
                     {% if purchase_request.status == STATUS_0 %}
                         <span class="badge text-bg-warning">{{ purchase_request.status }}</span>

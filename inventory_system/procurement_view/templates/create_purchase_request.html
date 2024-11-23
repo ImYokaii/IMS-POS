@@ -89,59 +89,23 @@
 
                     <div class="row g-4">
                         <div class="col-lg-6">
-                            <label for="buyer_company_name" class="form-label fw-bold">Buyer Company Name</label>
-                            <input type="text" class="form-control {% if form.buyer_company_name.errors %}is-invalid{% endif %}" id="buyer_company_name" name="buyer_company_name" value="{{ form.buyer_company_name.value|default:'' }}">
-                            {% if form.buyer_company_name.errors %}
-                                <div class="invalid-feedback">{{ form.buyer_company_name.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6">
-                            <label for="buyer_address" class="form-label fw-bold">Buyer Address</label>
-                            <input type="text" class="form-control {% if form.buyer_address.errors %}is-invalid{% endif %}" id="buyer_address" name="buyer_address" value="{{ form.buyer_address.value|default:'' }}">
-                            {% if form.buyer_address.errors %}
-                                <div class="invalid-feedback">{{ form.buyer_address.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-lg-6">
                             <label for="delivery_date" class="form-label fw-bold">Delivery Date</label>
                             <input type="date" class="form-control {% if form.delivery_date.errors %}is-invalid{% endif %}" id="delivery_date" name="delivery_date" value="{{ form.delivery_date.value|default:'' }}">
                             {% if form.delivery_date.errors %}
                                 <div class="invalid-feedback">{{ form.delivery_date.errors }}</div>
                             {% endif %}
                         </div>
-
-                        <div class="col-lg-6">
-                            <label for="status" class="form-label fw-bold">Status</label>
-                            <select class="form-select {% if form.status.errors %}is-invalid{% endif %}" id="status" name="status">
-                                {% for value, label in form.status.field.widget.choices %}
-                                    <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.status.errors %}
-                                <div class="invalid-feedback">{{ form.status.errors }}</div>
-                            {% endif %}
-                        </div>
                     </div>
 
                     <div class="row g-4">
                         <div class="col-lg-6">
-                            <label for="total_amount" class="form-label fw-bold">Total Amount</label>
-                            <input type="text" class="form-control {% if form.total_amount.errors %}is-invalid{% endif %}" id="total_amount" name="total_amount" value="{{ form.total_amount.value|default:'' }}">
-                            {% if form.total_amount.errors %}
-                                <div class="invalid-feedback">{{ form.total_amount.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6">
-                            <label for="approved_by" class="form-label fw-bold">Approved By</label>
-                            <input type="text" class="form-control {% if form.approved_by.errors %}is-invalid{% endif %}" id="approved_by" name="approved_by" value="{{ form.approved_by.value|default:'' }}">
-                            {% if form.approved_by.errors %}
-                                <div class="invalid-feedback">{{ form.approved_by.errors }}</div>
-                            {% endif %}
+                            <div class="col-lg-12">
+                                <label for="note" class="form-label fw-bold">Note</label>
+                                <textarea class="form-control {% if form.note.errors %}is-invalid{% endif %}" id="note" name="note">{{ form.note.value|default:'' }}</textarea>
+                                {% if form.note.errors %}
+                                    <div class="invalid-feedback">{{ form.note.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
 

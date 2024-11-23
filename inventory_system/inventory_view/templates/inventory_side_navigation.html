@@ -1,24 +1,55 @@
+<!-- Sidebar Navigation -->
 <nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
     <div class="position-sticky">
         <ul class="nav flex-column">
-
+            <!-- View Products Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'product_list' %}">
+                    <i class="bi bi-box me-2"></i> <!-- Bootstrap Icon for Products -->
                     <strong>View Products</strong>
                 </a>
             </li>
 
+            <!-- Add New Stock Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'add_new_product' %}">
+                    <i class="bi bi-plus-circle me-2"></i> <!-- Bootstrap Icon for Add Stock -->
                     <strong>Add New Stock</strong>
                 </a>
             </li>
 
+            <!-- View Product Waste Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'wasted_product_list' %}">
+                    <i class="bi bi-trash me-2"></i> <!-- Bootstrap Icon for Waste -->
                     <strong>View Product Waste</strong>
                 </a>
             </li>
         </ul>
     </div>
 </nav>
+
+<!-- Custom CSS for Hover Animations and Styling -->
+<style>
+    .nav-link {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+        background-color: #0275d8; /* Lighter shade of blue on hover */
+        transform: scale(1.05); /* Slight scale up effect on hover */
+    }
+
+    .nav-link i {
+        transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover i {
+        transform: translateX(5px); /* Slight move of the icon to the right on hover */
+    }
+
+    /* Optional: Adjust font size for better readability */
+    .nav-link strong {
+        font-size: 1.1rem;
+    }
+</style>
