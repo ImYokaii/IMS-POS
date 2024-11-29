@@ -11,7 +11,6 @@
     <button type="submit">Search</button>
 </form>
 
-
 {% if products %}
     <h3>Search Results</h3>
     <table>
@@ -28,7 +27,7 @@
             <tr>
                 <td>{{ product.name }}</td>
                 <td>{{ product.sku }}</td>
-                <td>{{ product.selling_price }}</td>
+                <td>₱{{ product.selling_price }}</td>
                 <td>
                     <form method="POST" action="{% url 'add_item' %}">
                         {% csrf_token %}
@@ -51,7 +50,6 @@
         <tr>
             <th>Product Name</th>
             <th>Quantity</th>
-            <th>Updated Quantity</th>
             <th>Unit Price</th>
             <th>Total Price</th>
             <th>Actions</th>
@@ -68,7 +66,6 @@
                     <button type="submit">Update</button>
                 </form>
             </td>
-            <td>{{ item.quantity }}</td>
             <td>{{ item.unit_price }}</td>
             <td>{{ item_total }}</td>
             <td>
@@ -82,8 +79,9 @@
     </tbody>
 </table>
 
-<h3>Total: ₱ {{ total_amount }}</h3>
-
+<h3>Total: ₱ {{ total_amount|floatformat:2 }}</h3>
+<h3>VAT (12%): ₱ {{ vat|floatformat:2 }}</h3>
+<h3>Total (VAT Inclusive): ₱ {{ total_with_vat|floatformat:2 }}</h3>
 
 {% if invoice.status == 'Pending' %}
     {% if has_items %}

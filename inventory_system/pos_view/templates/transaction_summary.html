@@ -1,0 +1,17 @@
+{% extends 'pos_base.html' %}
+
+{% block content %}
+<h1>Transaction Summary</h1>
+
+<p>Invoice No: {{ invoice.invoice_no }}</p>
+<p>Total Amount: ₱ {{ invoice.total_amount|floatformat:2 }}</p>
+<p>Cash Tendered: ₱ {{ invoice.cash_tendered|floatformat:2 }}</p>
+<p>Change: ₱ {{ change|floatformat:2 }}</p>
+
+<a href="{% url 'input_cash' invoice.id %}" class="btn btn-secondary">Back</a>
+
+<form method="POST" action="{% url 'finish_transaction' invoice.id %}">
+    {% csrf_token %}
+    <button type="submit">Finish Transaction</button>
+</form>
+{% endblock %}
