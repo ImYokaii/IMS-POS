@@ -1,0 +1,97 @@
+{% extends 'pos_base.html' %}
+
+{% block content %}
+<h1>POS - Add Items to Invoice</h1>
+
+<form method="GET" action="{% url 'pos_page' %}">
+    <label for="sku">Search by SKU:</label>
+    <input type="text" name="sku" id="sku" placeholder="Enter SKU">
+    <label for="name">Search by Name:</label>
+    <input type="text" name="name" id="name" placeholder="Enter Product Name">
+    <button type="submit">Search</button>
+</form>
+
+
+{% if products %}
+    <h3>Search Results</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>SKU</th>
+                <th>Unit Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.sku }}</td>
+                <td>{{ product.selling_price }}</td>
+                <td>
+                    <form method="POST" action="{% url 'add_item' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input type="number" name="quantity" placeholder="Quantity" required min="1">
+                        <button type="submit">Add to Invoice</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+<h2>Invoice: {{ invoice.invoice_no }} - Status: {{ invoice.status }}</h2>
+
+<h3>Items Added</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Updated Quantity</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item, item_total in item_totals %}
+        <tr>
+            <td>{{ item.product_name }}</td>
+            <td>
+                <form method="POST" action="{% url 'edit_item' item.id %}">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" required>
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item_total }}</td>
+            <td>
+                <form method="POST" action="{% url 'delete_item' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Total: ₱ {{ total_amount }}</h3>
+
+
+{% if invoice.status == 'Pending' %}
+    {% if has_items %}
+        <form action="{% url 'complete_invoice' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Complete Transaction</button>
+        </form>
+    {% endif %}
+{% endif %}
+
+{% endblock %}
