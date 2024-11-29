@@ -1,0 +1,19 @@
+{% extends 'pos_base.html' %}
+
+{% block title %} Cash Tendered {% endblock%}
+
+{% block content %}
+<h1>Cash Input</h1>
+
+<p>Invoice No: {{ invoice.invoice_no }}</p>
+<p>Total Amount Payable (with VAT): ₱ {{ invoice.total_amount_with_vat|floatformat:2 }}</p>
+
+<form method="POST" action="{% url 'input_cash' invoice.id %}">
+    {% csrf_token %}
+    <label for="cash_tendered">Enter Cash Tendered:</label>
+    <input type="number" step="0.01" name="cash_tendered" required>
+    <button type="submit">Submit</button>
+</form>
+
+<a href="{% url 'pos_page' %}" class="btn btn-secondary">Cancel</a>
+{% endblock %}
