@@ -1,5 +1,5 @@
 {% extends 'pos_base.html' %}
-
+{% load static %}
 {% block content %}
 <h1>POS - Add Items to Invoice</h1>
 
@@ -9,6 +9,18 @@
     <label for="name">Search by Name:</label>
     <input type="text" name="name" id="name" placeholder="Enter Product Name">
     <button type="submit">Search</button>
+</form>
+<link rel="stylesheet" href="{% static 'pos-style.css' %}">
+<div class="video-container" style="display: none;">
+    <video id="videoElement" autoplay muted></video>
+</div>
+<div id="videoError" style="display: none; color: red;">Error accessing webcam. Please check your permissions or device.</div>
+
+<button id="startScanButton">Start Scanning</button>
+<button id="stopScanButton" class="d-none">Stop Scanning</button>
+<p id="scannedValue">Scanned Value: </p>
+<form id="filterForm" method="GET" action="{% url 'pos_page' %}" style="display: none;">
+    <input type="hidden" name="sku">
 </form>
 
 {% if products %}
@@ -92,4 +104,9 @@
     {% endif %}
 {% endif %}
 
+
+
 {% endblock %}
+
+<script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.js"></script>
+<script src="{% static 'pos-qr-scanner.js' %}"></script>

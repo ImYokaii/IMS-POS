@@ -66,9 +66,16 @@ def add_item(request):
         if existing_item:
             existing_item.quantity += quantity
             existing_item.save()
-
         else:
             SalesInvoiceItem.objects.create(invoice=invoice, product_name=product.name, quantity=quantity, unit_price=product.selling_price)
+
+        return redirect('pos_page')
+
+    # Handle GET request for SKU submission
+    sku = request.GET.get('sku')
+    if sku:
+        product = get_object_or_404(Product, sku=sku)
+        return render(request, 'add_item_form.html', {'product': product})
 
     return redirect('pos_page')
 
