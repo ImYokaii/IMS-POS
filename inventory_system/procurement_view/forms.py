@@ -4,6 +4,7 @@ from django.forms import modelformset_factory
 from django.contrib.auth.models import User
 from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
 from supplier_view.models import PurchaseInvoice
+from inventory_view.models import Product
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -52,7 +53,21 @@ class PurchaseOrderForm(forms.ModelForm):
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderItem
-        fields = ['product', 'quantity', 'unit_price']
+        fields = ['product_name', 'quantity', 'unit_price']
+
+    product_name = forms.ChoiceField(
+        choices=[('', '--- Select Existing Product ---')] + 
+                [(product.name, product.name) for product in Product.objects.all()],
+        required=False,
+        label='Existing Product'
+    )
+    
+    other_product_name = forms.CharField(
+        max_length=255,
+        required=False,
+        label='Other Product Name',
+        widget=forms.TextInput(attrs={'placeholder': 'Enter custom product name if not in list'})
+    )
 
 PurchaseOrderItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=5)
 

@@ -50,41 +50,56 @@ def create_request_quotation(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 def create_purchase_request(request):
+    vat = Decimal('0.00')
+    
     if request.method == "POST":
         form = PurchaseOrderForm(request.POST)
         formset = PurchaseOrderItemFormSet(request.POST)
 
         if form.is_valid() and formset.is_valid():
             purchase_order = form.save(commit=False)
-            total_amount = Decimal('0.00')
-
-            for form in formset:
-                if form.cleaned_data:
-                    unit_price = form.cleaned_data.get('unit_price')
-                    quantity = form.cleaned_data.get('quantity')
-
-                    if unit_price and quantity:
-                        total_amount += unit_price * quantity
-
-            purchase_order.total_amount = total_amount
+            purchase_order.total_amount = Decimal('0.00')
             purchase_order.save()
 
-            for form in formset:
-                if form.cleaned_data:
-                    purchase_order_item = form.save(commit=False)
-                    purchase_order_item.purchase_order = purchase_order
-                    purchase_order_item.save()
+            total_amount = Decimal('0.00')
 
-            messages.success(request, "Purchase request was successfully submitted")
+            for item_form in formset:
+                if item_form.cleaned_data:
+                    product_name = (
+                        item_form.cleaned_data.get('product_name') or
+                        item_form.cleaned_data.get('other_product_name')
+                    )
+                    unit_price = item_form.cleaned_data.get('unit_price')
+                    quantity = item_form.cleaned_data.get('quantity')
+
+                    if product_name and unit_price and quantity:
+                        total_amount += unit_price * quantity
+                        
+                        purchase_order_item = item_form.save(commit=False)
+                        purchase_order_item.product_name = product_name
+                        purchase_order_item.purchase_order = purchase_order
+                        purchase_order_item.save()
+
+            vat = total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+            total_amount_with_tax = total_amount + vat
+
+            purchase_order.total_amount = total_amount
+            purchase_order.total_amount_with_tax = total_amount_with_tax
+            purchase_order.save()
+
+            messages.success(request, "Purchase request was successfully submitted.")
             return redirect('purchase_request_list')
 
     else:
         form = PurchaseOrderForm()
         formset = PurchaseOrderItemFormSet(queryset=PurchaseOrderItem.objects.none())
         
-    return render(request, 'create_purchase_request.html', 
-        {'form': form, 
-         'formset': formset})
+    return render(request, 'create_purchase_request.html', {
+        'form': form,
+        'formset': formset,
+        'vat': vat,
+    })
+
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -146,12 +161,19 @@ def purchase_request_detail(request, pr_id):
     STATUS_2 = STATUS[2]
 
     purchase_request = get_object_or_404(PurchaseOrder, id=pr_id)
+    vat = purchase_request.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+
+    items = purchase_request.items.all()
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
 
     return render(request, 'purchase_request_detail.html', 
         {'purchase_request': purchase_request,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
-         'STATUS_2': STATUS_2})
+         'STATUS_2': STATUS_2,
+         'vat': vat,
+         'items': items,})
 
 
 @login_required(login_url=settings.LOGIN_URL)

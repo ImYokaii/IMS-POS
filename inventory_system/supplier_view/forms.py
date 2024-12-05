@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-
+# Create a button Approved or Rejected if the status is Pending.
+# Create a button Delivered if the status is Approved.
 class PurchaseOrderStatusForm(forms.ModelForm):
     class Meta:
         STATUS_CHOICES = [(status, status) for status in os.environ.get('PO_STATUS_CHOICES', '').split(',')]

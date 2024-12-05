@@ -122,10 +122,20 @@
                                         <h5 class="card-title">Item {{ forloop.counter }}</h5>
 
                                         <div class="mb-3">
-                                            <label for="id_product_{{ forloop.counter0 }}" class="form-label fw-bold">Product</label>
-                                            <input type="text" class="form-control {% if form.product.errors %}is-invalid{% endif %}" id="id_product_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-product" value="{{ form.product.value|default:'' }}">
-                                            {% if form.product.errors %}
-                                                <div class="invalid-feedback">{{ form.product.errors }}</div>
+                                            <label for="id_product_name_{{ forloop.counter0 }}" class="form-label fw-bold">Existing Product</label>
+                                            <select class="form-select" id="id_product_name_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-product_name">
+                                                <option value="">--- Select Existing Product ---</option>
+                                                {% for value, label in form.product_name.field.choices %}
+                                                    <option value="{{ value }}" {% if value == form.product_name.value %}selected{% endif %}>{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="id_other_product_name_{{ forloop.counter0 }}" class="form-label fw-bold">Custom Product</label>
+                                            <input type="text" class="form-control {% if form.other_product_name.errors %}is-invalid{% endif %}" id="id_other_product_name_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-other_product_name" value="{{ form.other_product_name.value|default:'' }}">
+                                            {% if form.other_product_name.errors %}
+                                                <div class="invalid-feedback">{{ form.other_product_name.errors }}</div>
                                             {% endif %}
                                         </div>
 
