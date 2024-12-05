@@ -12,7 +12,9 @@
                 <p><strong>Buyer Company Name:</strong> {{ purchase_request.buyer_company_name }}</p>
                 <p><strong>Date Ordered:</strong> {{ purchase_request.date_ordered }}</p>
                 <p><strong>Delivery Date:</strong> {{ purchase_request.delivery_date }}</p>
-                <p><strong>Total Amount:</strong> {{ purchase_request.total_amount }}</p>
+                <p><strong>Total Amount:</strong> ₱ {{ purchase_request.total_amount }}</p>
+                <p><strong>VAT</strong> (12%): ₱ {{ vat|floatformat:2 }}</p>
+                <p><strong>Total Amount</strong> (VAT Inclusive): ₱ {{ purchase_request.total_amount_with_tax }}</p>
                 <p><strong>Status:</strong> 
                     {% if purchase_request.status == STATUS_0 %}
                         <span class="badge text-bg-warning">{{ purchase_request.status }}</span>
@@ -35,14 +37,16 @@
                         <th scope="col">Product Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
+                        <th scope="col">Total Price</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in purchase_request.items.all %}
+                    {% for item in items %}
                         <tr>
-                            <td>{{ item.product }}</td>
+                            <td>{{ item.product_name }}</td>
                             <td>{{ item.quantity }}</td>
                             <td>₱ {{ item.unit_price }}</td>
+                            <td>₱ {{ item.total_price|floatformat:2 }}</td>
                         </tr>
                     {% empty %}
                         <tr>
