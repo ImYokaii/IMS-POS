@@ -1,0 +1,72 @@
+<!-- completed_transactions.html -->
+{% extends 'pos_base.html' %}
+
+{% block content %}
+    <h2>Completed Transactions</h2>
+    
+    {% if completed_invoices %}
+        <table class="completed-transactions-table">
+            <thead>
+                <tr>
+                    <th>Invoice ID</th>
+                    <th>Employee</th>
+                    <th>Total Amount</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in completed_invoices %}
+                    <tr>
+                        <td>{{ invoice.invoice_no }}</td>
+                        <td>{{ invoice.employee_id.get_full_name }}</td>
+                        <td>{{ invoice.total_amount_with_vat }}</td>
+                        <td>{{ invoice.transaction_date }}</td>
+                        <td>{{ invoice.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No completed transactions found.</p>
+    {% endif %}
+{% endblock %}
+
+{% block styles %}
+    <style>
+        /* Table styling */
+        .completed-transactions-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px; /* Adds space between rows */
+        }
+
+        .completed-transactions-table th,
+        .completed-transactions-table td {
+            padding: 12px 20px; /* Adds space inside table cells */
+            text-align: left;
+        }
+
+        .completed-transactions-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        .completed-transactions-table tr {
+            background-color: #ffffff;
+        }
+
+        .completed-transactions-table tr:nth-child(even) {
+            background-color: #f9f9f9; /* Alternating row colors */
+        }
+
+        .completed-transactions-table td,
+        .completed-transactions-table th {
+            border: 1px solid #ddd;
+        }
+
+        .completed-transactions-table td {
+            vertical-align: middle;
+        }
+    </style>
+{% endblock %}

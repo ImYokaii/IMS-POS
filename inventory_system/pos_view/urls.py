@@ -10,5 +10,6 @@ urlpatterns = [
     path('pos_page/input_cash/<int:invoice_id>/', views.input_cash, name='input_cash'),
     path('pos_page/transaction_summary/<int:invoice_id>/', views.transaction_summary, name='transaction_summary'),
     path('pos_page/finish_transaction/<int:invoice_id>/', views.finish_transaction, name='finish_transaction'),
+     path('pos_page/completed_transactions/', views.completed_transactions, name='completed_transactions'),
 ]
 
