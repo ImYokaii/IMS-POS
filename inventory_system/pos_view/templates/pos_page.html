@@ -12,12 +12,12 @@
 </form>
 <link rel="stylesheet" href="{% static 'pos-style.css' %}">
 <div class="video-container" style="display: none; visibility: hidden;">
-    <video id="videoElement" style="display: none; visibility: hidden;"></video>
+    <video id="videoElement" autoplay muted style="display: none; visibility: hidden;"></video>
 </div>
 <div id="videoError" style="display: none; color: red;">Error accessing webcam. Please check your permissions or device.</div>
-
-<button id="startScanButton">Start Scanning</button>
+<button id="startScanButton" >Start Scanning</button>
 <button id="stopScanButton" class="d-none">Stop Scanning</button>
+<p id="scannedValue"></p>
 <form id="filterForm" method="GET" action="{% url 'pos_page' %}" style="display: none;">
     <input type="hidden" name="sku">
 </form>
