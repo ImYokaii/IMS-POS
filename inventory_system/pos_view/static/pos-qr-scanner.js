@@ -60,3 +60,4 @@ function toggleScanButtons() {
     document.getElementById('startScanButton').classList.toggle('d-none');
     document.getElementById('stopScanButton').classList.toggle('d-none');
 }
+

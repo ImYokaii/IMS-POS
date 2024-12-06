@@ -1,7 +1,7 @@
 const videoElement = document.getElementById('videoElement');
+const videoContainer = document.querySelector('.video-container');
 const scannedValueDisplay = document.getElementById('scannedValue');
 const filterForm = document.getElementById('filterForm');
-const videoContainer = document.querySelector('.video-container');
 
 let codeReader = null;
 let stream = null;
@@ -13,15 +13,15 @@ async function startScanning() {
     videoContainer.style.display = 'block'; // Show video container
     toggleScanButtons();
 
-    // Initialize the ZXing code reader
     codeReader = new ZXing.BrowserMultiFormatReader();
 
     try {
+        // Access the user's camera
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        videoElement.srcObject = stream;
-        videoElement.play();
+        videoElement.srcObject = stream; // Set video source
+        videoElement.play(); // Start playing the video feed
 
-        // Start decoding from video stream
+        // Start decoding from the video feed
         codeReader.decodeFromVideoDevice(null, videoElement, (result, error) => {
             if (result) {
                 handleScannedValue(result.text);
@@ -38,18 +38,18 @@ async function startScanning() {
 
 function handleScannedValue(scannedValue) {
     scannedValueDisplay.textContent = `Scanned Value: ${scannedValue}`;
-    filterForm.querySelector('[name="sku"]').value = scannedValue; // Populate input with lowercase 'sku'
-    filterForm.submit(); // Submit the form
-    stopScanning(); // Stop scanning after successful scan
+    filterForm.querySelector('[name="sku"]').value = scannedValue; // Populate the hidden input with scanned value
+    filterForm.submit(); // Automatically submit the form
+    stopScanning(); // Stop scanning after a successful scan
 }
 
 function stopScanning() {
     if (codeReader) {
-        codeReader.reset(); // Stop ZXing
+        codeReader.reset(); // Stop the code reader
         codeReader = null;
     }
     if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach(track => track.stop()); // Stop the video stream
         stream = null;
     }
     videoContainer.style.display = 'none'; // Hide video container
@@ -60,3 +60,4 @@ function toggleScanButtons() {
     document.getElementById('startScanButton').classList.toggle('d-none');
     document.getElementById('stopScanButton').classList.toggle('d-none');
 }
+
