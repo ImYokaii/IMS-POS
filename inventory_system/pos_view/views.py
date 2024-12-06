@@ -161,3 +161,12 @@ def finish_transaction(request, invoice_id):
 
     messages.success(request, "Transaction finished successfully.")
     return redirect('pos_page')
+
+def completed_transactions(request):
+    # Filter the invoices that are completed (status = 'Paid')
+    completed_invoices = SalesInvoice.objects.filter(status='Completed').order_by('-transaction_date')
+
+    # Prepare to display the relevant data
+    return render(request, 'completed_transactions.html', {
+        'completed_invoices': completed_invoices,
+    })
