@@ -1,19 +1,13 @@
 /* Style for the video container */
 .video-container {
-    max-width: 500px;
-    margin: 20px auto;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f8f8f8;
+    display: none; /* Ensure the container is fully hidden */
 }
 
 #videoElement {
-    width: 100%;
-    height: auto;
+    display: none;
+    visibility: hidden;
+    width: 0;
+    height: 0; /* Ensure no size is allocated to the video element */
 }
 
 
