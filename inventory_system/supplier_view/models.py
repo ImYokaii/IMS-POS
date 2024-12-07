@@ -33,7 +33,8 @@ class PurchaseInvoice(models.Model):
     supplier_company_name = models.CharField(max_length=255, blank=True, null=True)
     supplier_address = models.TextField(blank=True, null=True)
     date_issued = models.DateField(auto_now_add=True, blank=True, null=True)
-    total_amount_payable = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    total_amount_payable = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    total_amount_payable_with_vat = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True, default="Pending")
 
     def __str__(self):

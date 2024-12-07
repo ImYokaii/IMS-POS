@@ -22,6 +22,10 @@
                                     <span class="badge text-bg-success">{{ pr.status }}</span>
                                 {% elif pr.status == STATUS_2 %}
                                     <span class="badge text-bg-danger">{{ pr.status }}</span>
+                                {% elif purchase_request.status == Delivered %}
+                                    <span class="badge text-bg-primary">{{ pr.status }}</span>
+                                {% elif purchase_request.status == Received %}
+                                    <span class="badge text-bg-success">{{ pr.status }}</span>
                                 {% else %}
                                     <span class="badge bg-light text-dark">{{ Unavailable }}</span>
                                 {% endif %}

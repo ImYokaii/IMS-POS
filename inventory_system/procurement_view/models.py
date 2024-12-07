@@ -45,7 +45,7 @@ class PurchaseOrder(models.Model):
     delivery_date = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     total_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
-    total_amount_with_tax = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
+    total_amount_with_vat = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     approved_by = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, default="Pending")
 
@@ -65,4 +65,4 @@ class PurchaseOrderItem(models.Model):
     unit_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.product} (PO #{self.purchase_order.quotation_no})"
+        return f"{self.product_name} (PO #{self.purchase_order.quotation_no})"

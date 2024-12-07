@@ -54,18 +54,25 @@ def generate_unique_procurement_no(DocumentType, ModelClass):
 def create_digital_invoice(purchase_order):
     from .models import PurchaseInvoice, PurchaseInvoiceItem
 
-    total_amount_payable = sum(item.quantity * item.unit_price for item in purchase_order.items.all())
+    print(f"Creating invoice for PO #{purchase_order.id}")
+    items = purchase_order.items.all()
+    print(f"Items in PurchaseOrder: {list(items)}")  # Debugging to verify items
+
+    if not items:
+        print("No items found for this purchase order.")
+        return  # Early exit if no items are found
 
     invoice = PurchaseInvoice.objects.create(
         supplier=purchase_order.supplier,
         invoice_no=f"PI{purchase_order.quotation_no[2:]}",
-        total_amount_payable=total_amount_payable
+        total_amount_payable=purchase_order.total_amount,
+        total_amount_payable_with_vat=purchase_order.total_amount_with_vat,
     )
 
-    for item in purchase_order.items.all():
+    for item in items:
         PurchaseInvoiceItem.objects.create(
             purchase_invoice=invoice,
-            product_name=item.product,
+            product_name=item.product_name,
             quantity=item.quantity,
             unit_price=item.unit_price
         )

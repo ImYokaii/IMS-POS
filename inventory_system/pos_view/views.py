@@ -56,6 +56,11 @@ def add_item(request):
         quantity = int(request.POST.get('quantity'))
 
         product = get_object_or_404(Product, id=product_id)
+
+        if product.selling_price <= 0:
+            messages.error(request, "This product cannot be added to the invoice because its selling price is 0.")
+            return redirect('pos_page')
+        
         invoice = SalesInvoice.objects.filter(status='Pending', employee_id=request.user).first()
 
         if not invoice:
@@ -164,7 +169,7 @@ def finish_transaction(request, invoice_id):
 
 def completed_transactions(request):
     # Filter the invoices that are completed (status = 'Paid')
-    completed_invoices = SalesInvoice.objects.filter(status='Completed').order_by('-transaction_date')
+    completed_invoices = SalesInvoice.objects.filter(status='Paid').order_by('-transaction_date')
 
     # Prepare to display the relevant data
     return render(request, 'completed_transactions.html', {

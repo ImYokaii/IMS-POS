@@ -8,19 +8,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Create a button Approved or Rejected if the status is Pending.
-# Create a button Delivered if the status is Approved.
-class PurchaseOrderStatusForm(forms.ModelForm):
-    class Meta:
-        STATUS_CHOICES = [(status, status) for status in os.environ.get('PO_STATUS_CHOICES', '').split(',')]
-
-        model = PurchaseOrder
-        fields = ['status']
-
-        widgets = {
-            'status': forms.Select(choices=STATUS_CHOICES),
-        }
-
 
 class QuotationSubmissionForm(forms.ModelForm):
     USER_ROLE = os.environ.get('ROLE_3')

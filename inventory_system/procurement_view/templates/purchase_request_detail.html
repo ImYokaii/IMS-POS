@@ -14,7 +14,7 @@
                 <p><strong>Delivery Date:</strong> {{ purchase_request.delivery_date }}</p>
                 <p><strong>Total Amount:</strong> ₱ {{ purchase_request.total_amount }}</p>
                 <p><strong>VAT</strong> (12%): ₱ {{ vat|floatformat:2 }}</p>
-                <p><strong>Total Amount</strong> (VAT Inclusive): ₱ {{ purchase_request.total_amount_with_tax }}</p>
+                <p><strong>Total Amount</strong> (VAT Inclusive): ₱ {{ purchase_request.total_amount_with_vat }}</p>
                 <p><strong>Status:</strong> 
                     {% if purchase_request.status == STATUS_0 %}
                         <span class="badge text-bg-warning">{{ purchase_request.status }}</span>
@@ -22,10 +22,21 @@
                         <span class="badge text-bg-success">{{ purchase_request.status }}</span>
                     {% elif purchase_request.status == STATUS_2 %}
                         <span class="badge text-bg-danger">{{ purchase_request.status }}</span>
+                    {% elif purchase_request.status == STATUS_3 %}
+                        <span class="badge text-bg-primary">{{ purchase_request.status }}</span>
+                    {% elif purchase_request.status == STATUS_4 %}
+                        <span class="badge text-bg-success">{{ purchase_request.status }}</span>
                     {% else %}
                         <span class="badge bg-light text-dark">Unavailable</span>
                     {% endif %}
                 </p>
+
+                {% if purchase_request.status == STATUS_3 %}
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" name="receive" class="btn btn-success">Received</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
 

@@ -2,6 +2,7 @@ import os
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RequestQuotationForm, RequestQuotationItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
 from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
+from .utils import add_or_update_product
 from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from django.http import HttpResponse
 from django.utils import timezone
@@ -81,10 +82,10 @@ def create_purchase_request(request):
                         purchase_order_item.save()
 
             vat = total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
-            total_amount_with_tax = total_amount + vat
+            total_amount_with_vat = total_amount + vat
 
             purchase_order.total_amount = total_amount
-            purchase_order.total_amount_with_tax = total_amount_with_tax
+            purchase_order.total_amount_with_vat = total_amount_with_vat
             purchase_order.save()
 
             messages.success(request, "Purchase request was successfully submitted.")
@@ -104,9 +105,6 @@ def create_purchase_request(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 def request_quotation_list(request):
-    request.session['can_view_request_quotation_detail'] = True
-    request.session['can_view_supplier_quotations'] = True
-
     due_date = timezone.now().date().strftime('%Y-%m-%d')
     quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date)
     return render(request, 'request_quotation_list.html', {'quotations': quotations})
@@ -114,11 +112,6 @@ def request_quotation_list(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 def request_quotation_detail(request, quotation_id):
-    if not request.session.get('can_view_request_quotation_detail'):
-        return redirect('request_quotation_list')
-    
-    del request.session['can_view_request_quotation_detail']
-
     request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)  
     items = request_quotation.items.all()
 
@@ -130,8 +123,6 @@ def request_quotation_detail(request, quotation_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_request_list(request):
-    request.session['can_view_purchase_request_detail'] = True
-
     STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
@@ -148,48 +139,54 @@ def purchase_request_list(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_request_detail(request, pr_id):
-    request.session['can_go_back_purchase_request_list'] = True
-    
-    if not request.session.get('can_view_purchase_request_detail'):
-        return redirect('purchase_request_list')
-    
-    del request.session['can_view_purchase_request_detail']
-
     STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
+    STATUS_3 = STATUS[3]
+    STATUS_4 = STATUS[4] 
 
     purchase_request = get_object_or_404(PurchaseOrder, id=pr_id)
+    print(f"STATUS: {purchase_request.status}")
     vat = purchase_request.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
 
     items = purchase_request.items.all()
     for item in items:
         item.total_price = item.unit_price * item.quantity
 
+    number = purchase_request.quotation_no
+    quotation_number = number[2:]
+
+    paid_purchase_invoice = PurchaseInvoice.objects.filter(invoice_no__endswith=quotation_number, status="Paid").exists()
+
+    if request.method == "POST":
+        print(f"POST: {request.POST}")
+        if 'receive' in request.POST:
+            purchase_request.status = STATUS_4
+            purchase_request.save()
+            print(f"Status updated to: {purchase_request.status}")
+
+            for item in items:
+                add_or_update_product(
+                    product_name=item.product_name,
+                    quantity=item.quantity,
+                    cost_price=item.unit_price
+                )
+
     return render(request, 'purchase_request_detail.html', 
         {'purchase_request': purchase_request,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2,
+         'STATUS_3': STATUS_3,
+         'STATUS_4': STATUS_4,
          'vat': vat,
-         'items': items,})
+         'items': items,
+         'paid_purchase_invoice': paid_purchase_invoice,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
 def view_supplier_quotations(request, quotation_no):
-    request.session['can_view_quotation_submission_detail'] = True
-
-    if not request.session.get('can_view_supplier_quotations'):
-        if not request.session.get('can_go_back_supplier_quotations'):
-            return redirect('request_quotation_list')
-        
-        del request.session['can_go_back_supplier_quotations']
-    
-    else:
-        del request.session['can_view_supplier_quotations']
-
-    
     quotation_no_numeric = quotation_no[2:]
     due_date = timezone.now().date().strftime('%Y-%m-%d')
     supplier_quotations = QuotationSubmission.objects.filter(quotation_no__endswith=quotation_no_numeric, quote_valid_until__gte=due_date)
@@ -199,13 +196,6 @@ def view_supplier_quotations(request, quotation_no):
 
 @login_required(login_url=settings.LOGIN_URL)
 def supplier_quotation_submission_detail(request, submission_id):
-    request.session['can_go_back_supplier_quotations'] = True
-
-    if not request.session.get('can_view_quotation_submission_detail'):
-        return redirect('request_quotation_list')
-
-    del request.session['can_view_quotation_submission_detail']
-
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
     items = quotation_submission.items.all()
 
