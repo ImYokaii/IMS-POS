@@ -12,6 +12,8 @@
                 <p><strong>Supplier Company Name:</strong> {{ purchase_invoice.supplier_company_name }}</p>
                 <p><strong>Date Issued:</strong> {{ purchase_invoice.date_issued }}</p>
                 <p><strong>Total Payable Amount:</strong> ₱ {{ purchase_invoice.total_amount_payable }}</p>
+                <p><strong>VAT</strong> (12%): ₱ {{ vat|floatformat:2 }}</p>
+                <p><strong>Total Payable Amount </strong>(VAT Inclusive): ₱ {{ purchase_invoice.total_amount_payable_with_vat }}</p>
                 <p><strong>Invoice Status:</strong> 
                     {% if purchase_invoice.status == STATUS_0 %}
                         <span class="badge text-bg-warning">{{ purchase_invoice.status }}</span>
@@ -23,6 +25,14 @@
                         <span class="badge bg-light text-dark">Unavailable</span>
                     {% endif %}
                 </p>
+
+                {% if purchase_invoice.status == "Pending" %}
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" name="paid" class="btn btn-success">Paid</button>
+                        <button type="submit" name="voided" class="btn btn-danger">Void</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
 
@@ -34,14 +44,16 @@
                         <th scope="col">Product Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
+                        <th scope="col">Total Price</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in purchase_invoice.items.all %}
+                    {% for item in items %}
                         <tr>
                             <td>{{ item.product_name }}</td>
                             <td>{{ item.quantity }}</td>
                             <td>₱ {{ item.unit_price }}</td>
+                            <td>₱ {{ item.total_price|floatformat:2 }}</td>
                         </tr>
                     {% empty %}
                         <tr>

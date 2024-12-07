@@ -18,14 +18,14 @@ class Product(models.Model):
     PRODUCT_STATUS_CHOICES = product_status_choices
 
     sku = models.CharField(max_length=50, unique=True, null=True, blank=True)
-    name = models.CharField(max_length=100, null=True)
-    category = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    category = models.CharField(max_length=50, null=True, blank=True, default="No Category")
     quantity = models.IntegerField(null=True)
-    measurement = models.CharField(max_length=50, null=True)
-    reorder_level = models.PositiveIntegerField(null=True, default=1)
-    selling_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Selling price
-    cost_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)  # Purchase price
-    status = models.CharField(max_length=50, choices=PRODUCT_STATUS_CHOICES, default="Active") # Active, Inactive
+    measurement = models.CharField(max_length=50, null=True, blank=True, default="No Measurement")
+    reorder_level = models.PositiveIntegerField(null=True, blank=True, default=1)
+    selling_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    status = models.CharField(max_length=50, choices=PRODUCT_STATUS_CHOICES, default="Active")
 
     def __str__(self):
         return f"Name: {self.name} (₱ {self.selling_price}) - {self.category}"
@@ -33,12 +33,11 @@ class Product(models.Model):
     def generate_sku_num(self):
         self.sku = generate_unique_sku(self.name, self.cost_price, self.category, Product)
         
-        
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.sku:
             self.generate_sku_num()
 
-        super(Product, self).save()
+        super(Product, self).save(*args, **kwargs)
 
 
 class WasteProduct(models.Model):

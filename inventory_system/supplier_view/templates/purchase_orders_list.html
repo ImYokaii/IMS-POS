@@ -22,6 +22,10 @@
                                     <span class="badge text-bg-success">{{ po.status }}</span>
                                 {% elif po.status == STATUS_2 %}
                                     <span class="badge text-bg-danger">{{ po.status }}</span>
+                                {% elif po.status == "Delivered" %}
+                                    <span class="badge text-bg-primary">{{ po.status }}</span>
+                                {% elif po.status == "Received" %}
+                                    <span class="badge text-bg-success">{{ po.status }}</span>
                                 {% else %}
                                     <span class="badge bg-light text-dark">{{ Unavailable }}</span>
                                 {% endif %}

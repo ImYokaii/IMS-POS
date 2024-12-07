@@ -48,3 +48,25 @@ def generate_unique_procurement_no(DocumentType, ModelClass):
         if not ModelClass.objects.filter(quotation_no=procurement_no).exists():
             return procurement_no
 # =============================================== #
+
+
+# ===== RESTOCK OR ADD NEW PRODUCT (PROCUREMENT) ===== #
+def add_or_update_product(product_name, quantity, cost_price):
+    from inventory_view.models import Product
+
+    print(f"Attempting to add or update product: {product_name}")
+    product = Product.objects.filter(name=product_name).first()
+
+    if product:
+        print(f"Product found: {product_name}. Current quantity: {product.quantity}. Adding: {quantity}.")
+        product.quantity += quantity
+        product.save()
+
+    else:
+        print(f"Product not found: {product_name}. Creating new product.")
+        Product.objects.create(
+            name=product_name,
+            quantity=quantity,
+            cost_price=cost_price,
+        )
+# =============================================== #
