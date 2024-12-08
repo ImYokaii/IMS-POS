@@ -1,19 +1,29 @@
 {% extends 'pos_base.html' %}
 
-{% block title %} Cash Tendered {% endblock%}
+{% block title %}Cash Tendered{% endblock %}
 
 {% block content %}
-<h1>Cash Input</h1>
+<div class="container my-5">
+    <h1 class="text-center mb-4">Cash Tendered</h1>
 
-<p>Invoice No: {{ invoice.invoice_no }}</p>
-<p>Total Amount Payable (with VAT): ₱ {{ invoice.total_amount_with_vat|floatformat:2 }}</p>
+    <div class="card shadow mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-3">Invoice Details</h5>
+            <p class="text-muted"><strong>Invoice No:</strong> {{ invoice.invoice_no }}</p>
+            <p class="text-muted"><strong>Total Amount Payable (with VAT):</strong> ₱{{ invoice.total_amount_with_vat|floatformat:2 }}</p>
 
-<form method="POST" action="{% url 'input_cash' invoice.id %}">
-    {% csrf_token %}
-    <label for="cash_tendered">Enter Cash Tendered:</label>
-    <input type="number" step="0.01" name="cash_tendered" required>
-    <button type="submit">Submit</button>
-</form>
-
-<a href="{% url 'pos_page' %}" class="btn btn-secondary">Cancel</a>
+            <form method="POST" action="{% url 'input_cash' invoice.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="cash_tendered" class="form-label">Enter Cash Tendered</label>
+                    <input type="number" step="0.01" name="cash_tendered" id="cash_tendered" class="form-control" placeholder="Enter amount" required>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <a href="{% url 'pos_page' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}

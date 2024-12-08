@@ -95,18 +95,6 @@
 
                     <div class="row g-4">
                         <div class="col-lg-6">
-                            <label for="supplier" class="form-label fw-bold">Supplier</label>
-                            <select class="form-control {% if form.supplier.errors %}is-invalid{% endif %}" id="supplier" name="supplier">
-                                {% for value, label in form.supplier.field.widget.choices %}
-                                    <option value="{{ value }}" {% if value == form.supplier.value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.supplier.errors %}
-                                <div class="invalid-feedback">{{ form.supplier.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="col-lg-6">
                             <label class="form-label fw-bold">Buyer Contact</label>
                             <p class="form-control-plaintext">{{ quotation_request.buyer_contact }}</p>
                             <input type="hidden" name="buyer_contact" value="{{ form.buyer_contact.value|default:quotation_request.buyer_contact }}">
@@ -175,6 +163,14 @@
                                             <input type="number" class="form-control {% if form.unit_price.errors %}is-invalid{% endif %}" id="id_unit_price_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-unit_price" value="{{ form.unit_price.value|default:'' }}">
                                             {% if form.unit_price.errors %}
                                                 <div class="invalid-feedback">{{ form.unit_price.errors }}</div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="id_price_valid_until_{{ forloop.counter0 }}" class="form-label fw-bold">Price Valid Until</label>
+                                            <input type="date" class="form-control {% if form.price_valid_until.errors %}is-invalid{% endif %}" id="price_valid_until_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-price_valid_until" value="{{ form.price_valid_until.value|default:'' }}">
+                                            {% if form.price_valid_until.errors %}
+                                                <div class="invalid-feedback">{{ form.price_valid_until.errors }}</div>
                                             {% endif %}
                                         </div>
                                     </div>

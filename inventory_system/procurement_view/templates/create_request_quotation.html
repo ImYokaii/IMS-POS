@@ -137,6 +137,14 @@
                                                 <div class="invalid-feedback">{{ form.unit_price.errors }}</div>
                                             {% endif %}
                                         </div>
+
+                                        <div class="mb-3">
+                                            <label for="id_price_valid_until_{{ forloop.counter0 }}" class="form-label fw-bold">Price Valid Until</label>
+                                            <input type="date" class="form-control {% if form.price_valid_until.errors %}is-invalid{% endif %}" id="price_valid_until_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-price_valid_until" value="{{ form.price_valid_until.value|default:'' }}">
+                                            {% if form.price_valid_until.errors %}
+                                                <div class="invalid-feedback">{{ form.price_valid_until.errors }}</div>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

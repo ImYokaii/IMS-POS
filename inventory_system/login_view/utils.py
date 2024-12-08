@@ -3,9 +3,27 @@ from dotenv import load_dotenv
 from django.core.cache import cache
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
+from datetime import date
+from django.utils import timezone
 
 
 load_dotenv()
+
+
+# ===== CHECK FOR DUE REQUEST QUOTATIONS AND CHANGE IT'S STATUS ===== #
+def check_due_request_quotations():
+    from procurement_view.models import RequestQuotation
+
+    RQ_STATUS = os.environ.get('RQ_STATUS_CHOICES').split(',')
+    ONGOING_STATUS = RQ_STATUS[0]
+    ENDED_STATUS = RQ_STATUS[1]
+
+    today = timezone.now().date()
+    today_str = today.strftime('%Y-%m-%d')
+
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__lte=today_str, status=ONGOING_STATUS)
+    request_quotations.update(status=ENDED_STATUS)
+# =============================================== #
 
 
 # ===== CHECK USER'S ROLE AFTER LOGIN ===== #
@@ -19,6 +37,7 @@ def check_logging_user_role(role):
         return ROLE_1_URL[0]
     
     elif role == os.environ.get('ROLE_2'):
+        check_due_request_quotations()
         return ROLE_2_URL[0]
     
     elif role == os.environ.get('ROLE_3'):

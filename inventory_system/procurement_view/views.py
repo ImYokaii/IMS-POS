@@ -1,11 +1,12 @@
 import os
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import RequestQuotationForm, RequestQuotationItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
+from .forms import RequestQuotationForm, RequestQuotationItemForm, RequestQuotationItemFormSet, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
 from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
 from .utils import add_or_update_product
 from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from django.http import HttpResponse
 from django.utils import timezone
+from datetime import date
 from decimal import Decimal
 from dotenv import load_dotenv
 from django.conf import settings
@@ -70,8 +71,8 @@ def create_purchase_request(request):
                         item_form.cleaned_data.get('product_name') or
                         item_form.cleaned_data.get('other_product_name')
                     )
-                    unit_price = item_form.cleaned_data.get('unit_price')
                     quantity = item_form.cleaned_data.get('quantity')
+                    unit_price = item_form.cleaned_data.get('unit_price')
 
                     if product_name and unit_price and quantity:
                         total_amount += unit_price * quantity
@@ -106,8 +107,16 @@ def create_purchase_request(request):
 @login_required(login_url=settings.LOGIN_URL)
 def request_quotation_list(request):
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date)
-    return render(request, 'request_quotation_list.html', {'quotations': quotations})
+    quotations = RequestQuotation.objects.all()
+
+    STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+
+    return render(request, 'request_quotation_list.html', 
+        {'quotations': quotations,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -115,10 +124,42 @@ def request_quotation_detail(request, quotation_id):
     request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)  
     items = request_quotation.items.all()
 
-    return render(request, 'request_quotation_detail.html', {
-        'request_quotation': request_quotation,
-        'items': items
-    })
+    STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
+
+    today = date.today()
+
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        item = get_object_or_404(RequestQuotationItem, id=item_id)
+        
+        if item.price_valid_until and item.price_valid_until <= today:
+            return redirect('edit_unit_price_rq', item_id=item.id)
+
+    return render(request, 'request_quotation_detail.html', 
+        {'request_quotation': request_quotation,
+         'items': items,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,
+         'today': today,})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def edit_unit_price_rq(request, item_id):
+    item = get_object_or_404(RequestQuotationItem, id=item_id)
+
+    if request.method == 'POST':
+        form = RequestQuotationItemForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('request_quotation_detail', item.request_quotation.id)
+    else:
+        form = RequestQuotationItemForm(instance=item)
+
+    return render(request, 'edit_unit_price_rq.html', 
+        {'form': form, 
+         'item': item})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -187,9 +228,9 @@ def purchase_request_detail(request, pr_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def view_supplier_quotations(request, quotation_no):
-    quotation_no_numeric = quotation_no[2:]
+    quotation_number = quotation_no[2:]
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    supplier_quotations = QuotationSubmission.objects.filter(quotation_no__endswith=quotation_no_numeric, quote_valid_until__gte=due_date)
+    supplier_quotations = QuotationSubmission.objects.filter(quotation_no__endswith=quotation_number, quote_valid_until__gte=due_date)
 
     return render(request, 'view_supplier_quotations.html', {'supplier_quotations': supplier_quotations,})
 

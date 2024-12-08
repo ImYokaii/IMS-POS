@@ -1,0 +1,35 @@
+{% extends 'supplier_base.html' %}
+
+{% block title %}Edit Unit Price{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Edit Unit Price for {{ item.product_name }}</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+                {% if field.name != "unit_price" %}
+                    <div style="display: none;">
+                        {{ field }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            
+            <div class="mb-3">
+                <label for="unit_price" class="form-label fw-bold">Unit Price</label>
+                <input type="number" class="form-control {% if form.unit_price.errors %}is-invalid{% endif %}" id="unit_price" name="unit_price" value="{{ form.unit_price.value|default:'' }}" step="0.01" min="0">
+                {% if form.unit_price.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.unit_price.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+{% endblock %}

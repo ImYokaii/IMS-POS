@@ -50,17 +50,18 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center">No items found for this quotation.</td>
+                        <td colspan="3" class="text-center text-muted">No items found for this quotation.</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     
-
-    <a href="{% url 'create_quotation_submission' quotation.id %}" class="btn btn-primary">
-        Create Quotation Submission
-    </a>
+    {% if quotation.status == STATUS_0 %}
+        <a href="{% url 'create_quotation_submission' quotation.id %}" class="btn btn-primary">
+            Create Quotation Submission
+        </a>
+    {% endif %}
 
     <div class="text-end mt-3">
         <a href="{% url 'request_quotations_list' %}" class="btn btn-outline-secondary">Back to List</a>
