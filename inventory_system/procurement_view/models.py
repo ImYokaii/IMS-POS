@@ -12,10 +12,10 @@ class RequestQuotation(models.Model):
     buyer_contact = models.CharField(max_length=100)
     quotation_no = models.CharField(max_length=50, unique=True)
     approved_by = models.CharField(max_length=100, null=True, blank=True)
-    quote_valid_until = models.DateField()
+    quote_valid_until = models.DateField(null=True, blank=True)
     date_prepared = models.DateField(auto_now_add=True)
     terms_and_conditions = models.TextField(null=True, blank=True)
-    status = models.CharField(max_length=50, default="Pending Approval", null=True, blank=True)
+    status = models.CharField(max_length=50, default="Ongoing", null=True, blank=True)
 
     def __str__(self):
         return f"Quotation {self.quotation_no} for {self.buyer_company_name}"
@@ -29,8 +29,9 @@ class RequestQuotation(models.Model):
 class RequestQuotationItem(models.Model):
     request_quotation = models.ForeignKey(RequestQuotation, on_delete=models.CASCADE, related_name='items')
     product_name = models.CharField(max_length=255)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(null=True, blank=True)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    price_valid_until = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.product_name} - {self.quantity} units"

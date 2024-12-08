@@ -1,8 +1,11 @@
 import os
 from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
+from pos_view.models import SalesInvoice, SalesInvoiceItem
 from procurement_view.models import PurchaseOrder
 from inventory_view.models import Product
+from django.utils import timezone
+from datetime import timedelta
 from django.db.models import Sum, F
 import matplotlib.pyplot as plt
 import matplotlib
@@ -85,37 +88,34 @@ def low_stock_products(request):
 # =============================================== #
 
 
-# ===== QR Scanner ===== #
-class QRCodeScanner:
-    def __init__(self):
-        self.cap = cv2.VideoCapture(0)
-        self.detector = cv2.QRCodeDetector()
-        self.data = None
+# ===== Financial Dashboard Page ===== #
+@login_required(login_url="/login/")
+def financial_dashboard(request):
+    # Total revenue
+    total_revenue = SalesInvoice.objects.filter(status='Paid').aggregate(total=Sum('total_amount_with_vat'))['total'] or 0
 
-    def start_scanning(self):
-        ret, img = self.cap.read()
-        if not ret:
-            print("Failed to grab frame.")
-            return None
-        
-        self.data, _, _ = self.detector.detectAndDecode(img)
-        return self.data
+    today = timezone.now().date()
+    today_str = today.strftime('%Y-%m-%d')
 
-    def release_resources(self):
-        self.cap.release()
-        cv2.destroyAllWindows()
+    # Daily Sale
+    daily_sales = SalesInvoice.objects.filter(status='Paid', transaction_date=today).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
+    
+    first_day_of_month = today.replace(day=1)
+    first_day_of_month_str = first_day_of_month.strftime('%Y-%m-%d')
 
-def scan_qr_code(request):
-    if request.method == "POST":
-        scanner = QRCodeScanner()
-        try:
-            scanned_value = scanner.start_scanning()
-        finally:
-            scanner.release_resources()
+    # Monthly Sales
+    monthly_sales = SalesInvoice.objects.filter(status='Paid', transaction_date__gte=first_day_of_month).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
+    
+    first_day_of_year = today.replace(month=1, day=1)
+    first_day_of_year_str = first_day_of_year.strftime('%Y-%m-%d')
 
-        if scanned_value:
-            return render(request, 'scan_result.html', {'scanned_value': scanned_value})
-        else:
-            return render(request, 'scan_result.html', {'error': 'No QR code detected.'})
+    # Yearly Sales
+    yearly_sales = SalesInvoice.objects.filter(status='Paid', transaction_date__gte=first_day_of_year).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
 
-    return render(request, 'scan_qr.html')
+    return render(request, 'financial_dashboard.html', {
+        'total_revenue': total_revenue,
+        'daily_sales': daily_sales,
+        'monthly_sales': monthly_sales,
+        'yearly_sales': yearly_sales,
+    })
+# =============================================== #

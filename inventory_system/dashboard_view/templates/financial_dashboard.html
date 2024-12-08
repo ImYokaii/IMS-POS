@@ -1,0 +1,78 @@
+{% extends "dashboard_base.html" %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="row mb-4">
+            <div class="col text-center">
+                <h1 class="display-4">Financial Dashboard</h1>
+            </div>
+        </div>
+
+        <!-- Revenue Section -->
+        <div class="mb-4">
+            <h2 class="mb-3">Revenue</h2>
+            <div class="card-deck row">
+                <!-- Total Revenue Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #4CAF50; color: white;">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="bi bi-cash-stack"></i>
+                                Total Revenue
+                            </h3>
+                            <p class="card-text fs-2 fw-bold">{{ total_revenue|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Line Separator -->
+        <hr class="my-4" style="border-top: 2px solid #ccc;">
+
+        <!-- Sales Section -->
+        <div>
+            <h2 class="mb-3">Sales</h2>
+            <div class="card-deck row">
+                <!-- Daily Sales Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #FFDA76;">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="bi bi-calendar-day"></i>
+                                Daily Sales
+                            </h3>
+                            <p class="card-text fs-2 fw-bold">{{ daily_sales|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monthly Sales Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #E68369;">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="bi bi-calendar-month"></i>
+                                Monthly Sales
+                            </h3>
+                            <p class="card-text fs-2 fw-bold">{{ monthly_sales|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yearly Sales Card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #88D66C;">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <i class="bi bi-calendar-year"></i>
+                                Yearly Sales
+                            </h3>
+                            <p class="card-text fs-2 fw-bold">{{ yearly_sales|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

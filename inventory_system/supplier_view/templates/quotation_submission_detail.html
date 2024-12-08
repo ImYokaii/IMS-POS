@@ -38,6 +38,7 @@
                         <th scope="col">Product Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
+                        <th scope="col">Price Valid Until</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,6 +47,18 @@
                             <td>{{ item.product_name }}</td>
                             <td>{{ item.quantity }}</td>
                             <td>{{ item.unit_price }}</td>
+                            <td>{{ item.price_valid_until }}</td>
+
+                            {% if item.price_valid_until <= today %}
+                                <td>
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" name="item_id" value="{{ item.id }}">Edit Unit Price</button>
+                                    </form>
+                                </td>
+                            {% else %}
+                                <td>Price not editable</td>
+                            {% endif %}
                         </tr>
                     {% empty %}
                         <tr>

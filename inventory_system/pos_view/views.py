@@ -104,7 +104,7 @@ def input_cash(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
 
     if request.method == 'POST':
-        cash_tendered = float(request.POST.get('cash_tendered', 0))
+        cash_tendered = Decimal(request.POST.get('cash_tendered', 0))
         
         if cash_tendered >= invoice.total_amount_with_vat:
             invoice.cash_tendered = cash_tendered

@@ -14,6 +14,8 @@ from reportlab.lib import colors
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
+from django.utils import timezone
+from datetime import date
 
 load_dotenv()
 
@@ -21,17 +23,30 @@ load_dotenv()
 @login_required(login_url=settings.LOGIN_URL)
 def request_quotations_list(request):
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
-    due_date = timezone.now().date().strftime('%Y-%m-%d')
-    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS[0])
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
 
-    return render(request, 'request_quotations_list.html', {'request_quotations': request_quotations})
+    due_date = timezone.now().date().strftime('%Y-%m-%d')
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS_0)
+
+    return render(request, 'request_quotations_list.html', 
+        {'request_quotations': request_quotations,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
 def request_quotations_detail(request, quotation_id):
     quotation = get_object_or_404(RequestQuotation, id=quotation_id)
+
+    STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
+    STATUS_0 = STATUS[0]
+    STATUS_1 = STATUS[1]
     
-    return render(request, 'request_quotations_detail.html', {'quotation': quotation})
+    return render(request, 'request_quotations_detail.html', 
+        {'quotation': quotation,
+         'STATUS_0': STATUS_0,
+         'STATUS_1': STATUS_1,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -249,8 +264,9 @@ def create_quotation_submission(request, quotation_id):
 
         if form.is_valid() and formset.is_valid():
             quotation_submission = form.save(commit=False)
+            quotation_submission.supplier = request.user
             quotation_submission.quotation_request = quotation_request
-            quotation_submission.save()
+            quotation_submission = form.save()
 
             for form in formset:
                 if form.cleaned_data:
@@ -258,8 +274,7 @@ def create_quotation_submission(request, quotation_id):
                     quotation_submission_item.quotation_submission = quotation_submission
                     quotation_submission_item.save()
 
-            messages.success("Quotation was successfully submitted!")
-
+            messages.success(request, "Quotation was successfully submitted!")
             return redirect('request_quotations_list')
         
         else:
@@ -299,8 +314,35 @@ def quotation_submission_detail(request, qs_id):
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
 
+    today = date.today()
+
+    if request.method == 'POST':
+        item_id = request.POST.get('item_id')
+        item = get_object_or_404(QuotationSubmissionItem, id=item_id)
+        
+        if item.price_valid_until and item.price_valid_until <= today:
+            return redirect('edit_unit_price_qs', item_id=item.id)
+
     return render(request, 'quotation_submission_detail.html', 
         {'quotation_submission': quotation_submission,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
-         'STATUS_2': STATUS_2})
+         'STATUS_2': STATUS_2,
+         'today': today,})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def edit_unit_price_qs(request, item_id):
+    item = get_object_or_404(QuotationSubmissionItem, id=item_id)
+
+    if request.method == 'POST':
+        form = QuotationSubmissionItemForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('quotation_submission_detail', item.quotation_submission.id)
+    else:
+        form = QuotationSubmissionItemForm(instance=item)
+
+    return render(request, 'edit_unit_price_qs.html', 
+        {'form': form, 
+         'item': item})

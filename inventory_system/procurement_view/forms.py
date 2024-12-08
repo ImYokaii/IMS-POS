@@ -25,7 +25,11 @@ class RequestQuotationItemForm(forms.ModelForm):
     class Meta:
         model = RequestQuotationItem
 
-        fields = ['product_name', 'quantity', 'unit_price']
+        fields = ['product_name', 'quantity', 'unit_price', 'price_valid_until']
+
+        widgets = {
+            'price_valid_until': forms.DateInput(attrs={'type': 'date'})
+        }
 
 RequestQuotationItemFormSet = modelformset_factory(RequestQuotationItem, form=RequestQuotationItemForm, extra=5)
 
