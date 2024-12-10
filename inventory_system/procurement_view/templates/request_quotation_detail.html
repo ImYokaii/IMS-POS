@@ -19,8 +19,8 @@
                         <p><strong>Buyer Contact:</strong> <span class="text-dark">{{ request_quotation.buyer_contact }}</span></p>
                         <p><strong>Quotation Number:</strong> <span class="text-dark">{{ request_quotation.quotation_no }}</span></p>
                         <p><strong>Approved By:</strong> <span class="text-dark">{{ request_quotation.approved_by }}</span></p>
-                        <p><strong>Quote Valid Until:</strong> <span class="text-dark">{{ request_quotation.quote_valid_until }}</span></p>
                         <p><strong>Date Prepared:</strong> <span class="text-dark">{{ request_quotation.date_prepared }}</span></p>
+                        <p><strong>Quote Valid Until:</strong> <span class="text-dark">{{ request_quotation.quote_valid_until }}</span></p>
                         <p><strong>Status:</strong> 
                             {% if request_quotation.status == STATUS_0 %}
                                 <span class="badge text-bg-success">{{ request_quotation.status }}</span>
@@ -49,7 +49,9 @@
                                         <th>Product Name</th>
                                         <th>Quantity</th>
                                         <th>Unit Price</th>
+                                        <th>Measurement</th>
                                         <th>Price Valid Until</th>
+                                        <th>Edit Price</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -58,6 +60,7 @@
                                             <td>{{ item.product_name }}</td>
                                             <td>{{ item.quantity }}</td>
                                             <td>₱ {{ item.unit_price }}</td>
+                                            <td>{{ item.measurement }}</td>
                                             <td>{{ item.price_valid_until }}</td>
 
                                             {% if item.price_valid_until <= today %}
@@ -68,7 +71,7 @@
                                                     </form>
                                                 </td>
                                             {% else %}
-                                                <td>Price not editable</td>
+                                                <td>Price not editable yet.</td>
                                             {% endif %}
                                         </tr>
                                     {% empty %}

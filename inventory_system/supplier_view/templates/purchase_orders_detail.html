@@ -45,7 +45,7 @@
                 {% if purchase_order.status == "Approved" %}
                     <form method="post" class="mt-4">
                         {% csrf_token %}
-                        <button type="submit" name="deliver" class="btn btn-success">Delivered</button>
+                        <button type="submit" name="deliver" class="btn btn-success">Deliver</button>
                     </form>
                 {% endif %}
             </div>

@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .utils import create_digital_invoice
-from .forms import QuotationSubmissionForm, QuotationSubmissionItemForm, QuotationSubmissionItemFormSet, PurchaseInvoiceForm
+from .forms import QuotationSubmissionForm, QuotationSubmissionItemForm, QuotationSubmissionItemFormSet, EditQuotationPriceForm, PurchaseInvoiceForm
 from .models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from procurement_view.models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
 from reportlab.lib.pagesizes import A4
@@ -39,12 +39,17 @@ def request_quotations_list(request):
 def request_quotations_detail(request, quotation_id):
     quotation = get_object_or_404(RequestQuotation, id=quotation_id)
 
+    items = quotation.items.all()
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     
     return render(request, 'request_quotations_detail.html', 
         {'quotation': quotation,
+         'items': items,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,})
 
@@ -234,58 +239,61 @@ def create_quotation_submission(request, quotation_id):
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
 
     logged_user = request.user
-    quotation_no = quotation_request.quotation_no[2:]
-    has_pending_submission = QuotationSubmission.objects.filter(supplier=logged_user, quotation_no__endswith=quotation_no, status__in=["Pending","Accepted"]).exists()
+    has_pending_submission = QuotationSubmission.objects.filter(
+        supplier=logged_user, request_quotation=quotation_request, status__in=["Pending", "Accepted"]
+    ).exists()
     if has_pending_submission:
         messages.error(request, "You have already submitted a quotation submission for this request.")
         return redirect("request_quotations_list")
-    
-    
-    initial_submission_data = {
-        'buyer_company_name': quotation_request.buyer_company_name,
-        'buyer_address': quotation_request.buyer_address,
-        'buyer_contact': quotation_request.buyer_contact,
-        'quotation_no': quotation_request.quotation_no,
-        'quote_valid_until': quotation_request.quote_valid_until,
-    }
 
     initial_items_data = [
         {
             'product_name': item.product_name,
-            'quantity': item.quantity
+            'quantity': item.quantity,
+            'measurement': item.measurement,
+            'unit_price': '',
+            'price_valid_until': '',
         }
         for item in quotation_request_items
     ]
 
-
     if request.method == "POST":
-        form = QuotationSubmissionForm(request.POST, initial=initial_submission_data)
-        formset = QuotationSubmissionItemFormSet(request.POST, queryset=QuotationSubmissionItem.objects.none())
+        form = QuotationSubmissionForm(request.POST)
+        formset = QuotationSubmissionItemFormSet(request.POST)
 
         if form.is_valid() and formset.is_valid():
             quotation_submission = form.save(commit=False)
             quotation_submission.supplier = request.user
-            quotation_submission.quotation_request = quotation_request
-            quotation_submission = form.save()
+            quotation_submission.request_quotation = quotation_request
+            quotation_submission.save()
 
             for form in formset:
                 if form.cleaned_data:
+                    # Skip forms where all relevant fields are None, blank, or null
+                    # if not any(value for key, value in form.cleaned_data.items() if key != 'DELETE'):
+                    #     continue
+                    
                     quotation_submission_item = form.save(commit=False)
                     quotation_submission_item.quotation_submission = quotation_submission
                     quotation_submission_item.save()
 
             messages.success(request, "Quotation was successfully submitted!")
             return redirect('request_quotations_list')
-        
+
         else:
             print("Form errors:", form.errors)
             print("Formset errors:", [f.errors for f in formset.forms])
 
     else:
-        form = QuotationSubmissionForm(initial=initial_submission_data)
+        form = QuotationSubmissionForm()
         formset = QuotationSubmissionItemFormSet(queryset=QuotationSubmissionItem.objects.none(), initial=initial_items_data)
 
-    return render(request, 'create_quotation_submission.html', {'form': form, 'formset': formset, 'quotation_request': quotation_request, 'quotation_request_items': quotation_request_items})
+    return render(request, 'create_quotation_submission.html', {
+        'form': form,
+        'formset': formset,
+        'quotation_request': quotation_request,
+        'quotation_request_items': quotation_request_items,
+    })
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -336,12 +344,28 @@ def edit_unit_price_qs(request, item_id):
     item = get_object_or_404(QuotationSubmissionItem, id=item_id)
 
     if request.method == 'POST':
-        form = QuotationSubmissionItemForm(request.POST, instance=item)
+        form = EditQuotationPriceForm(request.POST, instance=item)
+
         if form.is_valid():
-            form.save()
-            return redirect('quotation_submission_detail', item.quotation_submission.id)
+            unit_price = form.cleaned_data.get('unit_price')
+            price_valid_until = form.cleaned_data.get('price_valid_until')
+
+            if price_valid_until and price_valid_until == date.today():
+                messages.error(request, "The 'price valid until' date cannot be today's date.")
+
+            elif item.unit_price != unit_price and not price_valid_until:
+                messages.error(request, "You must provide a 'price valid until' date when updating the unit price.")
+
+            else:
+                form.save()
+                messages.success(request, "Unit price and validity date updated successfully.")
+                return redirect('quotation_submission_detail', item.quotation_submission.id)
+            
+        else:
+            messages.error(request, "Please ensure all required fields are correctly filled.")
+            
     else:
-        form = QuotationSubmissionItemForm(instance=item)
+        form = EditQuotationPriceForm(instance=item)
 
     return render(request, 'edit_unit_price_qs.html', 
         {'form': form, 

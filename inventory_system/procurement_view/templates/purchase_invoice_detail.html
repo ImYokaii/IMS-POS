@@ -23,26 +23,6 @@
                         <span class="badge bg-light text-dark">Unavailable</span>
                     {% endif %}
                 </p>
-
-                {% if purchase_invoice.status == STATUS_0 %}
-                    <form method="post" class="mt-4">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="status" class="form-label"><strong>Update Status</strong></label>
-                            <select class="form-select .custom-status-select {% if form.status.errors %}is-invalid{% endif %}" id="status" name="status" style="width: 150px;">
-                                {% for value, label in form.status.field.widget.choices %}
-                                    <option value="{{ value }}" {% if value == form.status.value %}selected{% endif %}>{{ label }}</option>
-                                {% endfor %}
-                            </select>
-                            {% if form.status.errors %}
-                                <div class="invalid-feedback">
-                                    Invalid status.
-                                </div>
-                            {% endif %}
-                        </div>
-                        <button type="submit" class="btn btn-primary">Update Status</button>
-                    </form>
-                {% endif %}
             </div>
         </div>
 

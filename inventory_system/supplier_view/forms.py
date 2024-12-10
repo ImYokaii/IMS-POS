@@ -12,11 +12,7 @@ load_dotenv()
 class QuotationSubmissionForm(forms.ModelForm):
     class Meta:
         model = QuotationSubmission
-        fields = [
-            'buyer_company_name', 'buyer_address', 'buyer_contact', 
-            'quotation_no', 'prepared_by', 'quote_valid_until',  
-            'terms_and_conditions'
-        ]
+        fields = ['prepared_by', 'supplier_contact', 'terms_and_conditions', 'quote_valid_until']
         
         widgets = {
             'quote_valid_until': forms.DateInput(attrs={'type': 'date'}),
@@ -27,13 +23,23 @@ class QuotationSubmissionForm(forms.ModelForm):
 class QuotationSubmissionItemForm(forms.ModelForm):
     class Meta:
         model = QuotationSubmissionItem
-        fields = ['product_name', 'quantity', 'unit_price', 'price_valid_until']
+        fields = ['product_name', 'quantity', 'unit_price', 'measurement', 'price_valid_until']
 
         widgets = {
             'price_valid_until': forms.DateInput(attrs={'type': 'date'})
         }
 
 QuotationSubmissionItemFormSet = modelformset_factory(QuotationSubmissionItem, form=QuotationSubmissionItemForm, extra=5)
+
+
+class EditQuotationPriceForm(forms.ModelForm):
+    class Meta:
+        model = QuotationSubmissionItem
+        fields = ['unit_price', 'price_valid_until']
+
+        widgets = {
+            'price_valid_until': forms.DateInput(attrs={'type': 'date'})
+        }
 
 
 class PurchaseInvoiceForm(forms.ModelForm):

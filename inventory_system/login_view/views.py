@@ -95,5 +95,5 @@ def signup_page(request):
 def logout_page(request):
     logout(request)
     
-    return HttpResponse("Logged out...")
+    return redirect("login")
 # =============================================== #
