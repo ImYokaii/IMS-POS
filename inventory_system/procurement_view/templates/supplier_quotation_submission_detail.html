@@ -5,14 +5,34 @@
 {% block content %}
     <h1>Quotation Submission Details</h1>
 
-    <h3>Quotation Information</h3>
-    <p><strong>Quotation No:</strong> {{ quotation_submission.quotation_no }}</p>
-    <p><strong>Buyer Company:</strong> {{ quotation_submission.buyer_company_name }}</p>
-    <p><strong>Buyer Address:</strong> {{ quotation_submission.buyer_address }}</p>
-    <p><strong>Contact:</strong> {{ quotation_submission.buyer_contact }}</p>
-    <p><strong>Prepared By:</strong> {{ quotation_submission.prepared_by }}</p>
-    <p><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
-    <p><strong>Status:</strong> {{ quotation_submission.status }}</p>
+    <div class="card p-4 shadow-sm mb-4">
+        <h3>Quotation Information</h3>
+        <p><strong>Quotation No:</strong> {{ quotation_submission.quotation_no }}</p>
+        <p><strong>Buyer Company:</strong> {{ quotation_submission.buyer_company_name }}</p>
+        <p><strong>Buyer Address:</strong> {{ quotation_submission.buyer_address }}</p>
+        <p><strong>Contact:</strong> {{ quotation_submission.buyer_contact }}</p>
+        <p><strong>Prepared By:</strong> {{ quotation_submission.prepared_by }}</p>
+        <p><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
+        <p><strong>Status:</strong>
+            {% if quotation_submission.status == "Pending" %}
+                <span class="badge text-bg-warning">{{ quotation_submission.status }}</span>
+            {% elif quotation_submission.status == "Accepted" %}
+                <span class="badge text-bg-success">{{ quotation_submission.status }}</span>
+            {% elif quotation_submission.status == "Rejected" %}
+                <span class="badge text-bg-danger">{{ quotation_submission.status }}</span>
+            {% else %}
+                <span class="badge bg-light text-dark">Unavailable</span>
+            {% endif %}
+        </p>
+    </div>
+
+    {% if quotation_submission.status == "Pending" %}
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" name="accept" class="btn btn-success">Accept</button>
+            <button type="submit" name="reject" class="btn btn-danger">Reject</button>
+        </form>
+    {% endif %}
 
     <h3>Items</h3>
     <table class="table">
@@ -38,5 +58,5 @@
         </tbody>
     </table>
 
-    <a href="{% url 'view_supplier_quotations' quotation_submission.quotation_no %}" class="btn btn-secondary">Go Back</a>
+    <a href="{% url 'view_supplier_quotations' quotation_submission.request_quotation.id %}" class="btn btn-secondary">Go Back</a>
 {% endblock %}

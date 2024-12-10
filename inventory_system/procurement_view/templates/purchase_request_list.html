@@ -3,43 +3,60 @@
 {% block title %}View Purchase Requests{% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <h2 class="mb-4 text-center">Purchase Requests</h2>
-    
-    <div class="row justify-content-center">
-        {% for pr in purchase_request %}
-            <div class="col-lg-8 col-md-10 mb-3">
-                <div class="card flex-row p-3 shadow-sm">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div>
-                            <h5 class="card-title"><strong>Purchase Request No:</strong> {{ pr.quotation_no }}</h5>
-                            <p class="mb-1"><strong>Date Issued:</strong> {{ pr.date_ordered }}</p>
-                            <p class="mb-1"><strong>Delivery Date:</strong> {{ pr.delivery_date }}</p>
-                            <p class="mb-1"><strong>Status:</strong>
-                                {% if pr.status == STATUS_0 %}
-                                    <span class="badge text-bg-warning">{{ pr.status }}</span>
-                                {% elif pr.status == STATUS_1 %}
-                                    <span class="badge text-bg-success">{{ pr.status }}</span>
-                                {% elif pr.status == STATUS_2 %}
-                                    <span class="badge text-bg-danger">{{ pr.status }}</span>
-                                {% elif purchase_request.status == Delivered %}
-                                    <span class="badge text-bg-primary">{{ pr.status }}</span>
-                                {% elif purchase_request.status == Received %}
-                                    <span class="badge text-bg-success">{{ pr.status }}</span>
-                                {% else %}
-                                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="text-end mt-3">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="h2">Purchase Request List</p>
+        <a class="btn btn-success rounded-3" href="{% url 'accepted_quotations_list' %}">
+            <i class="bi bi-cart2"></i>
+            <span>New Purchase Request</span>
+        </a>
+    </div>
+
+    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col" class="small">Purchase Request No.</th>
+                    <th scope="col" class="small">Date Issued</th>
+                    <th scope="col" class="small">Delivery Date</th>
+                    <th scope="col" class="small">Total Amount (VAT)</th>
+                    <th scope="col" class="small">Status</th>
+                    <th scope="col" class="text-center small">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pr in purchase_request %}
+                    <tr>
+                        <th scope="row" class="small">{{ pr.quotation_no }}</th>
+                        <td scope="row" class="small">{{ pr.date_ordered }}</td>
+                        <td scope="row" class="small">{{ pr.delivery_date }}</td>
+                        <td scope="row" class="small">₱ {{ pr.total_amount_with_vat|floatformat:2 }}</td>
+                        <td scope="row" class="small">
+                            {% if pr.status == STATUS_0 %}
+                                <span class="badge text-bg-warning small">{{ pr.status }}</span>
+                            {% elif pr.status == STATUS_1 %}
+                                <span class="badge text-bg-success small">{{ pr.status }}</span>
+                            {% elif pr.status == STATUS_2 %}
+                                <span class="badge text-bg-danger small">{{ pr.status }}</span>
+                            {% elif pr.status == 'Delivered' %}
+                                <span class="badge text-bg-primary small">{{ pr.status }}</span>
+                            {% elif pr.status == 'Received' %}
+                                <span class="badge text-bg-success small">{{ pr.status }}</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark small">{{ pr.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td scope="row" class="text-center small">
                             <a href="{% url 'purchase_request_detail' pr.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <p class="text-center">No purchase requests available.</p>
-        {% endfor %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted small">No purchase requests available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

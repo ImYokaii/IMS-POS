@@ -9,23 +9,22 @@
     <div class="card p-4 shadow-sm mb-4">
         <div class="card-body">
             <h5 class="card-title"><strong>Quotation No:</strong> {{ quotation.quotation_no }}</h5>
-            <p><strong>Buyer Company Name:</strong> {{ quotation.buyer_company_name }}</p>
-            <p><strong>Contact:</strong> {{ quotation.buyer_contact }}</p>
-            <p><strong>Address:</strong> {{ quotation.buyer_address }}</p>
-            <p><strong>Prepared by:</strong> {{ quotation.prepared_by }}</p>
-            <p><strong>Status:</strong> 
-                {% if quotation.status == "Ongoing" %}
+            <p><strong>Buyer Company Name:</strong> <span class="text-dark">{{ quotation.buyer_company_name }}</span></p>
+            <p><strong>Buyer Address:</strong> <span class="text-dark">{{ quotation.buyer_address }}</span></p>
+            <p><strong>Buyer Contact:</strong> <span class="text-dark">{{ quotation.buyer_contact }}</span></p>
+            <p><strong>Quotation Number:</strong> <span class="text-dark">{{ quotation.quotation_no }}</span></p>
+            <p><strong>Approved By:</strong> <span class="text-dark">{{ quotation.approved_by }}</span></p>
+            <p><strong>Date Prepared:</strong> <span class="text-dark">{{ quotation.date_prepared }}</span></p>
+            <p><strong>Quote Valid Until:</strong> <span class="text-dark">{{ quotation.quote_valid_until }}</span></p>
+            <p><strong>Status:</strong>
+                {% if quotation.status == STATUS_0 %}
                     <span class="badge text-bg-success">{{ quotation.status }}</span>
-                {% elif quotation.status == "Ended" %}
+                {% elif quotation.status == STATUS_1 %}
                     <span class="badge text-bg-danger">{{ quotation.status }}</span>
                 {% else %}
                     <span class="badge bg-light text-dark">{{ Unavailable }}</span>
                 {% endif %}
-            </p>
-            <p><strong>Valid Until:</strong> {{ quotation.quote_valid_until }}</p>
-            <p><strong>Date Prepared:</strong> {{ quotation.date_prepared }}</p>
-            <p><strong>Terms and Conditions:</strong></p>
-            <p>{{ quotation.terms_and_conditions }}</p>
+                <p><strong>Terms and Conditions:</strong> <span class="text-dark">{{ quotation.terms_and_conditions|default:"N/A" }}</span></p>
         </div>
     </div>
 
@@ -42,11 +41,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for item in quotation.items.all %}
+                {% for item in items %}
                     <tr>
                         <td>{{ item.product_name }}</td>
                         <td>{{ item.quantity }}</td>
                         <td>{{ item.unit_price }}</td>
+                        <td>₱ {{ item.total_price|floatformat:2 }}</td>
                     </tr>
                 {% empty %}
                     <tr>

@@ -2,28 +2,11 @@
 <nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
     <div class="position-sticky">
         <ul class="nav flex-column">
-            
-            <!-- Create Request Quotation Link -->
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'create_request_quotation' %}">
-                    <i class="bi bi-file-earmark-plus me-2"></i> <!-- Icon for Create Request Quotation -->
-                    <strong>Create Request Quotation</strong>
-                </a>
-            </li>
-            
-            <!-- Create Purchase Request Link -->
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'create_purchase_request' %}">
-                    <i class="bi bi-file-earmark-plus me-2"></i> <!-- Icon for Create Purchase Request -->
-                    <strong>Create Purchase Request</strong>
-                </a>
-            </li>
-
             <!-- View Request Quotations Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'request_quotation_list' %}">
                     <i class="bi bi-file-earmark-text me-2"></i> <!-- Icon for View Request Quotations -->
-                    <strong>View Request Quotations</strong>
+                    <strong>Request Quotations</strong>
                 </a>
             </li>
 
@@ -31,7 +14,7 @@
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'purchase_request_list' %}">
                     <i class="bi bi-folder me-2"></i> <!-- Icon for View Purchase Requests -->
-                    <strong>View Purchase Requests</strong>
+                    <strong>Purchase Requests</strong>
                 </a>
             </li>
 

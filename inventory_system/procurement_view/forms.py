@@ -15,7 +15,7 @@ class RequestQuotationForm(forms.ModelForm):
         model = RequestQuotation
         
         fields = ['buyer_contact', 'quote_valid_until',
-                'terms_and_conditions', 'status',]
+                'terms_and_conditions',]
         
         widgets = {
             'quote_valid_until': forms.DateInput(attrs={'type': 'date'})
@@ -25,20 +25,36 @@ class RequestQuotationItemForm(forms.ModelForm):
     class Meta:
         model = RequestQuotationItem
 
-        fields = ['product_name', 'quantity', 'unit_price', 'price_valid_until']
+        fields = ['product_name', 'quantity', 'unit_price', 'measurement', 'price_valid_until']
 
         widgets = {
             'price_valid_until': forms.DateInput(attrs={'type': 'date'})
         }
 
+    product_name = forms.ChoiceField(
+        choices=[('', '--- Select Existing Product ---')] +
+                [(product.name, product.name) for product in Product.objects.all()],
+        required=False,
+        label='Existing Product'
+    )
+
+    other_product_name = forms.CharField(max_length=255, required=False, label='Other Product Name', widget=forms.TextInput(attrs={'placeholder': 'Enter custom product name if not in list'}))
+
 RequestQuotationItemFormSet = modelformset_factory(RequestQuotationItem, form=RequestQuotationItemForm, extra=5)
 
 
+class EditQuotationPriceForm(forms.ModelForm):
+    class Meta:
+        model = RequestQuotationItem
+        fields = ['unit_price', 'price_valid_until']
+
+        widgets = {
+            'price_valid_until': forms.DateInput(attrs={'type': 'date'})
+        }
+
 
 class PurchaseOrderForm(forms.ModelForm):
-    USER_ROLE = os.environ.get('ROLE_3')
-
-    supplier = forms.ModelChoiceField(queryset=User.objects.filter(userpermission__role=USER_ROLE), label=USER_ROLE)
+    deliver_date = forms.Form()
 
     class Meta:
         STATUS_CHOICES = [(status, status) for status in os.environ.get('PO_STATUS_CHOICES', '').split(',')]
@@ -46,13 +62,14 @@ class PurchaseOrderForm(forms.ModelForm):
         model = PurchaseOrder
 
         fields = [
-            'supplier', 'delivery_date', 'notes'
+            'delivery_date', 'notes'
         ]
         
         widgets = {
             'delivery_date': forms.DateInput(attrs={'type': 'date'}),
             'status': forms.Select(choices=STATUS_CHOICES),
         }
+
 
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
@@ -66,12 +83,8 @@ class PurchaseOrderItemForm(forms.ModelForm):
         label='Existing Product'
     )
     
-    other_product_name = forms.CharField(
-        max_length=255,
-        required=False,
-        label='Other Product Name',
-        widget=forms.TextInput(attrs={'placeholder': 'Enter custom product name if not in list'})
-    )
+    other_product_name = forms.CharField(max_length=255, required=False, label='Other Product Name', widget=forms.TextInput(attrs={'placeholder': 'Enter custom product name if not in list'})
+)
 
 PurchaseOrderItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=5)
 

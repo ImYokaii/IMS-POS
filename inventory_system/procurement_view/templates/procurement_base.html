@@ -8,13 +8,22 @@
     <link rel="stylesheet" type="text/css" href="{% static 'inventory.css' %}">
 </head>
 <body>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+        body {
+            font-family: "Rubik", sans-serif;
+        }
+    </style>
+
+
     {% include 'navigation_bar.html' %}
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" style="background-color: #ECEBDE;">
             {% include 'procurement_side_navigation.html' %}
 
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4" style="height: 93vh; overflow: auto; scroll-width: thin;">
+            <main class="col-md-9 col-lg-10 px-md-4" style="height: 93vh; overflow: auto; scroll-width: thin;">
                 {% for message in messages %}
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
                         <div class="alert alert-success" role="alert">
@@ -37,6 +46,7 @@
                 
                 {% block content %}
                 {% endblock %}
+                <div>
             </main>
             
         </div>

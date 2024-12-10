@@ -38,6 +38,7 @@
                         <th scope="col">Product Name</th>
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
+                        <th scope="col">Measurement</th>
                         <th scope="col">Price Valid Until</th>
                     </tr>
                 </thead>
@@ -47,6 +48,7 @@
                             <td>{{ item.product_name }}</td>
                             <td>{{ item.quantity }}</td>
                             <td>{{ item.unit_price }}</td>
+                            <td>{{ item.measurement }}</td>
                             <td>{{ item.price_valid_until }}</td>
 
                             {% if item.price_valid_until <= today %}
