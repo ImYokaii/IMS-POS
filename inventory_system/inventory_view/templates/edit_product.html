@@ -21,6 +21,21 @@
         </div>
 
         <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-control {% if form.category.errors %}is-invalid{% endif %}" id="category" name="category" value="{{ form.category.value|default:'' }}">
+                <option value="">--- Select Product Category ---</option>
+                {% for value, label in form.category.field.widget.choices %}
+                    <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            {% if form.category.errors %}
+                <div class="invalid-feedback">
+                    Invalid category.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
             <label for="measurement" class="form-label">Measurement</label>
             <input type="text" class="form-control {% if form.measurement.errors %}is-invalid{% endif %}" id="measurement" name="measurement" value="{{ form.measurement.value|default:'' }}">
             {% if form.measurement.errors %}

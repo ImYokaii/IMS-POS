@@ -71,7 +71,11 @@ class EditProductForm(forms.ModelForm):
     class Meta:
         model = Product
 
-        fields = ['name', 'measurement', 'reorder_level', 'selling_price', 'cost_price']
+        fields = ['name', 'category', 'measurement', 'reorder_level', 'selling_price', 'cost_price']
+
+        widgets = {
+            'category': forms.Select(choices=CATEGORY_CHOICES),
+        }
 
     name = forms.CharField(required=True)
     measurement = forms.CharField(required=True)
