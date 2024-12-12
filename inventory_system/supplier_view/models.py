@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from procurement_view.models import RequestQuotation
+from procurement_view.models import RequestQuotation, PurchaseOrder
 from .utils import generate_unique_procurement_no
 
 STORE_COMPANY_NAME = "AR. DJ Hardware Trading"
@@ -42,6 +42,7 @@ class QuotationSubmissionItem(models.Model):
 
 
 class PurchaseInvoice(models.Model):
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name='purchase_invoices', null=True)
     supplier = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     invoice_no = models.CharField(max_length=50, unique=True, blank=True, null=True)
     supplier_company_name = models.CharField(max_length=255, blank=True, null=True)
@@ -53,6 +54,12 @@ class PurchaseInvoice(models.Model):
 
     def __str__(self):
         return f"PI #{self.invoice_no} - {self.supplier_company_name}"
+    
+    def save(self, *args, **kwargs):
+        if not self.invoice_no:
+            self.invoice_no = generate_unique_procurement_no("PI", PurchaseInvoice)
+
+        super(PurchaseInvoice, self).save(*args, **kwargs)
 
 class PurchaseInvoiceItem(models.Model):
     purchase_invoice = models.ForeignKey(PurchaseInvoice, on_delete=models.CASCADE, related_name='items')

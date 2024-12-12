@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-dark shadow-sm" style="top: 0; height: 7vh; z-index: 10;">
         <!-- Branding -->
         <a class="navbar-brand text-light font-weight-bold" href="#">
-            My Hardware Store
+            <strong>My Hardware Store</strong>
         </a>
 
         <!-- Toggler for mobile view -->
@@ -15,27 +15,32 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link text-light" href="{% url 'pos_page' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-cart"></i> POS
+                        <i class="bi bi-cart"></i> 
+                        <strong>POS</strong>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-light" href="{% url 'dashboard' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-house-door"></i> Dashboard
+                        <i class="bi bi-house-door"></i> 
+                        <strong>Dashboard</strong>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-light" href="{% url 'product_list' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-box"></i> Inventory
+                        <i class="bi bi-box"></i> 
+                        <strong>Inventory</strong>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-light" href="{% url 'request_quotation_list' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-file-earmark-plus"></i> Procurement
+                        <i class="bi bi-file-earmark-plus"></i> 
+                        <strong>Procurement</strong>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-light" href="{% url 'logout' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-box-arrow-right"></i> Logout
+                        <i class="bi bi-box-arrow-right"></i> 
+                        <strong>Logout</strong>
                     </a>
                 </li>
             </ul>

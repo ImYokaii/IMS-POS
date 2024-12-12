@@ -31,10 +31,10 @@
                     {% endif %}
                 </p>
 
-                {% if purchase_request.status == STATUS_3 %}
+                {% if purchase_request.status == STATUS_3 and paid_purchase_invoice %}
                     <form method="post" class="mt-4">
                         {% csrf_token %}
-                        <button type="submit" name="receive" class="btn btn-success">Received</button>
+                        <button type="submit" name="receive" class="btn btn-success">Receive</button>
                     </form>
                 {% endif %}
             </div>

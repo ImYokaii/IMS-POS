@@ -91,6 +91,7 @@
                                 <th scope="col" class="small">Quantity</th>
                                 <th scope="col" class="small">Measurement</th>
                                 <th scope="col" class="small">Unit Price</th>
+                                <th scope="col" class="small">Price Valid Until</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -98,13 +99,14 @@
                                 <tr>
                                     <td>{{ item.product_name }}</td>
                                     <td>
-                                        <input type="number" name="quantity" class="form-control {% if item.quantity.errors %}is-invalid{% endif %}" value="{{ item.quantity }}" min="1" required>
+                                        <input type="number" name="quantity" class="form-control {% if item.quantity.errors %}is-invalid{% endif %}" value="{{ item.quantity }}" min="0" required>
                                         {% if item.quantity.errors %}
                                             <div class="invalid-feedback">{{ item.quantity.errors }}</div>
                                         {% endif %}
                                     </td>
                                     <td>{{ item.measurement }}</td>
                                     <td>₱ {{ item.unit_price }}</td>
+                                    <td>{{ item.price_valid_until }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

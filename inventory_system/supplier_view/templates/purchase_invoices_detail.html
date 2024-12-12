@@ -26,11 +26,17 @@
                     {% endif %}
                 </p>
 
-                {% if purchase_invoice.status == "Pending" %}
+                {% if purchase_invoice.purchase_order.status == "Approved" %}
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" name="voided" class="btn btn-danger">Void</button>
+                    </form>
+                {% endif %}
+
+                {% if purchase_invoice.purchase_order.status == "Delivered" and purchase_invoice.status == "Pending" %}
                     <form method="post" class="mt-4">
                         {% csrf_token %}
                         <button type="submit" name="paid" class="btn btn-success">Paid</button>
-                        <button type="submit" name="voided" class="btn btn-danger">Void</button>
                     </form>
                 {% endif %}
             </div>

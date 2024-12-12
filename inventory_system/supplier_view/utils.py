@@ -33,11 +33,11 @@ def generate_procurement_no(DocumentType):
     mont_code = get_month()
     year_code = get_year()
     doc_code = DocumentType
-    quotation_no_arr = [doc_code, mont_code, year_code, rand_code]
+    invoice_no_arr = [doc_code, mont_code, year_code, rand_code]
 
-    quotation_no = ''.join(map(str, quotation_no_arr))
+    invoice_no = ''.join(map(str, invoice_no_arr))
 
-    return quotation_no
+    return invoice_no
 # =============================================== #
 
 
@@ -45,7 +45,7 @@ def generate_procurement_no(DocumentType):
 def generate_unique_procurement_no(DocumentType, ModelClass):
     while True:
         procurement_no = generate_procurement_no(DocumentType)
-        if not ModelClass.objects.filter(quotation_no=procurement_no).exists():
+        if not ModelClass.objects.filter(invoice_no=procurement_no).exists():
             return procurement_no
 # =============================================== #
 
@@ -54,17 +54,15 @@ def generate_unique_procurement_no(DocumentType, ModelClass):
 def create_digital_invoice(purchase_order):
     from .models import PurchaseInvoice, PurchaseInvoiceItem
 
-    print(f"Creating invoice for PO #{purchase_order.id}")
     items = purchase_order.items.all()
-    print(f"Items in PurchaseOrder: {list(items)}")  # Debugging to verify items
 
     if not items:
         print("No items found for this purchase order.")
-        return  # Early exit if no items are found
+        return
 
     invoice = PurchaseInvoice.objects.create(
+        purchase_order=purchase_order,
         supplier=purchase_order.supplier,
-        invoice_no=f"PI{purchase_order.quotation_no[2:]}",
         total_amount_payable=purchase_order.total_amount,
         total_amount_payable_with_vat=purchase_order.total_amount_with_vat,
     )

@@ -289,7 +289,7 @@ def purchase_request_detail(request, pr_id):
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
     STATUS_3 = STATUS[3]
-    STATUS_4 = STATUS[4] 
+    STATUS_4 = STATUS[4]
 
     purchase_request = get_object_or_404(PurchaseOrder, id=pr_id)
     print(f"STATUS: {purchase_request.status}")
@@ -299,10 +299,12 @@ def purchase_request_detail(request, pr_id):
     for item in items:
         item.total_price = item.unit_price * item.quantity
 
-    number = purchase_request.quotation_no
-    quotation_number = number[2:]
+    paid_purchase_invoice = PurchaseInvoice.objects.filter(purchase_order=purchase_request, status="Paid").exists()
 
-    paid_purchase_invoice = PurchaseInvoice.objects.filter(invoice_no__endswith=quotation_number, status="Paid").exists()
+    if request.method == "POST":
+        if 'receive' in request.POST:
+            purchase_request.status = STATUS_4
+            purchase_request.save()
 
     return render(request, 'purchase_request_detail.html', 
         {'purchase_request': purchase_request,
