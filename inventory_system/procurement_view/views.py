@@ -306,6 +306,14 @@ def purchase_request_detail(request, pr_id):
             purchase_request.status = STATUS_4
             purchase_request.save()
 
+            for item in items:
+                product_name = item.product_name
+                quantity = item.quantity
+                cost_price = item.unit_price
+                add_or_update_product(product_name, quantity, cost_price)
+        
+        return redirect('purchase_request_detail', pr_id)
+
     return render(request, 'purchase_request_detail.html', 
         {'purchase_request': purchase_request,
          'STATUS_0': STATUS_0,
