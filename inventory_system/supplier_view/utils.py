@@ -45,6 +45,15 @@ def generate_procurement_no(DocumentType):
 def generate_unique_procurement_no(DocumentType, ModelClass):
     while True:
         procurement_no = generate_procurement_no(DocumentType)
+        if not ModelClass.objects.filter(quotation_no=procurement_no).exists():
+            return procurement_no
+# =============================================== #
+
+
+# ===== GENERATE ANOTHER UNIQUE INVOICE NO. IF IT CATCHES AN EXISTING ONE  ===== #
+def generate_unique_invoice_no(DocumentType, ModelClass):
+    while True:
+        procurement_no = generate_procurement_no(DocumentType)
         if not ModelClass.objects.filter(invoice_no=procurement_no).exists():
             return procurement_no
 # =============================================== #

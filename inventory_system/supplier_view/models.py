@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from procurement_view.models import RequestQuotation, PurchaseOrder
-from .utils import generate_unique_procurement_no
+from .utils import generate_unique_procurement_no, generate_unique_invoice_no
 
 STORE_COMPANY_NAME = "AR. DJ Hardware Trading"
 STORE_ADDRESS = "street bergal maligaya park, 77 Bautista, Caloocan, Metro Manila"
@@ -57,7 +57,7 @@ class PurchaseInvoice(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.invoice_no:
-            self.invoice_no = generate_unique_procurement_no("PI", PurchaseInvoice)
+            self.invoice_no = generate_unique_invoice_no("PI", PurchaseInvoice)
 
         super(PurchaseInvoice, self).save(*args, **kwargs)
 
