@@ -88,23 +88,22 @@ def purchase_orders_detail(request, po_id):
             purchase_order.status = "Rejected"
         elif 'deliver' in request.POST:
             purchase_order.status = "Delivered"
+            create_digital_invoice(purchase_order)
+        elif 'cancel' in request.POST:
+            purchase_order.status = "Cancelled"
 
         purchase_order.save()
 
         if purchase_order.status == "Approved":
             logged_user = request.user
-            quotation_no = purchase_order.quotation_no[2:]
             has_pending_submission = PurchaseInvoice.objects.filter(
+                purchase_order=purchase_order,
                 supplier=logged_user,
-                invoice_no__endswith=quotation_no,
                 status__in=["Pending", "Paid"]
             ).exists()
 
             if has_pending_submission:
-                messages.error(request, "A digital invoice for this purchase order already exists.")
-            else:
-                create_digital_invoice(purchase_order)
-                print(f"Purchase Invoice Created: PI{quotation_no}")
+                messages.error(request, "A digital invoice for this purchase order already exists.")  
 
         return redirect('purchase_orders_detail', po_id=po_id)
 
