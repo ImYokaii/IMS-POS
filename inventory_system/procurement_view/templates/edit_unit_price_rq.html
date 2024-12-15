@@ -3,15 +3,21 @@
 {% block title %}Edit Unit Price{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <h2>Edit Unit Price for {{ item.product_name }}</h2>
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-4 shadow-sm" style="width: 500px;">
+        <h2 class="mb-4 text-center">Edit Unit Price</h2>
 
         <form method="POST">
             {% csrf_token %}
-
             <div class="mb-3">
                 <label for="unit_price" class="form-label fw-bold">Unit Price</label>
-                <input type="number" class="form-control {% if form.unit_price.errors %}is-invalid{% endif %}" id="unit_price" name="unit_price" value="{{ form.unit_price.value|default:'' }}" min="1">
+                <input 
+                    type="number" 
+                    class="form-control {% if form.unit_price.errors %}is-invalid{% endif %}" 
+                    id="unit_price" 
+                    name="unit_price" 
+                    value="{{ form.unit_price.value|default:'' }}" 
+                    min="1">
                 {% if form.unit_price.errors %}
                     <div class="invalid-feedback">
                         {% for error in form.unit_price.errors %}
@@ -20,10 +26,15 @@
                     </div>
                 {% endif %}
             </div>
-    
+
             <div class="mb-3">
                 <label for="price_valid_until" class="form-label fw-bold">Price Valid Until</label>
-                <input type="date" class="form-control {% if form.price_valid_until.errors %}is-invalid{% endif %}" id="price_valid_until" name="price_valid_until" value="{{ form.price_valid_until.value|default:'' }}">
+                <input 
+                    type="date" 
+                    class="form-control {% if form.price_valid_until.errors %}is-invalid{% endif %}" 
+                    id="price_valid_until" 
+                    name="price_valid_until" 
+                    value="{{ form.price_valid_until.value|default:'' }}">
                 {% if form.price_valid_until.errors %}
                     <div class="invalid-feedback">
                         {% for error in form.price_valid_until.errors %}
@@ -33,7 +44,8 @@
                 {% endif %}
             </div>
 
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="submit" class="btn btn-primary w-100">Save</button>
         </form>
     </div>
+</div>
 {% endblock %}

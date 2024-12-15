@@ -43,6 +43,9 @@ def request_quotations_detail(request, quotation_id):
     for item in items:
         item.total_price = item.unit_price * item.quantity
 
+    vat = quotation.total_amount * (Decimal(float(os.environ.get('VALUE_ADDED_TAX'))))
+    print("VAT: ", vat)
+
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
@@ -51,7 +54,8 @@ def request_quotations_detail(request, quotation_id):
         {'quotation': quotation,
          'items': items,
          'STATUS_0': STATUS_0,
-         'STATUS_1': STATUS_1,})
+         'STATUS_1': STATUS_1,
+         'vat': vat,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -266,6 +270,7 @@ def create_quotation_submission(request, quotation_id):
             quotation_submission.request_quotation = quotation_request
             quotation_submission.save()
 
+            total_amount = 0
             for form in formset:
                 if form.cleaned_data:
                     # Skip forms where all relevant fields are None, blank, or null
@@ -275,9 +280,16 @@ def create_quotation_submission(request, quotation_id):
                     quotation_submission_item = form.save(commit=False)
                     quotation_submission_item.quotation_submission = quotation_submission
                     quotation_submission_item.save()
+            
+                    total_amount += quotation_submission_item.quantity * quotation_submission_item.unit_price
+
+            quotation_submission.total_amount = total_amount
+            vat = total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+            quotation_submission.total_amount_with_vat = total_amount + vat
+            quotation_submission.save()
 
             messages.success(request, "Quotation was successfully submitted!")
-            return redirect('request_quotations_list')
+            return redirect('quotation_submission_list')
 
         else:
             print("Form errors:", form.errors)
@@ -323,6 +335,12 @@ def quotation_submission_detail(request, qs_id):
 
     today = date.today()
 
+    items = quotation_submission.items.all()
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = quotation_submission.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
         item = get_object_or_404(QuotationSubmissionItem, id=item_id)
@@ -335,7 +353,9 @@ def quotation_submission_detail(request, qs_id):
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2,
-         'today': today,})
+         'today': today,
+         'items': items,
+         'vat': vat,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
