@@ -80,6 +80,7 @@ def create_digital_invoice(purchase_order):
         PurchaseInvoiceItem.objects.create(
             purchase_invoice=invoice,
             product_name=item.product_name,
+            measurement=item.measurement,
             quantity=item.quantity,
             unit_price=item.unit_price
         )

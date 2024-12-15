@@ -3,38 +3,50 @@
 {% block title %}View Purchase Invoices{% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <h2 class="mb-4 text-center">Purchase Invoices</h2>
-    
-    <div class="row justify-content-center">
-        {% for pi in purchase_invoices %}
-            <div class="col-lg-8 col-md-10 mb-3">
-                <div class="card flex-row p-3 shadow-sm">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div>
-                            <h5 class="card-title"><strong>Purchase Invoice No:</strong> {{ pi.invoice_no }}</h5>
-                            <p class="mb-1"><strong>Date Issued:</strong> {{ pi.date_issued }}</p>
-                            <p class="mb-1"><strong>Status:</strong>
-                                {% if pi.status == STATUS_0 %}
-                                    <span class="badge text-bg-warning">{{ pi.status }}</span>
-                                {% elif pi.status == STATUS_1 %}
-                                    <span class="badge text-bg-success">{{ pi.status }}</span>
-                                {% elif pi.status == STATUS_2 %}
-                                    <span class="badge text-bg-danger">{{ pi.status }}</span>
-                                {% else %}
-                                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
-                                {% endif %}
-                            </p>
-                        </div>
-                        <div class="text-end mt-3">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="h2">Purchase Invoice List</p>
+    </div>
+
+    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col" class="small">Purchase Invoice No.</th>
+                    <th scope="col" class="small">Date Issued</th>
+                    <th scope="col" class="small">Total Amount (VAT)</th>
+                    <th scope="col" class="small">Status</th>
+                    <th scope="col" class="text-center small">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pi in purchase_invoices %}
+                    <tr>
+                        <th scope="row" class="small">{{ pi.invoice_no }}</h5>
+                        <td scope="row" class="small">{{ pi.date_issued }}</p>
+                        <td scope="row" class="small">₱ {{ pi.total_amount_payable_with_vat }}</p>
+                        <td scope="row" class="small">
+                            {% if pi.status == STATUS_0 %}
+                                <span class="badge text-bg-warning">{{ pi.status }}</span>
+                            {% elif pi.status == STATUS_1 %}
+                                <span class="badge text-bg-success">{{ pi.status }}</span>
+                            {% elif pi.status == STATUS_2 %}
+                                <span class="badge text-bg-danger">{{ pi.status }}</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                            {% endif %}
+                        </td>
+                        <td scope="row" class="text-center small">
                             <a href="{% url 'purchase_invoices_detail' pi.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <p class="text-center">No request purchase orders available.</p>
-        {% endfor %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted small">No request purchase orders available.</p>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}

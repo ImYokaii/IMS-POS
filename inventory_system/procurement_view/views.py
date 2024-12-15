@@ -32,38 +32,33 @@ def create_purchase_request_from_quotation(request, quotation_id):
     quotation_submission = get_object_or_404(QuotationSubmission, id=quotation_id)
     items = quotation_submission.items.all()
 
-    # Handle form submission
     if request.method == "POST":
         form = PurchaseOrderForm(request.POST)
-        # Handle the item quantity inputs dynamically
-        quantities = request.POST.getlist('quantity')  # List of quantities for each item
+        quantities = request.POST.getlist('quantity')
 
         if form.is_valid():
             purchase_order = form.save(commit=False)
             purchase_order.supplier = quotation_submission.supplier
-            purchase_order.total_amount = 0  # Start with zero, will be calculated below
+            purchase_order.total_amount = 0
             
-            # Save the purchase order instance to get a valid ID for the related items
             purchase_order.save()
 
-            # Add items to the purchase order
             for index, item in enumerate(items):
-                quantity = int(quantities[index])  # Get the quantity input by the user
+                quantity = int(quantities[index])
                 total_item_price = quantity * item.unit_price
                 purchase_order.total_amount += total_item_price
 
-                # Create a purchase order item with user-provided quantity
                 PurchaseOrderItem.objects.create(
-                    purchase_order=purchase_order,  # Now the purchase_order is saved and has an ID
+                    purchase_order=purchase_order,
                     product_name=item.product_name,
                     quantity=quantity,
+                    measurement=item.measurement,
                     unit_price=item.unit_price,
                 )
 
-            # Apply VAT
             vat = purchase_order.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
             purchase_order.total_amount_with_vat = purchase_order.total_amount + vat
-            purchase_order.save()  # Save the final purchase_order instance with VAT
+            purchase_order.save()
 
             messages.success(request, "Purchase request created successfully.")
             return redirect('purchase_request_list')
@@ -218,6 +213,11 @@ def request_quotation_detail(request, quotation_id):
 
     today = date.today()
 
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = request_quotation.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
         item = get_object_or_404(RequestQuotationItem, id=item_id)
@@ -230,7 +230,8 @@ def request_quotation_detail(request, quotation_id):
          'items': items,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
-         'today': today,})
+         'today': today,
+         'vat': vat,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -352,6 +353,11 @@ def supplier_quotation_submission_detail(request, submission_id):
     ACCEPTED_STATUS = STATUS[1]
     REJECTED_STATUS = STATUS[2]
 
+    vat = quotation_submission.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
     if request.method == "POST":
         if 'accept' in request.POST:
             quotation_submission.status = ACCEPTED_STATUS
@@ -367,7 +373,8 @@ def supplier_quotation_submission_detail(request, submission_id):
          'items': items,
          'PENDING_STATUS': PENDING_STATUS,
          'ACCEPTED_STATUS': ACCEPTED_STATUS,
-         'REJECTED_STATUS': REJECTED_STATUS,})
+         'REJECTED_STATUS': REJECTED_STATUS,
+         'vat': vat,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -389,11 +396,17 @@ def purchase_invoice_list(request):
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_invoice_detail(request, pi_id):
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
+    items = purchase_invoice.items.all()
 
     STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = purchase_invoice.total_amount_payable * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
 
     if request.method == "POST":
         form = PurchaseInvoiceForm(request.POST, instance=purchase_invoice)
@@ -411,4 +424,6 @@ def purchase_invoice_detail(request, pi_id):
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2,
-         'form': form})
+         'form': form,
+         'items': items,
+         'vat': vat,})

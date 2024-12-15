@@ -3,60 +3,94 @@
 {% block title %}Quotation Submission Details{% endblock %}
 
 {% block content %}
-    <h1>Quotation Submission Details</h1>
+<div class="card mt-5 mb-5 m-auto p-5 w-75">
+    <h1 class="mb-4 text-center">Quotation Submission Details</h1>
 
-    <div class="card p-4 shadow-sm mb-4">
-        <h3>Quotation Information</h3>
-        <p><strong>Quotation No:</strong> {{ quotation_submission.quotation_no }}</p>
-        <p><strong>Buyer Company:</strong> {{ quotation_submission.buyer_company_name }}</p>
-        <p><strong>Buyer Address:</strong> {{ quotation_submission.buyer_address }}</p>
-        <p><strong>Contact:</strong> {{ quotation_submission.buyer_contact }}</p>
-        <p><strong>Prepared By:</strong> {{ quotation_submission.prepared_by }}</p>
-        <p><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
-        <p><strong>Status:</strong>
-            {% if quotation_submission.status == "Pending" %}
-                <span class="badge text-bg-warning">{{ quotation_submission.status }}</span>
-            {% elif quotation_submission.status == "Accepted" %}
-                <span class="badge text-bg-success">{{ quotation_submission.status }}</span>
-            {% elif quotation_submission.status == "Rejected" %}
-                <span class="badge text-bg-danger">{{ quotation_submission.status }}</span>
-            {% else %}
-                <span class="badge bg-light text-dark">Unavailable</span>
-            {% endif %}
-        </p>
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <p class="small text-muted mb-2"><strong>Quotation No:</strong> {{ quotation_submission.quotation_no }}</p>
+            <p class="small text-muted mb-2"><strong>Buyer Company:</strong> {{ quotation_submission.buyer_company_name }}</p>
+            <p class="small text-muted mb-2"><strong>Buyer Address:</strong> {{ quotation_submission.buyer_address }}</p>
+            <p class="small text-muted mb-2"><strong>Buyer Contact:</strong> {{ quotation_submission.buyer_contact }}</p>
+        </div>
+        <div class="col-md-6">
+            <p class="small text-muted mb-2"><strong>Prepared By:</strong> {{ quotation_submission.supplier }}</p>
+            <p class="small text-muted mb-2"><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
+            
+        </div>
     </div>
 
-    {% if quotation_submission.status == "Pending" %}
-        <form method="post" class="mt-4">
-            {% csrf_token %}
-            <button type="submit" name="accept" class="btn btn-success">Accept</button>
-            <button type="submit" name="reject" class="btn btn-danger">Reject</button>
-        </form>
-    {% endif %}
+    
+    <div class="mb-4">
+        <hr>
+        <p class="small text-muted mb-2"><strong>Status:</strong>
+            {% if quotation_submission.status == "Pending" %}
+                <span class="text-warning">{{ quotation_submission.status }}</span>
+            {% elif quotation_submission.status == "Accepted" %}
+                <span class="text-success">{{ quotation_submission.status }}</span>
+            {% elif quotation_submission.status == "Rejected" %}
+                <span class="text-danger">{{ quotation_submission.status }}</span>
+            {% else %}
+                <span class="text-secondary">Unavailable</span>
+            {% endif %}
+        </p>
+        
+        {% if quotation_submission.status == "Pending" %}
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="accept" class="btn btn-sm btn-success">Accept</button>
+                <button type="submit" name="reject" class="btn btn-sm btn-danger">Reject</button>
+            </form>
+        {% endif %}
+    </div>
 
-    <h3>Items</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-                <tr>
-                    <td>{{ item.product_name }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.unit_price }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="3">No items in this submission.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
-    <a href="{% url 'view_supplier_quotations' quotation_submission.request_quotation.id %}" class="btn btn-secondary">Go Back</a>
+    <div class="mb-4">
+        <hr>
+        <table class="table table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col"><p class="small text-muted mb-0">Product Name</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Quantity</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Measurement</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Unit Price</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Total Price</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Price Valid Until</p></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td scope="row"><p class="small text-muted mb-0">{{ item.product_name }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">{{ item.quantity }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">{{ item.measurement }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">₱ {{ item.unit_price }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">₱ {{ item.total_price }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">{{ item.price_valid_until }}</p></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-secondary">No items in this submission.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <hr>
+        <div class="row mb-2">
+            <div class="col-md-8">
+            </div>
+            <div class="col-md-4">
+                <p class="small text-muted mb-2"><strong>Total Amount:</strong> ₱ {{ quotation_submission.total_amount }}</p>
+                <p class="small text-muted mb-2"><strong>VAT (12%):</strong> ₱ {{ vat|floatformat:2 }}</p>
+                <hr>
+                <p class="small text-muted mb-2"><strong>Total Amount (VAT Inclusive):</strong> ₱ {{ quotation_submission.total_amount_with_vat }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="{% url 'view_supplier_quotations' quotation_submission.request_quotation.id %}" class="btn btn-outline-secondary">Go Back</a>
+</div>
 {% endblock %}

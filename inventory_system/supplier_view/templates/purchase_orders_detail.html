@@ -3,85 +3,105 @@
 {% block title %}View Purchase Order Details{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        <h2 class="mb-4 text-center">Purchase Order Details</h2>
-        
-        <div class="card p-4 shadow-sm mb-4">
-            <div class="card-body">
-                <h5 class="card-title"><strong>Purchase Order No:</strong> {{ purchase_order.quotation_no }}</h5>
-                <p><strong>Buyer Company Name:</strong> {{ purchase_order.buyer_company_name }}</p>
-                <p><strong>Address:</strong> {{ purchase_order.buyer_address }}</p>
-                <p><strong>Date Ordered:</strong> {{ purchase_order.date_ordered }}</p>
-                <p><strong>Delivery Date:</strong> {{ purchase_order.delivery_date }}</p>
-                <p><strong>Total Amount:</strong> ₱ {{ purchase_order.total_amount }}</p>
-                <p><strong>VAT</strong> (12%): ₱ {{ vat|floatformat:2 }}</p>
-                <p><strong>Total Amount</strong> (VAT Inclusive): ₱ {{ purchase_order.total_amount_with_vat }}</p>
-                <p><strong>Notes:</strong> {{ purchase_order.notes }}</p>
-                <p><strong>Approved by:</strong> {{ purchase_order.approved_by }}</p>
-                <p><strong>Order Status:</strong> 
-                    {% if purchase_order.status == "Pending" %}
-                        <span class="badge text-bg-warning">{{ purchase_order.status }}</span>
-                    {% elif purchase_order.status == "Approved" %}
-                        <span class="badge text-bg-success">{{ purchase_order.status }}</span>
-                    {% elif purchase_order.status == "Rejected" %}
-                        <span class="badge text-bg-danger">{{ purchase_order.status }}</span>
-                    {% elif purchase_order.status == "Delivered" %}
-                        <span class="badge text-bg-primary">{{ purchase_order.status }}</span>
-                    {% elif purchase_order.status == "Received" %}
-                        <span class="badge text-bg-success">{{ purchase_order.status }}</span>
-                    {% else %}
-                        <span class="badge bg-light text-dark">Unavailable</span>
-                    {% endif %}
-                </p>
+<div class="card mt-5 mb-5 m-auto p-5 w-75">
+    <h1 class="mb-4 text-center">Purchase Order Details</h1>
 
-                {% if purchase_order.status == "Pending" %}
-                    <form method="post" class="mt-4">
-                        {% csrf_token %}
-                        <button type="submit" name="approve" class="btn btn-success">Approve</button>
-                        <button type="submit" name="reject" class="btn btn-danger">Reject</button>
-                    </form>
-                {% endif %}
-
-                {% if purchase_order.status == "Approved" %}
-                    <form method="post" class="mt-4">
-                        {% csrf_token %}
-                        <button type="submit" name="deliver" class="btn btn-primary">Deliver</button>
-                        <button type="submit" name="cancel" class="btn btn-secondary">Cancel</button>
-                    </form>
-                {% endif %}
-            </div>
+    <!-- Purchase Order Information -->
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <p class="small text-muted mb-2"><strong>Purchase Order No:</strong> {{ purchase_order.quotation_no }}</p>
+            <p class="small text-muted mb-2"><strong>Buyer Company Name:</strong> {{ purchase_order.buyer_company_name }}</p>
+            <p class="small text-muted mb-2"><strong>Buyer Address:</strong> {{ purchase_order.buyer_address }}</p>
         </div>
-
-        <h3 class="mb-3">Items in this Purchase Order</h3>
-        <div class="table-responsive">
-            <table class="table table-bordered shadow-sm">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">Product Name</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Unit Price</th>
-                        <th scope="col">Total Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in items %}
-                        <tr>
-                            <td>{{ item.product_name }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>{{ item.unit_price }}</td>
-                            <td>₱ {{ item.total_price|floatformat:2 }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="3" class="text-center">No items found for this Purchase Order.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        
-        <div class="text-end mt-3">
-            <a href="{% url 'purchase_orders_list' %}" class="btn btn-outline-secondary">Back to List</a>
+        <div class="col-md-6">
+            <p class="small text-muted mb-2"><strong>Approved by:</strong> {{ purchase_order.approved_by }}</p>
+            <p class="small text-muted mb-2"><strong>Date Ordered:</strong> {{ purchase_order.date_ordered }}</p>
+            <p class="small text-muted mb-2"><strong>Delivery Date:</strong> {{ purchase_order.delivery_date }}</p>
         </div>
     </div>
+
+    <div class="mb-2">
+        <hr>
+        <p class="small text-muted mb-2"><strong>Order Status:</strong>
+            {% if purchase_order.status == "Pending" %}
+                <span class="badge text-bg-warning">{{ purchase_order.status }}</span>
+            {% elif purchase_order.status == "Approved" %}
+                <span class="badge text-bg-success">{{ purchase_order.status }}</span>
+            {% elif purchase_order.status == "Rejected" %}
+                <span class="badge text-bg-danger">{{ purchase_order.status }}</span>
+            {% elif purchase_order.status == "Delivered" %}
+                <span class="badge text-bg-primary">{{ purchase_order.status }}</span>
+            {% elif purchase_order.status == "Received" %}
+                <span class="badge text-bg-success">{{ purchase_order.status }}</span>
+            {% else %}
+                <span class="badge bg-light text-dark">Unavailable</span>
+            {% endif %}
+        </p>
+        <p class="small text-muted mb-2"><strong>Notes:</strong> {{ purchase_order.notes }}</p>
+    </div>
+
+    <!-- Approve/Reject or Deliver/Cancel Actions -->
+    {% if purchase_order.status == "Pending" %}
+        <form method="post" class="mt-0">
+            {% csrf_token %}
+            <button type="submit" name="approve" class="btn btn-sm btn-success">Approve</button>
+            <button type="submit" name="reject" class="btn btn-sm btn-danger">Reject</button>
+        </form>
+    {% endif %}
+
+    {% if purchase_order.status == "Approved" %}
+        <form method="post" class="mt-0">
+            {% csrf_token %}
+            <button type="submit" name="deliver" class="btn btn-sm btn-primary">Deliver</button>
+            <button type="submit" name="cancel" class="btn btn-sm btn-secondary">Cancel</button>
+        </form>
+    {% endif %}
+
+    <!-- Items in this Purchase Order -->
+    <div class="mb-4">
+        <hr>
+        <table class="table table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col"><p class="small text-muted mb-0">Product Name</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Quantity</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Measurement</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Unit Price</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Total Price</p></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td scope="row"><p class="small text-muted mb-0">{{ item.product_name }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">{{ item.quantity }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">{{ item.measurement }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">₱ {{ item.unit_price }}</p></td>
+                        <td scope="row"><p class="small text-muted mb-0">₱ {{ item.total_price|floatformat:2 }}</p></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-secondary">No items found for this Purchase Order.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <hr>
+        <div class="row mb-2">
+            <div class="col-md-8">
+            </div>
+            <div class="col-md-4">
+                <p class="small text-muted mb-2"><strong>Total Amount:</strong> ₱ {{ purchase_order.total_amount }}</p>
+                <p class="small text-muted mb-2"><strong>VAT (12%):</strong> ₱ {{ vat|floatformat:2 }}</p>
+                <hr>
+                <p class="small text-muted mb-2"><strong>Total Amount (VAT Inclusive):</strong> ₱ {{ purchase_order.total_amount_with_vat }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="{% url 'purchase_orders_list' %}" class="btn btn-outline-secondary">Back to List</a>
+</div>
 {% endblock %}

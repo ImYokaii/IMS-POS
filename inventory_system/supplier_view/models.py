@@ -15,6 +15,8 @@ class QuotationSubmission(models.Model):
     supplier_contact = models.CharField(max_length=255, null=True)
     quotation_no = models.CharField(max_length=50, blank=True, null=True)
     prepared_by = models.CharField(max_length=255)
+    total_amount = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    total_amount_with_vat = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     quote_valid_until = models.DateField()
     date_submitted = models.DateField(auto_now_add=True)
     terms_and_conditions = models.TextField()

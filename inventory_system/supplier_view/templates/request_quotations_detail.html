@@ -3,67 +3,88 @@
 {% block title %}View Request Quotation Details{% endblock %}
 
 {% block content %}
-<div class="container my-4">
-    <h2 class="mb-4 text-center">Request Quotation Details</h2>
-    
-    <div class="card p-4 shadow-sm mb-4">
-        <div class="card-body">
-            <h5 class="card-title"><strong>Quotation No:</strong> {{ quotation.quotation_no }}</h5>
-            <p><strong>Buyer Company Name:</strong> <span class="text-dark">{{ quotation.buyer_company_name }}</span></p>
-            <p><strong>Buyer Address:</strong> <span class="text-dark">{{ quotation.buyer_address }}</span></p>
-            <p><strong>Buyer Contact:</strong> <span class="text-dark">{{ quotation.buyer_contact }}</span></p>
-            <p><strong>Quotation Number:</strong> <span class="text-dark">{{ quotation.quotation_no }}</span></p>
-            <p><strong>Approved By:</strong> <span class="text-dark">{{ quotation.approved_by }}</span></p>
-            <p><strong>Date Prepared:</strong> <span class="text-dark">{{ quotation.date_prepared }}</span></p>
-            <p><strong>Quote Valid Until:</strong> <span class="text-dark">{{ quotation.quote_valid_until }}</span></p>
-            <p><strong>Status:</strong>
+<div class="container mt-4">
+    <div class="card mt-5 mb-3 m-auto p-5 w-75">
+        <h1 class="mb-4 text-center">Request Quotation Details</h1>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <p class="small text-muted mb-2"><strong>Buyer Company Name:</strong> {{ quotation.buyer_company_name }}</p>
+                <p class="small text-muted mb-2"><strong>Buyer Address:</strong> {{ quotation.buyer_address }}</p>
+                <p class="small text-muted mb-2"><strong>Buyer Contact:</strong> {{ quotation.buyer_contact }}</p>
+            </div>
+            <div class="col-md-6">
+                <p class="small text-muted mb-2"><strong>Quotation Number:</strong> {{ quotation.quotation_no }}</p>
+                <p class="small text-muted mb-2"><strong>Approved By:</strong> {{ quotation.approved_by }}</p>
+                <p class="small text-muted mb-2"><strong>Date Prepared:</strong> {{ quotation.date_prepared }}</p>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <hr>
+            <p class="small text-muted mb-2"><strong>Quote Valid Until:</strong> {{ quotation.quote_valid_until }}</p>
+            <p class="small text-muted mb-2"><strong>Status:</strong>
                 {% if quotation.status == STATUS_0 %}
-                    <span class="badge text-bg-success">{{ quotation.status }}</span>
+                    <span class="text-success">{{ quotation.status }}</span>
                 {% elif quotation.status == STATUS_1 %}
-                    <span class="badge text-bg-danger">{{ quotation.status }}</span>
+                    <span class="text-danger">{{ quotation.status }}</span>
                 {% else %}
-                    <span class="badge bg-light text-dark">{{ Unavailable }}</span>
+                    <span class="text-secondary">Unavailable</span>
                 {% endif %}
-                <p><strong>Terms and Conditions:</strong> <span class="text-dark">{{ quotation.terms_and_conditions|default:"N/A" }}</span></p>
+            </p>
+            <p class="small text-muted mt-3 mb-2"><strong>Terms and Conditions:</strong> {{ quotation.terms_and_conditions|default:"N/A" }}</p>
+        </div>
+
+        <div class="mb-4">
+            <hr>
+            <table class="table table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col"><p class="small text-muted mb-0">Product Name</p></th>
+                        <th scope="col"><p class="small text-muted mb-0">Quantity</p></th>
+                        <th scope="col"><p class="small text-muted mb-0">Measurement</p></th>
+                        <th scope="col"><p class="small text-muted mb-0">Unit Price</p></th>
+                        <th scope="col"><p class="small text-muted mb-0">Total Price</p></th>
+                        <th scope="col"><p class="small text-muted mb-0">Price Valid Until</p></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td scope="row"><p class="small text-muted mb-0">{{ item.product_name }}</p></td>
+                            <td scope="row"><p class="small text-muted mb-0">{{ item.quantity }}</p></td>
+                            <td scope="row"><p class="small text-muted mb-0">{{ item.measurement }}</p></td>
+                            <td scope="row"><p class="small text-muted mb-0">₱ {{ item.unit_price }}</p></td>
+                            <td scope="row"><p class="small text-muted mb-0">₱ {{ item.total_price|floatformat:2 }}</p></td>
+                            <td scope="row"><p class="small text-muted mb-0">₱ {{ item.price_valid_until }}</p></td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-secondary">No items available for this quotation.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <hr>
+            <div class="row mb-0">
+                <div class="col-md-8">
+                </div>
+                <div class="col-md-4">
+                    <p class="small text-muted mb-2"><strong>Total Amount:</strong> ₱ {{ quotation.total_amount }}</p>
+                    <p class="small text-muted mb-2"><strong>VAT (12%):</strong> ₱ {{ vat|floatformat:2 }}</p>
+                    <hr>
+                    <p class="small text-muted mb-2"><strong>Total Amount (VAT Inclusive):</strong> ₱ {{ quotation.total_amount_with_vat }}</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Quotation Items Section -->
-    <h3 class="mb-3">Items in this Quotation</h3>
-    <div class="table-responsive">
-        <table class="table table-bordered shadow-sm">
-            <thead class="table-light">
-                <tr>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Unit Price</th>
-                    <th scope="col">Total Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                    <tr>
-                        <td>{{ item.product_name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.unit_price }}</td>
-                        <td>₱ {{ item.total_price|floatformat:2 }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="3" class="text-center text-muted">No items found for this quotation.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
-    {% if quotation.status == STATUS_0 %}
-        <a href="{% url 'create_quotation_submission' quotation.id %}" class="btn btn-primary">
-            Create Quotation Submission
-        </a>
-    {% endif %}
+    <div class="text-center mt-2 mb-4">
+        {% if quotation.status == STATUS_0 %}
+            <a href="{% url 'create_quotation_submission' quotation.id %}" class="btn btn-primary me-2">Create Quotation Submission</a>
+        {% endif %}
 
-    <div class="text-end mt-3">
         <a href="{% url 'request_quotations_list' %}" class="btn btn-outline-secondary">Back to List</a>
     </div>
 </div>
