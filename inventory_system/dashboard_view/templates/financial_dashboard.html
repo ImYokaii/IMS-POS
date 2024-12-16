@@ -59,6 +59,7 @@
                         </div>
                     </div>
                 </div>
+                
 
                 <!-- Yearly Sales Card -->
                 <div class="col-md-4 mb-4">
@@ -74,5 +75,54 @@
                 </div>
             </div>
         </div>
+    
+        <!-- Line Separator -->
+        <hr class="my-4" style="border-top: 2px solid #ccc;">
+
+        <!-- Linear Forecasting Section -->
+        <div class="mb-4">
+            <h2 class="mb-3">Sales Forecast</h2>
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body text-center">
+                    <form id="forecast-form" method="post" class="mb-4">
+                        {% csrf_token %}
+                        {{ forecast_form.as_p }}
+                        <button type="submit" class="btn btn-primary">Update Forecast</button>
+                    </form>
+                    
+                    <!-- Render the line graph with responsive styling -->
+                    <div class="line-graph-container" style="max-width: 100%; overflow-x: auto;">
+                        <img id="line-graph-img" src="data:image/png;base64,{{ line_graph }}" alt="Sales and Forecasted Sales Graph" class="img-fluid" />
+                    </div>
+                      
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Blank Line Graph Section -->
+    <div class="mb-4">
+        <h2 class="mb-3">Blank Sales Graph</h2>
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body text-center">
+            <!-- Render the blank line graph -->
+            <div class="line-graph-container" style="max-width: 100%; overflow-x: auto;">
+                <img id="blank-line-graph-img" src="data:image/png;base64,{{ blank_line_graph }}" alt="Blank Sales Graph" class="img-fluid" />
+            </div>
+                  
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        .line-graph-container {
+            width: 100%;  /* Make sure the container spans the full width */
+            text-align: center;
+        }
+        .line-graph-container img {
+            max-width: 100%;  /* Ensure the image scales down on smaller screens */
+            height: auto;     /* Maintain the aspect ratio */
+        }
+    </style>
 {% endblock %}
