@@ -18,9 +18,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-import numpy as np
-from sklearn.linear_model import LinearRegression
-
+from django import forms
 
 load_dotenv()
 matplotlib.use('agg')
@@ -92,45 +90,105 @@ def low_stock_products(request):
 
 
 # ===== Financial Dashboard Page ===== #
+class ForecastForm(forms.Form):
+    FORECAST_PERIOD_CHOICES = [
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly'),
+    ]
+
+    forecast_period = forms.ChoiceField(choices=FORECAST_PERIOD_CHOICES, initial='daily')
+
 @login_required(login_url="/login/")
 def financial_dashboard(request):
     # Total revenue
     total_revenue = SalesInvoice.objects.filter(status='Paid').aggregate(total=Sum('total_amount_with_vat'))['total'] or 0
 
     today = timezone.now().date()
-    today_str = today.strftime('%Y-%m-%d')
 
-    # Daily Sale
+    # Daily Sale (for today)
     daily_sales = SalesInvoice.objects.filter(status='Paid', transaction_date=today).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
-    
+
     first_day_of_month = today.replace(day=1)
-    first_day_of_month_str = first_day_of_month.strftime('%Y-%m-%d')
 
     # Monthly Sales
     monthly_sales = SalesInvoice.objects.filter(status='Paid', transaction_date__gte=first_day_of_month).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
-    
+
     first_day_of_year = today.replace(month=1, day=1)
-    first_day_of_year_str = first_day_of_year.strftime('%Y-%m-%d')
 
     # Yearly Sales
     yearly_sales = SalesInvoice.objects.filter(status='Paid', transaction_date__gte=first_day_of_year).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
 
-    # Generate a blank line graph
-    plt.figure(figsize=(6, 4))
-    plt.plot([], [], label="Blank Line Graph")  # Empty line graph
-    plt.title("Blank Line Graph")
-    plt.xlabel("X Axis")
-    plt.ylabel("Y Axis")
-    plt.legend()
+    # Get historical sales data for plotting (used for all forecast types)
+    sales_data = SalesInvoice.objects.filter(status='Paid').order_by('transaction_date')
 
-    # Save the blank line graph to a buffer
+    # Prepare sales data for plotting
+    dates = [sale.transaction_date for sale in sales_data]
+    sales = [sale.total_amount_with_vat for sale in sales_data]
+
+    # Calculate average daily sales for forecasting
+    total_sales = sum(sales)
+    days_count = len(sales)
+    avg_daily_sales = total_sales / days_count if days_count > 0 else 0
+
+    # Handle the form submission for forecast period (daily, weekly, monthly, yearly)
+    forecast_form = ForecastForm(request.POST or None)
+    forecast_period = 'monthly'  # Default to monthly
+    if forecast_form.is_valid():
+        forecast_period = forecast_form.cleaned_data['forecast_period']
+
+    # Generate forecast based on user selection
+    if forecast_period == 'weekly':
+        forecast_days = 35  # 5 weeks forecast (7 days * 5)
+    elif forecast_period == 'monthly':
+        forecast_days = 150  # 5 months forecast (30 days * 5)
+    elif forecast_period == 'yearly':
+        forecast_days = 1825  # 5 years forecast (365 days * 5)
+    elif forecast_period == 'daily':
+        forecast_days = 7  # 7 days forecast (for next week)
+    else:
+        forecast_days = 150  # Default to 5 months forecast
+
+    # Generate forecasted sales (using a straight-line forecast for simplicity)
+    forecast_dates = [today + timedelta(days=i) for i in range(1, forecast_days + 1)]
+    forecast_sales = [avg_daily_sales * (i + 1) for i in range(forecast_days)]  # Straight-line forecast
+
+    # Combine historical sales data with forecasted sales
+    all_dates = dates + forecast_dates
+    all_sales = sales + forecast_sales
+
+    # Generate the line graph with actual sales and forecasted sales
+    plt.figure(figsize=(8, 6))  # Adjust figsize to make the graph proportional
+    plt.plot(dates, sales, label='Actual Sales', color='blue')
+    plt.plot(forecast_dates, forecast_sales, label=f'{forecast_period.capitalize()} Forecasted Sales', color='green', linestyle='--')
+
+
+    
+    # Formatting the x-axis for better date readability
+    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
+    if forecast_period == 'weekly':
+        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.WeekdayLocator())
+    elif forecast_period == 'monthly':
+        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.MonthLocator())
+    elif forecast_period == 'yearly':
+        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.YearLocator())
+    elif forecast_period == 'daily':
+        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.DayLocator())
+
+    plt.gcf().autofmt_xdate()
+    plt.title(f"Sales and {forecast_period.capitalize()} Forecasted Sales")
+    plt.xlabel("Date")
+    plt.ylabel("Sales Amount")
+    plt.legend()
+    # Save the graph to a buffer
     buffer = BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.1)
     buffer.seek(0)
     line_graph_img = buffer.getvalue()
     plt.close()
 
-    # Encode the image in base64
+# Encode the image in base64
     line_graph = base64.b64encode(line_graph_img).decode('utf-8')
 
     return render(request, 'financial_dashboard.html', {
@@ -139,5 +197,7 @@ def financial_dashboard(request):
         'monthly_sales': monthly_sales,
         'yearly_sales': yearly_sales,
         'line_graph': line_graph,  # Pass the line graph to the template
-        })
+        'forecast_form': forecast_form,  # Pass the form to the template
+    })
+
 # =============================================== #
