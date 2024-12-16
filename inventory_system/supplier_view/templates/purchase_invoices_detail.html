@@ -21,7 +21,6 @@
 
     <div class="mb-4">
         <hr>
-        <p class="small text-muted mb-2"><strong>Total Payable Amount:</strong> ₱ {{ purchase_invoice.total_amount_payable }}</p>
         <p class="small text-muted mb-2"><strong>Invoice Status:</strong> 
             {% if purchase_invoice.status == STATUS_0 %}
                 <span class="text-warning">{{ purchase_invoice.status }}</span>
@@ -33,6 +32,14 @@
                 <span class="text-secondary">Unavailable</span>
             {% endif %}
         </p>
+
+        {% if purchase_invoice.purchase_order.status == "Delivered" and purchase_invoice.status == "Pending" %}
+            <form method="post" class="mt-0">
+                {% csrf_token %}
+                <button type="submit" name="paid" class="btn btn-sm btn-success">Paid</button>
+                <button type="submit" name="voided" class="btn btn-sm btn-danger">Void</button>
+            </form>
+        {% endif %}
     </div>
 
     <div class="mb-4">
