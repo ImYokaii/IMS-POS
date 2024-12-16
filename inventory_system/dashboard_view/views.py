@@ -18,6 +18,9 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
 
 load_dotenv()
 matplotlib.use('agg')
@@ -112,10 +115,29 @@ def financial_dashboard(request):
     # Yearly Sales
     yearly_sales = SalesInvoice.objects.filter(status='Paid', transaction_date__gte=first_day_of_year).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
 
+    # Generate a blank line graph
+    plt.figure(figsize=(6, 4))
+    plt.plot([], [], label="Blank Line Graph")  # Empty line graph
+    plt.title("Blank Line Graph")
+    plt.xlabel("X Axis")
+    plt.ylabel("Y Axis")
+    plt.legend()
+
+    # Save the blank line graph to a buffer
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.1)
+    buffer.seek(0)
+    line_graph_img = buffer.getvalue()
+    plt.close()
+
+    # Encode the image in base64
+    line_graph = base64.b64encode(line_graph_img).decode('utf-8')
+
     return render(request, 'financial_dashboard.html', {
         'total_revenue': total_revenue,
         'daily_sales': daily_sales,
         'monthly_sales': monthly_sales,
         'yearly_sales': yearly_sales,
-    })
+        'line_graph': line_graph,  # Pass the line graph to the template
+        })
 # =============================================== #
