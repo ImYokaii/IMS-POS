@@ -163,8 +163,6 @@ def financial_dashboard(request):
     plt.plot(dates, sales, label='Actual Sales', color='blue')
     plt.plot(forecast_dates, forecast_sales, label=f'{forecast_period.capitalize()} Forecasted Sales', color='green', linestyle='--')
 
-
-    
     # Formatting the x-axis for better date readability
     plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
     if forecast_period == 'weekly':
