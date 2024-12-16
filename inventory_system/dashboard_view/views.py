@@ -189,13 +189,32 @@ def financial_dashboard(request):
 # Encode the image in base64
     line_graph = base64.b64encode(line_graph_img).decode('utf-8')
 
+
+# Blank line graph (just a placeholder)
+    plt.figure(figsize=(8, 6))  # Adjust figsize to make the graph proportional
+    plt.plot([], [], label="Blank Graph", color='gray')  # No data, just an empty line
+    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))  # Placeholder format
+    plt.title("Blank Line Graph")
+    plt.xlabel("Date")
+    plt.ylabel("Sales Amount")
+    plt.legend()
+    # Save the blank graph to a buffer
+    buffer_blank = BytesIO()
+    plt.savefig(buffer_blank, format='png', bbox_inches='tight', pad_inches=0.1)
+    buffer_blank.seek(0)
+    blank_line_graph_img = buffer_blank.getvalue()
+    plt.close()
+
+    # Encode the blank graph in base64
+    blank_line_graph = base64.b64encode(blank_line_graph_img).decode('utf-8')
+
     return render(request, 'financial_dashboard.html', {
         'total_revenue': total_revenue,
         'daily_sales': daily_sales,
         'monthly_sales': monthly_sales,
         'yearly_sales': yearly_sales,
         'line_graph': line_graph,  # Pass the line graph to the template
+        'blank_line_graph': blank_line_graph,  # Pass the blank graph to the template
         'forecast_form': forecast_form,  # Pass the form to the template
     })
-
 # =============================================== #
