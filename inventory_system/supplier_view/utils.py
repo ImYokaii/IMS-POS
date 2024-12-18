@@ -1,50 +1,39 @@
 import os
 import random
 from datetime import datetime
+from django.db.models import Max
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
 # ===== AUTOMATIC PROCUREMENT NUMBER GENERATOR ===== #
-def generate_procurement_no(DocumentType):
+def generate_procurement_no(DocumentType, ModelClass):
+
+    if DocumentType == "QS":
+        max_number = ModelClass.objects.filter(quotation_no__startswith=DocumentType).aggregate(Max('quotation_no'))['quotation_no__max']
     
-    def get_rand():
-        min = int(os.environ.get('MINIMUM_INT'))
-        max = int(os.environ.get('MAXIMUM_INT'))
+    if DocumentType == "PI":
+        max_number = ModelClass.objects.filter(invoice_no__startswith=DocumentType).aggregate(Max('invoice_no'))['invoice_no__max']
 
-        code = random.randint(min, max)
+    if max_number:
+        current_number = int(max_number[len(DocumentType):])
+        new_number = current_number + 1
+    else:
+        new_number = 1
 
-        return code
-    
-    def get_month():
-        month = datetime.now()
-        code = month.strftime("%m")
+    formatted_number = f"{new_number:07d}"
 
-        return code
-    
-    def get_year():
-        year = datetime.now()
-        code = year.strftime("%Y")
+    procurement_no = f"{DocumentType}{formatted_number}"
 
-        return code
-
-    rand_code = get_rand()
-    mont_code = get_month()
-    year_code = get_year()
-    doc_code = DocumentType
-    invoice_no_arr = [doc_code, mont_code, year_code, rand_code]
-
-    invoice_no = ''.join(map(str, invoice_no_arr))
-
-    return invoice_no
+    return procurement_no
 # =============================================== #
 
 
 # ===== GENERATE ANOTHER UNIQUE PROCUREMENT NO. IF IT CATCHES AN EXISTING ONE  ===== #
 def generate_unique_procurement_no(DocumentType, ModelClass):
     while True:
-        procurement_no = generate_procurement_no(DocumentType)
+        procurement_no = generate_procurement_no(DocumentType, ModelClass)
         if not ModelClass.objects.filter(quotation_no=procurement_no).exists():
             return procurement_no
 # =============================================== #
@@ -62,8 +51,11 @@ def generate_unique_invoice_no(DocumentType, ModelClass):
 # ===== GENERATE ANOTHER UNIQUE PROCUREMENT NO. IF IT CATCHES AN EXISTING ONE  ===== #
 def create_digital_invoice(purchase_order):
     from .models import PurchaseInvoice, PurchaseInvoiceItem
+    from login_view.models import Supplier
 
     items = purchase_order.items.all()
+
+    supplier_info = Supplier.objects.get(user=purchase_order.supplier)
 
     if not items:
         print("No items found for this purchase order.")
@@ -72,6 +64,9 @@ def create_digital_invoice(purchase_order):
     invoice = PurchaseInvoice.objects.create(
         purchase_order=purchase_order,
         supplier=purchase_order.supplier,
+        supplier_company_name=supplier_info.supplier_company_name,
+        supplier_company_address=supplier_info.supplier_company_address,
+        supplier_company_contact=supplier_info.supplier_company_contact,
         total_amount_payable=purchase_order.total_amount,
         total_amount_payable_with_vat=purchase_order.total_amount_with_vat,
     )

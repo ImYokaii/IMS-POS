@@ -6,14 +6,14 @@ from django.db.models import Q
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import LoginForm, UserRegistrationForm
+from .forms import LoginForm, UserRegistrationForm, SupplierRegistrationForm
 from .models import UserPermission
 from .utils import check_logging_user_role, get_client_ip, increment_failed_login_attempts
 
 
 # ===== LOGIN PAGE ===== #
 def landing_page(request):
-    return HttpResponse("A Landing Page")
+    return render(request, "landing_page.html")
 
 
 # ===== WAIT FOR PERMISSION PAGE ===== #
@@ -66,8 +66,8 @@ def login_page(request):
 # =============================================== #
 
 
-# ===== SIGNUP PAGE ===== #
-def signup_page(request):
+# ===== EMPLOYEE SIGNUP PAGE ===== #
+def employee_signup_page(request):
     if request.user.is_authenticated:
         logout(request)
         return redirect("login")
@@ -77,7 +77,12 @@ def signup_page(request):
 
         if form.is_valid():
             user = form.save()
-            UserPermission.objects.create(user=user)
+
+            UserPermission.objects.create(
+                user=user,
+                role="Employee",
+                is_permitted=False)
+            
             return redirect("login")
         
         else:
@@ -86,7 +91,44 @@ def signup_page(request):
     else:
         form = UserRegistrationForm()
 
-    return render(request, "signup.html", {"form": form})
+    return render(request, "employee_signup_page.html", 
+        {"form": form,})
+# =============================================== #
+
+
+# ===== SUPPLIER SIGNUP PAGE ===== #
+def supplier_signup_page(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect("login")
+
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        supplier_form = SupplierRegistrationForm(request.POST)
+
+        if form.is_valid() and supplier_form.is_valid():
+            user = form.save()
+            supplier = supplier_form.save(commit=False)
+            supplier.user = user
+            supplier.save()
+
+            UserPermission.objects.create(
+                user=user,
+                role="Supplier",
+                is_permitted=False)
+            
+            return redirect("login")
+        
+        else:
+            return HttpResponse("Invalid Credentials")
+    
+    else:
+        form = UserRegistrationForm()
+        supplier_form = SupplierRegistrationForm
+
+    return render(request, "supplier_signup_page.html", 
+        {"form": form,
+         "supplier_form": supplier_form,})
 # =============================================== #
 
 

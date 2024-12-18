@@ -5,7 +5,6 @@ urlpatterns = [
     path('create_request_quotation/', views.create_request_quotation, name="create_request_quotation"),
     path('accepted_quotations_list/', views.accepted_quotations_list, name="accepted_quotations_list"),
     path('create_purchase_request_from_quotation/<int:quotation_id>/', views.create_purchase_request_from_quotation, name='create_purchase_request_from_quotation'),
-    # path('create_purchase_request/', views.create_purchase_request, name="create_purchase_request"),
     path('request_quotation_list/', views.request_quotation_list, name="request_quotation_list"),  
     path('request_quotation_detail/<int:quotation_id>/', views.request_quotation_detail, name="request_quotation_detail"),
     path('edit_unit_price_rq/<int:item_id>/', views.edit_unit_price_rq, name='edit_unit_price_rq'),

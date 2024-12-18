@@ -41,15 +41,19 @@ class RequestQuotationItem(models.Model):
 
 class PurchaseOrder(models.Model):
     supplier = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    prepared_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="prepared_by_employee")
     quotation_no = models.CharField(max_length=20, unique=True)
     buyer_company_name = models.CharField(max_length=255, default=STORE_COMPANY_NAME, null=True)
     buyer_address = models.TextField(default=STORE_ADDRESS, null=True)
+    buyer_contact = models.CharField(max_length=100, null=True)
+    supplier_company_name = models.CharField(max_length=255, null=True, blank=True)
+    supplier_company_address = models.CharField(max_length=255, null=True, blank=True)
+    supplier_company_contact = models.CharField(max_length=255, null=True, blank=True)
     date_ordered = models.DateField(auto_now_add=True)
     delivery_date = models.DateField(null=True)
     notes = models.TextField(blank=True, null=True)
     total_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
     total_amount_with_vat = models.DecimalField(max_digits=20, decimal_places=2, default=0.00)
-    approved_by = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, default="Pending")
 
     def __str__(self):

@@ -62,7 +62,7 @@ class PurchaseOrderForm(forms.ModelForm):
         model = PurchaseOrder
 
         fields = [
-            'delivery_date', 'notes'
+            'buyer_contact', 'delivery_date', 'notes'
         ]
         
         widgets = {

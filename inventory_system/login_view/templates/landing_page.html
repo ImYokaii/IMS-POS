@@ -1,0 +1,18 @@
+{% extends 'login_base.html' %}
+
+{% block title %}Welcome!{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow" style="width: 22rem; padding: 1.5rem;">
+        <div class="card-body text-center">
+            <h2 class="card-title mb-4">Welcome!</h2>
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'employee_signup_page' %}" class="btn btn-secondary">Sign Up as Employee</a>
+                <a href="{% url 'supplier_signup_page' %}" class="btn btn-secondary">Sign Up as Supplier</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
