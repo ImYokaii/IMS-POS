@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RequestQuotationForm, RequestQuotationItemForm, RequestQuotationItemFormSet, EditQuotationPriceForm, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
 from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
 from .utils import add_or_update_product
+from login_view.models import Supplier
 from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from django.http import HttpResponse
 from django.utils import timezone
@@ -31,6 +32,7 @@ def accepted_quotations_list(request):
 def create_purchase_request_from_quotation(request, quotation_id):
     quotation_submission = get_object_or_404(QuotationSubmission, id=quotation_id)
     items = quotation_submission.items.all()
+    supplier = Supplier.objects.get(user=quotation_submission.supplier)
 
     if request.method == "POST":
         form = PurchaseOrderForm(request.POST)
@@ -39,6 +41,12 @@ def create_purchase_request_from_quotation(request, quotation_id):
         if form.is_valid():
             purchase_order = form.save(commit=False)
             purchase_order.supplier = quotation_submission.supplier
+            purchase_order.prepared_by = request.user
+
+            purchase_order.supplier_company_name = supplier.supplier_company_name
+            purchase_order.supplier_company_address = supplier.supplier_company_address
+            purchase_order.supplier_company_contact = supplier.supplier_company_contact
+
             purchase_order.total_amount = 0
             
             purchase_order.save()
@@ -131,60 +139,6 @@ def create_request_quotation(request):
     return render(request, 'create_request_quotation.html', 
         {'form': form, 
          'formset': formset})
-
-
-# @login_required(login_url=settings.LOGIN_URL)
-# def create_purchase_request(request):
-#     vat = Decimal('0.00')
-    
-#     if request.method == "POST":
-#         form = PurchaseOrderForm(request.POST)
-#         formset = PurchaseOrderItemFormSet(request.POST)
-
-#         if form.is_valid() and formset.is_valid():
-#             purchase_order = form.save(commit=False)
-#             purchase_order.total_amount = Decimal('0.00')
-#             purchase_order.save()
-
-#             total_amount = Decimal('0.00')
-
-#             for item_form in formset:
-#                 if item_form.cleaned_data:
-#                     product_name = (
-#                         item_form.cleaned_data.get('product_name') or
-#                         item_form.cleaned_data.get('other_product_name')
-#                     )
-#                     quantity = item_form.cleaned_data.get('quantity')
-#                     unit_price = item_form.cleaned_data.get('unit_price')
-
-#                     if product_name and unit_price and quantity:
-#                         total_amount += unit_price * quantity
-                        
-#                         purchase_order_item = item_form.save(commit=False)
-#                         purchase_order_item.product_name = product_name
-#                         purchase_order_item.purchase_order = purchase_order
-#                         purchase_order_item.save()
-
-#             vat = total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
-#             total_amount_with_vat = total_amount + vat
-
-#             purchase_order.total_amount = total_amount
-#             purchase_order.total_amount_with_vat = total_amount_with_vat
-#             purchase_order.save()
-
-#             messages.success(request, "Purchase request was successfully submitted.")
-#             return redirect('purchase_request_list')
-
-#     else:
-#         form = PurchaseOrderForm()
-#         formset = PurchaseOrderItemFormSet(queryset=PurchaseOrderItem.objects.none())
-        
-#     return render(request, 'create_purchase_request.html', {
-#         'form': form,
-#         'formset': formset,
-#         'vat': vat,
-#     })
-
 
 
 @login_required(login_url=settings.LOGIN_URL)

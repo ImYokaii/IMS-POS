@@ -12,7 +12,7 @@ load_dotenv()
 class QuotationSubmissionForm(forms.ModelForm):
     class Meta:
         model = QuotationSubmission
-        fields = ['prepared_by', 'supplier_contact', 'terms_and_conditions', 'quote_valid_until']
+        fields = ['prepared_by', 'terms_and_conditions', 'quote_valid_until']
         
         widgets = {
             'quote_valid_until': forms.DateInput(attrs={'type': 'date'}),
@@ -45,4 +45,4 @@ class EditQuotationPriceForm(forms.ModelForm):
 class PurchaseInvoiceForm(forms.ModelForm):
     class Meta:
         model = PurchaseInvoice
-        fields = ['supplier', 'supplier_company_name', 'supplier_address', 'status']
+        fields = ['supplier', 'status']

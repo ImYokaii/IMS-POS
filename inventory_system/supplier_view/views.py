@@ -7,6 +7,7 @@ from .utils import create_digital_invoice
 from .forms import QuotationSubmissionForm, QuotationSubmissionItemForm, QuotationSubmissionItemFormSet, EditQuotationPriceForm, PurchaseInvoiceForm
 from .models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from procurement_view.models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
+from login_view.models import Supplier
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
@@ -240,6 +241,7 @@ def generate_invoice_pdf(request, po_id):
 def create_quotation_submission(request, quotation_id):
     quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
+    supplier = Supplier.objects.get(user=request.user)
 
     logged_user = request.user
     has_pending_submission = QuotationSubmission.objects.filter(
@@ -267,6 +269,9 @@ def create_quotation_submission(request, quotation_id):
         if form.is_valid() and formset.is_valid():
             quotation_submission = form.save(commit=False)
             quotation_submission.supplier = request.user
+            quotation_submission.supplier_company_name = supplier.supplier_company_name
+            quotation_submission.supplier_company_address = supplier.supplier_company_address
+            quotation_submission.supplier_company_contact = supplier.supplier_company_contact
             quotation_submission.request_quotation = quotation_request
             quotation_submission.save()
 

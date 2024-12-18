@@ -60,7 +60,32 @@
                     <h4 class="text-muted mb-4">Request Details</h4>
 
                     <div class="row g-4">
+                        <div class="col-4 mb-0">
+                            <label class="form-label fw-bold mb-0">Supplier Company Name:</label>
+                            <p class="form-control-plaintext">{{ quotation_submission.supplier_company_name }}</p>
+                        </div>
+                        
+                        <div class="col-4 mb-0">
+                            <label class="form-label fw-bold mb-0">Supplier Address</label>
+                            <p class="form-control-plaintext">{{ quotation_submission.supplier_company_address }}</p>
+                        </div>
+
+                        <div class="col-4 mb-3">
+                            <label class="form-label fw-bold mb-0">Supplier Contact</label>
+                            <p class="form-control-plaintext">{{ quotation_submission.supplier_company_contact }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
                         <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="buyer_contact" class="form-label fw-bold">Buyer Contact</label>
+                                <input type="text" class="form-control {% if form.buyer_contact.errors %}is-invalid{% endif %}" id="buyer_contact" name="buyer_contact" value="{{ form.buyer_contact.value|default:'' }}">
+                                {% if form.buyer_contact.errors %}
+                                    <div class="invalid-feedback">{{ form.buyer_contact.errors }}</div>
+                                {% endif %}
+                            </div>
+
                             <div class="mb-3">
                                 <label for="delivery_date" class="form-label fw-bold">Delivery Date</label>
                                 <input type="date" class="form-control {% if form.delivery_date.errors %}is-invalid{% endif %}" id="delivery_date" name="delivery_date" value="{{ form.delivery_date.value|default:'' }}">
@@ -72,10 +97,10 @@
 
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label for="note" class="form-label fw-bold">Note</label>
-                                <textarea class="form-control {% if form.note.errors %}is-invalid{% endif %}" id="note" name="note">{{ form.note.value|default:'' }}</textarea>
-                                {% if form.note.errors %}
-                                    <div class="invalid-feedback">{{ form.note.errors }}</div>
+                                <label for="notes" class="form-label fw-bold">Notes</label>
+                                <textarea class="form-control {% if form.note.errors %}is-invalid{% endif %}" id="notes" name="notes">{{ form.notes.value|default:'' }}</textarea>
+                                {% if form.notes.errors %}
+                                    <div class="invalid-feedback">{{ form.notes.errors }}</div>
                                 {% endif %}
                             </div>
                         </div>

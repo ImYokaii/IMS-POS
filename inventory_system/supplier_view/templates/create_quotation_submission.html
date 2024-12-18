@@ -90,16 +90,6 @@
                     </div>
 
                     <div class="row g-4">
-                        <div class="col-lg-6">
-                            <label for="supplier_contact" class="form-label fw-bold">Supplier Contact</label>
-                            <input type="text" class="form-control {% if form.supplier_contact.errors %}is-invalid{% endif %}" id="supplier_contact" name="supplier_contact" value="{{ form.supplier_contact.value|default:'' }}">
-                            {% if form.supplier_contact.errors %}
-                                <div class="invalid-feedback">{{ form.supplier_contact.errors }}</div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    <div class="row g-4">
                         <div class="col-lg-12">
                             <label for="terms_and_conditions" class="form-label fw-bold">Terms and Conditions</label>
                             <textarea class="form-control {% if form.terms_and_conditions.errors %}is-invalid{% endif %}" id="terms_and_conditions" name="terms_and_conditions">{{ form.terms_and_conditions.value|default:'' }}</textarea>

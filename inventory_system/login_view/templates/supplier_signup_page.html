@@ -1,0 +1,139 @@
+{% extends 'login_base.html' %}
+
+{% block title %}Supplier Sign Up Page{% endblock %}
+
+{% block content %}
+<div class="container-fluid" style="height: 100vh;">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card shadow-lg" style="width: 100%; max-width: 800px; border-radius: 12px; padding: 20px;">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4" style="font-size: 1.8rem; color: #333;">Supplier Sign Up</h1>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <!-- Column 1: Personal Details -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}">
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid username.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}">
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid first name.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}">
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid last name.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Column 2: Credentials -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{{ form.email.value|default:'' }}">
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid email address.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password1" class="form-label">Password</label>
+                                <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="password1" name="password1" value="{{ form.password1.value|default:'' }}">
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid password.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="password2" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="password2" name="password2" value="{{ form.password2.value|default:'' }}">
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback">
+                                        Passwords do not match.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <h4 class="text-center mb-3">Supplier Company Information</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="supplier_company_name" class="form-label">Company Name</label>
+                                <input type="text" class="form-control {% if supplier_form.supplier_company_name.errors %}is-invalid{% endif %}" id="supplier_company_name" name="supplier_company_name" value="{{ supplier_form.supplier_company_name.value|default:'' }}">
+                                {% if supplier_form.supplier_company_name.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid company name.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="supplier_company_address" class="form-label">Company Address</label>
+                                <input type="text" class="form-control {% if supplier_form.supplier_company_address.errors %}is-invalid{% endif %}" id="supplier_company_address" name="supplier_company_address" value="{{ supplier_form.supplier_company_address.value|default:'' }}">
+                                {% if supplier_form.supplier_company_address.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid company address.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="supplier_company_contact" class="form-label">Company Contact</label>
+                                <input type="text" class="form-control {% if supplier_form.supplier_company_contact.errors %}is-invalid{% endif %}" id="supplier_company_contact" name="supplier_company_contact" value="{{ supplier_form.supplier_company_contact.value|default:'' }}">
+                                {% if supplier_form.supplier_company_contact.errors %}
+                                    <div class="invalid-feedback">
+                                        Invalid contact details.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="captcha" class="form-label">Captcha</label>
+                        {{ form.captcha }}
+                        {% if form.captcha.errors %}
+                            <div class="invalid-feedback">
+                                Invalid captcha.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="btn-container text-center">
+                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; border-radius: 8px; background-color: #2575fc; border: none; padding: 10px;">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
