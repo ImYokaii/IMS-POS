@@ -92,6 +92,7 @@
 </div>
 
 <div class="text-center">
+    <a href="{% url 'download_request_quotation_pdf' request_quotation.id %}" class="btn btn-primary">Download PDF</a>
     <a href="{% url 'request_quotation_list' %}" class="btn btn-outline-secondary">Back to List</a>
 </div>
 {% endblock %}

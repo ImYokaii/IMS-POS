@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Quotation PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Request Quotation Details</h1>
+    <p><strong>Buyer Company:</strong> {{ request_quotation.buyer_company_name }}</p>
+    <p><strong>Buyer Address:</strong> {{ request_quotation.buyer_address }}</p>
+    <p><strong>Buyer Contact:</strong> {{ request_quotation.buyer_contact }}</p>
+    <p><strong>Request Quotation No.:</strong> {{ request_quotation.quotation_no }}</p>
+    <p><strong>Date Prepared:</strong> {{ request_quotation.date_prepared }}</p>
+    <p><strong>Quote Valid Until:</strong> {{ request_quotation.quote_valid_until }}</p>
+    <p><strong>Status:</strong> {{ request_quotation.status }}</p>
+    <p><strong>Terms and Conditions:</strong> {{ request_quotation.terms_and_conditions }}</p>
+
+    <h2>Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Measurement</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Price Valid Until</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.measurement }}</td>
+                <td>₱ {{ item.unit_price }}</td>
+                <td>₱ {{ item.total_price }}</td>
+                <td>₱ {{ item.price_valid_until }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p><strong>Total Amount:</strong> ₱ {{ request_quotation.total_amount }}</p>
+    <p><strong>VAT:</strong> ₱ {{ vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> ₱ {{ request_quotation.total_amount_with_vat }}</p>
+</body>
+</html>

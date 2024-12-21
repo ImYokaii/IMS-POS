@@ -1,4 +1,5 @@
 import os
+from io import BytesIO
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RequestQuotationForm, RequestQuotationItemForm, RequestQuotationItemFormSet, EditQuotationPriceForm, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
 from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
@@ -13,7 +14,8 @@ from dotenv import load_dotenv
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 load_dotenv()
 
@@ -189,6 +191,35 @@ def request_quotation_detail(request, quotation_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
+def download_request_quotation_pdf(request, quotation_id):
+    request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)
+    items = request_quotation.items.all()
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = request_quotation.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'request_quotation': request_quotation,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
+
+    template = get_template('download_request_quotation_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="request-quotation_{request_quotation.quotation_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
+
+
+@login_required(login_url=settings.LOGIN_URL)
 def edit_unit_price_rq(request, item_id):
     item = get_object_or_404(RequestQuotationItem, id=item_id)
 
@@ -282,6 +313,35 @@ def purchase_request_detail(request, pr_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
+def download_purchase_order_pdf(request, purchase_order_id):
+    purchase_order = get_object_or_404(PurchaseOrder, id=purchase_order_id)
+    items = purchase_order.items.all()
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = purchase_order.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'purchase_order': purchase_order,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
+
+    template = get_template('download_purchase_order_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="purchase-order_{purchase_order.quotation_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
+
+
+@login_required(login_url=settings.LOGIN_URL)
 def view_supplier_quotations(request, quotation_id):
     due_date = timezone.now().date().strftime('%Y-%m-%d')
     
@@ -329,6 +389,35 @@ def supplier_quotation_submission_detail(request, submission_id):
          'ACCEPTED_STATUS': ACCEPTED_STATUS,
          'REJECTED_STATUS': REJECTED_STATUS,
          'vat': vat,})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def download_supplier_quotation_pdf(request, quotation_id):
+    supplier_quotation = get_object_or_404(QuotationSubmission, id=quotation_id)
+    items = supplier_quotation.items.all()
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = supplier_quotation.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'supplier_quotation': supplier_quotation,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
+
+    template = get_template('download_supplier_quotation_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="supplier-quotation_{supplier_quotation.quotation_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -381,3 +470,32 @@ def purchase_invoice_detail(request, pi_id):
          'form': form,
          'items': items,
          'vat': vat,})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def download_purchase_invoice_pdf(request, purchase_invoice_id):
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=purchase_invoice_id)
+    items = purchase_invoice.items.all()
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = purchase_invoice.total_amount_payable * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'purchase_invoice': purchase_invoice,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
+
+    template = get_template('download_purchase_invoice_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="purchase-invoice_{purchase_invoice.invoice_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
