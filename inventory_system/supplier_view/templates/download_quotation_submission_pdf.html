@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request Quotation PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Request Quotation Details</h1>
+    <p><strong>Buyer Company:</strong> {{ quotation_submission.buyer_company_name }}</p>
+    <p><strong>Buyer Address:</strong> {{ quotation_submission.buyer_address }}</p>
+    <p><strong>Supplier Company:</strong> {{ quotation_submission.supplier_company_name }}</p>
+    <p><strong>Supplier Address:</strong> {{ quotation_submission.supplier_company_address }}</p>
+    <p><strong>Supplier Contact:</strong> {{ quotation_submission.supplier_company_contact }}</p>
+    <p><strong>Quotation No.:</strong> {{ quotation_submission.quotation_no }}</p>
+    <p><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
+    <p><strong>Prepared By:</strong> {{ quotation_submission.supplier }}</p>
+    <p><strong>Status:</strong> {{ quotation_submission.status }}</p>
+    <p><strong>Terms and Conditions:</strong> {{ quotation_submission.terms_and_conditions }}</p>
+
+    <h2>Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Measurement</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Price Valid Until</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.measurement }}</td>
+                <td>₱ {{ item.unit_price }}</td>
+                <td>₱ {{ item.total_price }}</td>
+                <td>₱ {{ item.price_valid_until }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p><strong>Total Amount:</strong> ₱ {{ quotation_submission.total_amount }}</p>
+    <p><strong>VAT:</strong> ₱ {{ vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> ₱ {{ quotation_submission.total_amount_with_vat }}</p>
+</body>
+</html>

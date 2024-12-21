@@ -89,6 +89,7 @@
 </div>
 
 <div class="text-center">
+    <a href="{% url 'download_purchase_invoices_pdf' purchase_invoice.id %}" class="btn btn-primary">Download PDF</a>
     <a href="{% url 'purchase_invoice_list' %}" class="btn btn-outline-secondary">Back to List</a>
 </div>
 {% endblock %}

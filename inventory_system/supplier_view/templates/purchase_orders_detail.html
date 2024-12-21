@@ -106,6 +106,7 @@
 </div>
 
 <div class="text-center">
+    <a href="{% url 'download_purchase_orders_pdf' purchase_order.id %}" class="btn btn-primary">Download PDF</a>
     <a href="{% url 'purchase_orders_list' %}" class="btn btn-outline-secondary">Back to List</a>
 </div>
 {% endblock %}

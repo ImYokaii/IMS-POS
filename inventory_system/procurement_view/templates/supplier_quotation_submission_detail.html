@@ -19,6 +19,7 @@
             <p class="small text-muted mb-2"><strong>Quotation No:</strong> {{ quotation_submission.quotation_no }}</p>
             <p class="small text-muted mb-2"><strong>Quote Valid Until:</strong> {{ quotation_submission.quote_valid_until }}</p>
             <p class="small text-muted mb-2"><strong>Prepared By:</strong> {{ quotation_submission.supplier }}</p>
+            <p class="small text-muted mb-2"><strong>Date Submitted:</strong> {{ quotation_submission.date_submitted }}</p>
             
         </div>
     </div>
@@ -45,6 +46,8 @@
                 <button type="submit" name="reject" class="btn btn-sm btn-danger">Reject</button>
             </form>
         {% endif %}
+        
+        <p class="small text-muted mb-2"><strong>terms_and_conditions:</strong> {{ quotation_submission.terms_and_conditions }}</p>
     </div>
 
 
@@ -94,6 +97,7 @@
 </div>
 
 <div class="text-center">
+    <a href="{% url 'download_supplier_quotation_pdf' quotation_submission.id %}" class="btn btn-primary">Download PDF</a> 
     <a href="{% url 'view_supplier_quotations' quotation_submission.request_quotation.id %}" class="btn btn-outline-secondary">Go Back</a>
 </div>
 {% endblock %}

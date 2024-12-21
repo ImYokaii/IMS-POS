@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Purchase Order PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Purchase Order Details</h1>
+    <p><strong>Buyer Company:</strong> {{ purchase_order.buyer_company_name }}</p>
+    <p><strong>Buyer Address:</strong> {{ purchase_order.buyer_address }}</p>
+    <p><strong>Buyer Contact:</strong> {{ purchase_order.buyer_contact }}</p>
+    <p><strong>Supplier Company:</strong> {{ purchase_order.supplier_company_name }}</p>
+    <p><strong>Supplier Address:</strong> {{ purchase_order.supplier_company_address }}</p>
+    <p><strong>Supplier Contact:</strong> {{ purchase_order.supplier_company_contact }}</p>
+    <p><strong>Purchase Order No.:</strong> {{ purchase_order.quotation_no }}</p>
+    <p><strong>Date Ordered:</strong> {{ purchase_order.date_ordered }}</p>
+    <p><strong>Delivery Date:</strong> {{ purchase_order.delivery_date }}</p>
+    <p><strong>Order Status:</strong> {{ purchase_order.status }}</p>
+    <p><strong>Notes:</strong> {{ purchase_order.notes }}</p>
+
+    <h2>Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Measurement</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.measurement }}</td>
+                <td>₱ {{ item.unit_price }}</td>
+                <td>₱ {{ item.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p><strong>Total Amount:</strong> ₱ {{ purchase_order.total_amount }}</p>
+    <p><strong>VAT:</strong> ₱ {{ vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> ₱ {{ purchase_order.total_amount_with_vat }}</p>
+</body>
+</html>

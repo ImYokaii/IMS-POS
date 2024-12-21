@@ -1,4 +1,5 @@
 import os
+from io import BytesIO
 from dotenv import load_dotenv
 from django.contrib import messages
 from django.utils import timezone
@@ -17,6 +18,8 @@ from django.contrib.auth.decorators import login_required
 from decimal import Decimal
 from django.utils import timezone
 from datetime import date
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 load_dotenv()
 
@@ -57,6 +60,35 @@ def request_quotations_detail(request, quotation_id):
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'vat': vat,})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def download_request_quotations_pdf(request, quotation_id):
+    request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)
+    items = request_quotation.items.all()
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = request_quotation.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'request_quotation': request_quotation,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
+
+    template = get_template('download_request_quotations_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="request-quotation_{request_quotation.quotation_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -121,6 +153,35 @@ def purchase_orders_detail(request, po_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
+def download_purchase_orders_pdf(request, purchase_order_id):
+    purchase_order = get_object_or_404(PurchaseOrder, id=purchase_order_id)
+    items = purchase_order.items.all()
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = purchase_order.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'purchase_order': purchase_order,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
+
+    template = get_template('download_purchase_orders_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="purchase-order_{purchase_order.quotation_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
+
+
+@login_required(login_url=settings.LOGIN_URL)
 def purchase_invoices_list(request):
     purchase_invoices = PurchaseInvoice.objects.filter(supplier=request.user)
 
@@ -170,70 +231,32 @@ def purchase_invoices_detail(request, pi_id):
         'items': items,})
 
 
-
 @login_required(login_url=settings.LOGIN_URL)
-def generate_invoice_pdf(request, po_id):
-    purchase_invoice = get_object_or_404(PurchaseInvoice, id=po_id)
-    items = PurchaseInvoiceItem.objects.filter(purchase_invoice=purchase_invoice)
+def download_purchase_invoices_pdf(request, purchase_invoice_id):
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=purchase_invoice_id)
+    items = purchase_invoice.items.all()
 
-    # Calculate total amount and VAT
-    total_amount = purchase_invoice.total_amount_payable
-    vat_rate = Decimal(float(os.environ.get('VALUE_ADDED_TAX')))  # e.g., 0.12 for 12% VAT
-    vat_amount = total_amount * vat_rate
-    total_with_vat = purchase_invoice.total_amount_payable_with_vat
-
-    # Set up PDF response
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="Invoice_{purchase_invoice.invoice_no}.pdf"'
-
-    # Create PDF document
-    pdf_canvas = canvas.Canvas(response, pagesize=A4)
-    pdf_canvas.setTitle(f"Invoice for Quotation {purchase_invoice.invoice_no}")
-
-    # Draw a header box
-    pdf_canvas.setStrokeColor(colors.black)
-    pdf_canvas.setLineWidth(1)
-    pdf_canvas.rect(0.5 * inch, 9.5 * inch, 7 * inch, 1 * inch)
-
-    # Write header information with improved spacing
-    pdf_canvas.drawString(1 * inch, 10 * inch, f"Invoice for Quotation: {purchase_invoice.invoice_no}")
-    
-    # General details in two columns
-    pdf_canvas.drawString(1 * inch, 9 * inch, f"Supplier: {purchase_invoice.supplier_company_name}")
-    pdf_canvas.drawString(4 * inch, 9 * inch, f"Date Issued: {purchase_invoice.date_issued.strftime('%Y-%m-%d')}")
-    pdf_canvas.drawString(1 * inch, 8.5 * inch, f"Supplier Address: {purchase_invoice.supplier_address}")
-    pdf_canvas.drawString(4 * inch, 8.5 * inch, f"Invoice Status: {purchase_invoice.status}")
-
-    # Draw item headers
-    pdf_canvas.drawString(1 * inch, 7 * inch, "Product Name")
-    pdf_canvas.drawString(3 * inch, 7 * inch, "Quantity")
-    pdf_canvas.drawString(4.5 * inch, 7 * inch, "Unit Price")
-    pdf_canvas.drawString(6 * inch, 7 * inch, "Total Price")
-    pdf_canvas.line(1 * inch, 6.8 * inch, 6.8 * inch, 6.8 * inch)
-
-    # List items in the purchase order
-    y = 6.5 * inch
     for item in items:
-        pdf_canvas.drawString(1 * inch, y, item.product_name)
-        pdf_canvas.drawString(3 * inch, y, str(item.quantity))
-        pdf_canvas.drawString(4.5 * inch, y, f"${item.unit_price:.2f}")
-        pdf_canvas.drawString(6 * inch, y, f"${item.quantity * item.unit_price:.2f}")
-        y -= 0.3 * inch  # Move down for the next line
+        item.total_price = item.unit_price * item.quantity
 
-    # Draw lines for each item
-    pdf_canvas.line(1 * inch, y + 0.15 * inch, 6.8 * inch, y + 0.15 * inch)
+    vat = purchase_invoice.total_amount_payable * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'purchase_invoice': purchase_invoice,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
 
-    # Add subtotal, VAT, and total with VAT
-    y -= 0.5 * inch
-    pdf_canvas.drawString(1 * inch, y, f"Subtotal: ${total_amount:.2f}")
-    y -= 0.3 * inch
-    pdf_canvas.drawString(1 * inch, y, f"VAT ({vat_rate * 100:.0f}%): ${vat_amount:.2f}")
-    y -= 0.3 * inch
-    pdf_canvas.drawString(1 * inch, y, f"Total (with VAT): ${total_with_vat:.2f}")
+    template = get_template('download_purchase_invoices_pdf.html')
+    html = template.render(context)
 
-    # Finalize and save PDF
-    pdf_canvas.showPage()
-    pdf_canvas.save()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="purchase-invoice_{purchase_invoice.invoice_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
     return response
 
 
@@ -361,6 +384,35 @@ def quotation_submission_detail(request, qs_id):
          'today': today,
          'items': items,
          'vat': vat,})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def download_quotation_submission_pdf(request, quotation_id):
+    quotation_submission = get_object_or_404(QuotationSubmission, id=quotation_id)
+    items = quotation_submission.items.all()
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = quotation_submission.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    context = {
+        'quotation_submission': quotation_submission,
+        'items': items,
+        'vat': vat,
+        'today': date.today(),
+    }
+
+    template = get_template('download_quotation_submission_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="quotation-submission_{quotation_submission.quotation_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
 
 
 @login_required(login_url=settings.LOGIN_URL)

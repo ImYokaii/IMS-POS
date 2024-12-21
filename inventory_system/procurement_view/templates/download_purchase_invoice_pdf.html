@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Purchase Order PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Purchase Order Details</h1>
+    <p><strong>Buyer Company:</strong> {{ purchase_invoice.buyer_company_name }}</p>
+    <p><strong>Buyer Address:</strong> {{ purchase_invoice.buyer_address }}</p>
+    <p><strong>Supplier Company:</strong> {{ purchase_invoice.supplier_company_name }}</p>
+    <p><strong>Supplier Address:</strong> {{ purchase_invoice.supplier_company_address }}</p>
+    <p><strong>Supplier Contact:</strong> {{ purchase_invoice.supplier_company_contact }}</p>
+    <p><strong>Invoice No.:</strong> {{ purchase_invoice.invoice_no }}</p>
+    <p><strong>Date Issued:</strong> {{ purchase_invoice.date_issued }}</p>
+    <p><strong>Prepared By:</strong> {{ purchase_invoice.supplier }}</p>
+    <p><strong>Order Status:</strong> {{ purchase_invoice.status }}</p>
+
+    <h2>Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Measurement</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.measurement }}</td>
+                <td>₱ {{ item.unit_price }}</td>
+                <td>₱ {{ item.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p><strong>Total Amount:</strong> ₱ {{ purchase_invoice.total_amount_payable }}</p>
+    <p><strong>VAT:</strong> ₱ {{ vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> ₱ {{ purchase_invoice.total_amount_payable_with_vat }}</p>
+</body>
+</html>
