@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 from inventory_view.models import Product
-from .models import SalesInvoice, SalesInvoiceItem
+from .models import SalesInvoice, SalesInvoiceItem, OfficialReceipt
 from .utils import search_products
 from decimal import Decimal
 from dotenv import load_dotenv
@@ -163,6 +163,16 @@ def finish_transaction(request, invoice_id):
                 return redirect('pos_page')
             product.quantity -= item.quantity
             product.save()
+
+    vat = invoice.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    OfficialReceipt.objects.create(
+        sales_invoice=invoice,
+        issued_by=request.user,
+        invoice_no=invoice.invoice_no,
+        vat=vat,
+        total_amount=invoice.total_amount,
+        total_amount_with_vat=invoice.total_amount_with_vat,
+    )
 
     messages.success(request, "Transaction finished successfully.")
     return redirect('pos_page')

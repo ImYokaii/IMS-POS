@@ -45,3 +45,24 @@ class SalesInvoiceItem(models.Model):
 
     def __str__(self):
         return f"Item for Transaction No: {self.transaction.transaction_no}"
+
+
+class OfficialReceipt(models.Model):
+    sales_invoice = models.ForeignKey('SalesInvoice', on_delete=models.CASCADE, related_name='official_receipt')
+    issued_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='issued_receipts')
+    invoice_no = models.CharField(max_length=50, unique=True)
+    company_name = models.CharField(max_length=255, default=STORE_COMPANY_NAME, null=True, blank=True)
+    company_address = models.TextField(default=STORE_ADDRESS, null=True, blank=True)
+    receipt_date = models.DateField(auto_now_add=True)
+    vat = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount_with_vat = models.DecimalField(max_digits=20, decimal_places=2)
+    
+    
+    def __str__(self):
+        return f"Receipt No: {self.invoice_no} for Invoice No: {self.sales_invoice.invoice_no}"
+
+    def save(self, *args, **kwargs):
+        if not self.invoice_no:
+            self.invoice_no = generate_unique_invoice_no("OR", OfficialReceipt)
+        super(OfficialReceipt, self).save(*args, **kwargs)
