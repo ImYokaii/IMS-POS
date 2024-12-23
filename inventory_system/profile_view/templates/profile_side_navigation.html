@@ -1,0 +1,32 @@
+<!-- Sidebar Navigation -->
+<nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
+    <div class="position-sticky">
+        <ul class="nav flex-column">
+        </ul>
+    </div>
+</nav>
+
+<!-- Custom CSS for Hover Animations and Styling -->
+<style>
+    .nav-link {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .nav-link:hover {
+        background-color: #0275d8; /* Lighter shade of blue on hover */
+        transform: scale(1.05); /* Slight scale up effect on hover */
+    }
+
+    .nav-link i {
+        transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover i {
+        transform: translateX(5px); /* Slight move of the icon to the right on hover */
+    }
+
+    /* Optional: Adjust font size for better readability */
+    .nav-link strong {
+        font-size: 1.1rem;
+    }
+</style>

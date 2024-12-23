@@ -30,5 +30,6 @@ urlpatterns = [
     path('procurement/', include("procurement_view.urls")),
     path('supplier/', include("supplier_view.urls")),
     path('pos/', include("pos_view.urls")),
+    path('profile/', include("profile_view.urls")),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
