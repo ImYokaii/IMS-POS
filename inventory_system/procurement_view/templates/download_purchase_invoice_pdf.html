@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Purchase Order PDF</title>
+    <title>{{ purchase_invoice.invoice_no }}</title>
     <style>
         body { font-family: Arial, sans-serif; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
@@ -10,16 +10,40 @@
     </style>
 </head>
 <body>
-    <h1>Purchase Order Details</h1>
-    <p><strong>Buyer Company:</strong> {{ purchase_invoice.buyer_company_name }}</p>
-    <p><strong>Buyer Address:</strong> {{ purchase_invoice.buyer_address }}</p>
-    <p><strong>Supplier Company:</strong> {{ purchase_invoice.supplier_company_name }}</p>
-    <p><strong>Supplier Address:</strong> {{ purchase_invoice.supplier_company_address }}</p>
-    <p><strong>Supplier Contact:</strong> {{ purchase_invoice.supplier_company_contact }}</p>
-    <p><strong>Invoice No.:</strong> {{ purchase_invoice.invoice_no }}</p>
-    <p><strong>Date Issued:</strong> {{ purchase_invoice.date_issued }}</p>
-    <p><strong>Prepared By:</strong> {{ purchase_invoice.supplier }}</p>
-    <p><strong>Order Status:</strong> {{ purchase_invoice.status }}</p>
+    <p>Software License Number: </p>
+    <p><strong>REPRINT</strong></p>
+    <h1><strong>Sales Invoice No.:</strong> {{ purchase_invoice.invoice_no }}</h1>
+    
+
+    <table>
+        <thead>
+            <th colspan="2"><center>Purchase Order Details</center></th>
+            
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Buyer Company:</strong> {{ purchase_invoice.buyer_company_name }}</td>
+                <td><strong>Supplier Company:</strong> {{ purchase_invoice.supplier_company_name }}</td>
+            </tr>
+            <tr>
+                <td rowspan="2"><strong>Buyer Address:</strong> {{ purchase_invoice.buyer_address }}</td>
+                <td><strong>Supplier Address:</strong> {{ purchase_invoice.supplier_company_address }}</td>
+            </tr>
+            <tr>
+                <td><strong>Supplier Contact:</strong> {{ purchase_invoice.supplier_company_contact }}</td>
+            </tr>
+            <tr>
+                <td><strong>Buyer VAT Reg TIN:</strong> 123-45-789-00000</td>
+                <td><strong>Supplier VAT Reg TIN:</strong> 123-45-789-00000 </td>
+            </tr>
+            <tr>
+                <td>Prepared By:</strong> {{ purchase_invoice.supplier }}</td>
+                <td>Order Status:</strong> {{ purchase_invoice.status }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
 
     <h2>Items</h2>
     <table>
@@ -38,15 +62,19 @@
                 <td>{{ item.product_name }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>{{ item.measurement }}</td>
-                <td>₱ {{ item.unit_price }}</td>
-                <td>₱ {{ item.total_price }}</td>
+                <td>Php {{ item.unit_price }}</td>
+                <td>Php {{ item.total_price }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     
-    <p><strong>Total Amount:</strong> ₱ {{ purchase_invoice.total_amount_payable }}</p>
-    <p><strong>VAT:</strong> ₱ {{ vat|floatformat:2 }}</p>
-    <p><strong>Total (VAT Inclusive):</strong> ₱ {{ purchase_invoice.total_amount_payable_with_vat }}</p>
+    <p><strong>Total Amount:</strong> Php {{ purchase_invoice.total_amount_payable }}</p>
+    <p><strong>VAT:</strong> Php {{ vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> Php {{ purchase_invoice.total_amount_payable_with_vat }}</p>
+
+    <p><strong>BIR Permit to Use:</strong> 123-45-789-00000 </p>
+    <p><b>Invoice is only valid for up to 5 Years upon Issuance.</b></p>
+    <p><strong>Date Issued:</strong> {{ purchase_invoice.date_issued }}</p>
 </body>
 </html>
