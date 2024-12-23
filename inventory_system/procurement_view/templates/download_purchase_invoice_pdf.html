@@ -33,8 +33,8 @@
                 <td><strong>Supplier Contact:</strong> {{ purchase_invoice.supplier_company_contact }}</td>
             </tr>
             <tr>
-                <td><strong>Buyer VAT Reg TIN:</strong> 123-45-789-00000</td>
-                <td><strong>Supplier VAT Reg TIN:</strong> 123-45-789-00000 </td>
+                <td><strong>Buyer VAT Reg TIN:</strong> 123-456-789-00000</td>
+                <td><strong>Supplier VAT Reg TIN:</strong> 123-456-789-00000 </td>
             </tr>
             <tr>
                 <td>Prepared By:</strong> {{ purchase_invoice.supplier }}</td>
@@ -73,7 +73,7 @@
     <p><strong>VAT:</strong> Php {{ vat|floatformat:2 }}</p>
     <p><strong>Total (VAT Inclusive):</strong> Php {{ purchase_invoice.total_amount_payable_with_vat }}</p>
 
-    <p><strong>BIR Permit to Use:</strong> 123-45-789-00000 </p>
+    <p><strong>BIR Permit to Use:</strong> 123-456-789-00000 </p>
     <p><b>Invoice is only valid for up to 5 Years upon Issuance.</b></p>
     <p><strong>Date Issued:</strong> {{ purchase_invoice.date_issued }}</p>
 </body>

@@ -38,16 +38,16 @@
                 <td>{{ item.product_name }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>{{ item.measurement }}</td>
-                <td>₱ {{ item.unit_price }}</td>
-                <td>₱ {{ item.total_price }}</td>
-                <td>₱ {{ item.price_valid_until }}</td>
+                <td>Php {{ item.unit_price }}</td>
+                <td>Php {{ item.total_price }}</td>
+                <td>Php {{ item.price_valid_until }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     
-    <p><strong>Total Amount:</strong> ₱ {{ request_quotation.total_amount }}</p>
-    <p><strong>VAT:</strong> ₱ {{ vat|floatformat:2 }}</p>
-    <p><strong>Total (VAT Inclusive):</strong> ₱ {{ request_quotation.total_amount_with_vat }}</p>
+    <p><strong>Total Amount:</strong> Php {{ request_quotation.total_amount }}</p>
+    <p><strong>VAT:</strong> Php {{ vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> Php {{ request_quotation.total_amount_with_vat }}</p>
 </body>
 </html>
