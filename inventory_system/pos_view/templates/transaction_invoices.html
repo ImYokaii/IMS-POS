@@ -1,0 +1,68 @@
+{% extends 'pos_base.html' %}
+
+{% block title %} POS Page {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="h2">Transactions List</p>
+    </div>
+
+    <div>
+        <form method="get" id="filterForm" class="mb-3">
+            <div class="d-flex flex-wrap gap-3">
+                <div class="mb-3">
+                    <label for="id_invoice_no" class="form-label"><strong>Invoice No:</strong></label>
+                    <input type="number" class="form-control" id="id_invoice_no" name="invoice_no">
+                </div>
+            
+                <div class="mb-3">
+                    <label for="id_receipt_date" class="form-label"><strong>Receipt Date:</strong></label>
+                    <input type="date" class="form-control" id="id_receipt_date" name="receipt_date">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        </form>
+    </div>
+    
+    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col" class="small">Invoice ID</th>
+                    <th scope="col" class="small">Employee</th>
+                    <th scope="col" class="small">Total Amount (VAT)</th>
+                    <th scope="col" class="small">Transaction Date</th>
+                    <th scope="col" class="small">Status</th>
+                    <th scope="col" class="text-center small">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in transaction_invoices %}
+                    <tr>
+                        <th scope="row" class="small">{{ invoice.invoice_no }}</td>
+                        <td scope="row" class="small">{{ invoice.employee_id.get_full_name }}</td>
+                        <td scope="row" class="small">₱ {{ invoice.total_amount_with_vat|floatformat:2 }}</td>
+                        <td scope="row" class="small">{{ invoice.transaction_date }}</td>
+                        <td scope="row" class="small">
+                            {% if invoice.status == "Paid" %}
+                                <span class="badge text-bg-success small">{{ invoice.status }}</span>
+                            {% elif invoice.status == "Voided" %}
+                                <span class="badge text-bg-danger small">{{ invoice.status }}</span>
+                            {% elif invoice.status == "Pending" %}
+                                <span class="badge text-bg-warning small">{{ invoice.status }}</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary small">{{ invoice.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td scope="row" class="text-center small">
+                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -34,7 +34,7 @@ def generate_unique_invoice_no(DocumentType, ModelClass):
 # =============================================== #
 
 
-# ===== SEARCH FILTER  ===== #
+# ===== SEARCH FILTER PRODUCTS ===== #
 def search_products(sku=None, name=None):
     from inventory_view.models import Product
 
@@ -46,6 +46,21 @@ def search_products(sku=None, name=None):
     if name:
         query = query.filter(name__icontains=name)
 
-    print(f"Prodcut searched: {query}")
+    return query
+# =============================================== #
+
+
+# ===== SEARCH FILTER INVOICES ===== #
+def search_filter_invoices(invoice_no=None, transaction_date=None):
+    from .models import SalesInvoice
+
+    query = SalesInvoice.objects.all()
+
+    if invoice_no:
+        query = query.filter(invoice_no__endswith=invoice_no)
+
+    if transaction_date:
+        query = query.filter(transaction_date=transaction_date)
+
     return query
 # =============================================== #
