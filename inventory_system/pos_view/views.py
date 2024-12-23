@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.urls import reverse
 from inventory_view.models import Product
 from .models import SalesInvoice, SalesInvoiceItem, OfficialReceipt
-from .utils import search_products
+from .utils import search_products, search_filter_invoices
+from .forms import InvoiceSearchForm
 from decimal import Decimal
 from dotenv import load_dotenv
 import os
@@ -177,11 +178,15 @@ def finish_transaction(request, invoice_id):
     messages.success(request, "Transaction finished successfully.")
     return redirect('pos_page')
 
-def completed_transactions(request):
-    # Filter the invoices that are completed (status = 'Paid')
-    completed_invoices = SalesInvoice.objects.filter(status='Paid').order_by('-transaction_date')
+def transaction_invoices(request):
+    form = InvoiceSearchForm(request.GET)
 
-    # Prepare to display the relevant data
-    return render(request, 'completed_transactions.html', {
-        'completed_invoices': completed_invoices,
+    if form.is_valid():
+        invoice_no = form.cleaned_data.get('invoice_no')
+        transaction_date = form.cleaned_data.get('receipt_date')
+
+        transaction_invoices = search_filter_invoices(invoice_no, transaction_date)
+
+    return render(request, 'transaction_invoices.html', {
+        'transaction_invoices': transaction_invoices,
     })
