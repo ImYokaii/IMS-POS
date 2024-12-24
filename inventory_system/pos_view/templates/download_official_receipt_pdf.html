@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ official_receipt.invoice_no }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <p>Software License Number: </p>
+    <h1><strong>Official Receipt No.:</strong> {{ official_receipt.invoice_no }}</h1>
+    <h1><strong>Sales Invoice No.:</strong> {{ official_receipt.sales_invoice.invoice_no }}</h1>
+    
+
+    <table>
+        <thead>
+            <th colspan="2"><center>Official Receipt Details:</center></th>
+            
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Company Name:</strong> {{ official_receipt.company_name }}</td>
+            </tr>
+            <tr>
+                <td rowspan="2"><strong>Company Address:</strong> {{ official_receipt.company_address }}</td>
+            </tr>
+            <tr>
+                <td><strong>Company VAT Reg TIN:</strong> 123-456-789-00000</td>
+            </tr>
+            <tr>
+                <td>Issued by:</strong> {{ official_receipt.issued_by }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p><strong>Total Amount:</strong> Php {{ official_receipt.total_amount }}</p>
+    <p><strong>VAT:</strong> Php {{ official_receipt.vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> Php {{ official_receipt.total_amount_with_vat }}</p>
+
+    <p><strong>BIR Permit to Use:</strong> 123-456-789-00000 </p>
+    <p><b>Invoice is only valid for up to 5 Years upon Issuance.</b></p>
+    <p><strong>Transaction Date:</strong> {{ official_receipt.receipt_date }}</p>
+</body>
+</html>
