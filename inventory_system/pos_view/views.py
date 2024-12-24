@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
@@ -9,6 +9,9 @@ from .forms import InvoiceSearchForm
 from decimal import Decimal
 from dotenv import load_dotenv
 import os
+from io import BytesIO
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 load_dotenv()
 
@@ -63,21 +66,20 @@ def add_item(request):
             return redirect('pos_page')
         
         invoice = SalesInvoice.objects.filter(status='Pending', employee_id=request.user).first()
-
         if not invoice:
             invoice = SalesInvoice.objects.create(employee_id=request.user, total_amount=0, cash_tendered=0, status='Pending')
 
-        existing_item = SalesInvoiceItem.objects.filter(invoice=invoice, product_name=product.name).first()
 
+        existing_item = SalesInvoiceItem.objects.filter(invoice=invoice, product_name=product.name).first()
         if existing_item:
             existing_item.quantity += quantity
             existing_item.save()
+
         else:
-            SalesInvoiceItem.objects.create(invoice=invoice, product_name=product.name, quantity=quantity, unit_price=product.selling_price)
+            SalesInvoiceItem.objects.create(invoice=invoice, product_name=product.name, quantity=quantity, measurement=product.measurement, unit_price=product.selling_price)
 
         return redirect('pos_page')
 
-    # Handle GET request for SKU submission
     sku = request.GET.get('sku')
     if sku:
         product = get_object_or_404(Product, sku=sku)
@@ -96,6 +98,7 @@ def complete_invoice(request):
 
     invoice.total_amount = total_amount
     invoice.total_amount_with_vat = total_with_vat
+    invoice.status = "Completed"
     invoice.save()
 
     return redirect('input_cash', invoice.id)
@@ -190,3 +193,83 @@ def transaction_invoices(request):
     return render(request, 'transaction_invoices.html', {
         'transaction_invoices': transaction_invoices,
     })
+
+
+def transaction_invoices_detail(request, invoice_id):
+    invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    items = SalesInvoiceItem.objects.filter(invoice=invoice)
+    
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = invoice.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    change = invoice.cash_tendered - invoice.total_amount_with_vat
+
+    if request.method == "POST":
+        if 'voided' in request.POST:
+            invoice.status = "Voided"
+            invoice.total_amount = 0
+            invoice.total_amount_with_vat = 0
+            invoice.save()
+
+        elif 'refunded' in request.POST:
+            invoice.status = "Refunded"
+            invoice.total_amount = 0
+            invoice.total_amount_with_vat = 0
+            invoice.cash_tendered = 0
+            invoice.save()
+
+    return render(request, 'transaction_invoices_detail.html', {
+        'invoice': invoice,
+        'items': items,
+        'vat': vat,
+        'change': change,
+    })
+
+
+def download_sales_invoice_pdf(request, invoice_id):
+    invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    items = SalesInvoiceItem.objects.filter(invoice=invoice)
+
+    for item in items:
+        item.total_price = item.unit_price * item.quantity
+
+    vat = invoice.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+
+    context = {
+        'invoice': invoice,
+        'items': items,
+        'vat': vat,
+    }
+
+    template = get_template('download_sales_invoice_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="sales-invoice_{invoice.invoice_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response
+
+
+def download_official_receipt_pdf(request, invoice_no):
+    official_receipt = get_object_or_404(OfficialReceipt, sales_invoice__invoice_no__endswith=invoice_no)
+
+    context = {
+        'official_receipt': official_receipt,
+    }
+
+    template = get_template('download_official_receipt_pdf.html')
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="official-receipt_{official_receipt.invoice_no}.pdf"'
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF', status=500)
+
+    return response

@@ -30,7 +30,7 @@
         <table class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th scope="col" class="small">Invoice ID</th>
+                    <th scope="col" class="small">Invoice No</th>
                     <th scope="col" class="small">Employee</th>
                     <th scope="col" class="small">Total Amount (VAT)</th>
                     <th scope="col" class="small">Transaction Date</th>
@@ -48,16 +48,18 @@
                         <td scope="row" class="small">
                             {% if invoice.status == "Paid" %}
                                 <span class="badge text-bg-success small">{{ invoice.status }}</span>
-                            {% elif invoice.status == "Voided" %}
-                                <span class="badge text-bg-danger small">{{ invoice.status }}</span>
+                            {% elif invoice.status == "Completed" %}
+                                <span class="badge text-bg-success small">{{ invoice.status }}</span>
                             {% elif invoice.status == "Pending" %}
                                 <span class="badge text-bg-warning small">{{ invoice.status }}</span>
+                            {% elif invoice.status == "Voided" %}
+                                <span class="badge text-bg-danger small">{{ invoice.status }}</span>
                             {% else %}
                                 <span class="badge text-bg-secondary small">{{ invoice.status }}</span>
                             {% endif %}
                         </td>
                         <td scope="row" class="text-center small">
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+                            <a href="{% url 'transaction_invoices_detail' invoice.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
                         </td>
                     </tr>
                 {% endfor %}

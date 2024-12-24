@@ -29,7 +29,7 @@ class SalesInvoice(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
-        return f"Transaction No: {self.transaction_no} - {self.company_name}"
+        return f"Invoice No: {self.invoice_no} - {self.company_name}"
     
     def save(self, *args, **kwargs):
         if not self.invoice_no:
@@ -41,10 +41,11 @@ class SalesInvoiceItem(models.Model):
     invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='invoice_items')
     product_name = models.CharField(max_length=255,null=True, blank=True)
     quantity = models.PositiveIntegerField()
+    measurement = models.CharField(max_length=50, null=True, blank=True, default="No Measurement")
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f"Item for Transaction No: {self.transaction.transaction_no}"
+        return f"Item for Invoice No: {self.invoice.invoice_no}"
 
 
 class OfficialReceipt(models.Model):

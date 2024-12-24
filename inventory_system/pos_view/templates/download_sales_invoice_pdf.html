@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ invoice.invoice_no }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <p>Software License Number: </p>
+    <h1><strong>Sales Invoice No.:</strong> {{ invoice.invoice_no }}</h1>
+    
+
+    <table>
+        <thead>
+            <th colspan="2"><center>Sales Invoice Details:</center></th>
+            
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Company Name:</strong> {{ invoice.company_name }}</td>
+            </tr>
+            <tr>
+                <td rowspan="2"><strong>Company Address:</strong> {{ invoice.company_address }}</td>
+            </tr>
+            <tr>
+                <td><strong>Company Contact:</strong> {{ invoice.company_contact }}</td>
+            </tr>
+            <tr>
+                <td><strong>Company VAT Reg TIN:</strong> 123-456-789-00000</td>
+            </tr>
+            <tr>
+                <td>Cashier:</strong> {{ invoice.employee_id }}</td>
+                <td>Status:</strong> {{ invoice.status }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+
+    <h2>Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Measurement</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.measurement }}</td>
+                <td>Php {{ item.unit_price }}</td>
+                <td>Php {{ item.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <p><strong>Total Amount:</strong> Php {{ invoice.total_amount }}</p>
+    <p><strong>VAT:</strong> Php {{ vat|floatformat:2 }}</p>
+    <p><strong>Total (VAT Inclusive):</strong> Php {{ invoice.total_amount_with_vat }}</p>
+
+    <p><strong>BIR Permit to Use:</strong> 123-456-789-00000 </p>
+    <p><b>Invoice is only valid for up to 5 Years upon Issuance.</b></p>
+    <p><strong>Transaction Date:</strong> {{ invoice.transaction_date }}</p>
+</body>
+</html>
