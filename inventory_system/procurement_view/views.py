@@ -17,6 +17,7 @@ from django.contrib import messages
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.core.paginator import Paginator
+from .utils import sign_id, unsign_id
 
 
 load_dotenv()
@@ -26,6 +27,9 @@ load_dotenv()
 def accepted_quotations_list(request):
     due_date = timezone.now().date().strftime('%Y-%m-%d')
     accepted_quotations = QuotationSubmission.objects.filter(status="Accepted", quote_valid_until__gte=due_date).order_by('-quotation_no')
+
+    for quotation in accepted_quotations:
+        quotation.signed_id = sign_id(quotation.id)
 
     paginator = Paginator(accepted_quotations, 10)
     page_number = request.GET.get('page', 1)
@@ -37,7 +41,11 @@ def accepted_quotations_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def create_purchase_request_from_quotation(request, quotation_id):
+def create_purchase_request_from_quotation(request, signed_id):
+    quotation_id = unsign_id(signed_id)
+    if quotation_id is None:
+        return HttpResponse("Invalid request", status=400)
+
     quotation_submission = get_object_or_404(QuotationSubmission, id=quotation_id)
     items = quotation_submission.items.all()
     supplier = Supplier.objects.get(user=quotation_submission.supplier)
@@ -155,6 +163,9 @@ def request_quotation_list(request):
     request_quotations = RequestQuotation.objects.all()
     quotations = request_quotations.order_by('-quotation_no')
 
+    for quotation in quotations:
+        quotation.signed_id = sign_id(quotation.id)
+
     paginator = Paginator(quotations, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -170,8 +181,12 @@ def request_quotation_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def request_quotation_detail(request, quotation_id):
-    request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)  
+def request_quotation_detail(request, signed_id):
+    quotation_id = unsign_id(signed_id)
+    if quotation_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
+    request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)
     items = request_quotation.items.all()
 
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
@@ -190,7 +205,7 @@ def request_quotation_detail(request, quotation_id):
         item = get_object_or_404(RequestQuotationItem, id=item_id)
         
         if item.price_valid_until and item.price_valid_until <= today:
-            return redirect('edit_unit_price_rq', item_id=item.id)
+            return redirect('edit_unit_price_rq', signed_id=signed_id)
 
     return render(request, 'request_quotation_detail.html', 
         {'request_quotation': request_quotation,
@@ -231,8 +246,12 @@ def download_request_quotation_pdf(request, quotation_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def edit_unit_price_rq(request, item_id):
-    item = get_object_or_404(RequestQuotationItem, id=item_id)
+def edit_unit_price_rq(request, signed_id):
+    item_id = unsign_id(signed_id)
+    if item_id is None:
+        return HttpResponse("Invalid request", status=400)
+        
+    item = get_object_or_404(RequestQuotationItem, request_quotation__id=item_id)
 
     if request.method == 'POST':
         form = EditQuotationPriceForm(request.POST, instance=item)
@@ -272,6 +291,9 @@ def purchase_request_list(request):
 
     purchase_request = PurchaseOrder.objects.all().order_by('-quotation_no')
 
+    for quotation in purchase_request:
+        quotation.signed_id = sign_id(quotation.id)
+
     paginator = Paginator(purchase_request, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -284,7 +306,11 @@ def purchase_request_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def purchase_request_detail(request, pr_id):
+def purchase_request_detail(request, signed_id):
+    pr_id = unsign_id(signed_id)
+    if pr_id is None:
+        return HttpResponse("Invalid request", status=400)
+
     STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
@@ -357,7 +383,11 @@ def download_purchase_order_pdf(request, purchase_order_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def view_supplier_quotations(request, quotation_id):
+def view_supplier_quotations(request, signed_id):
+    quotation_id = unsign_id(signed_id)
+    if quotation_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
     due_date = timezone.now().date().strftime('%Y-%m-%d')
     
     try:
@@ -366,6 +396,9 @@ def view_supplier_quotations(request, quotation_id):
         request_quotation = None
 
     supplier_quotations = QuotationSubmission.objects.filter(request_quotation=request_quotation, quote_valid_until__gte=due_date).order_by('-quotation_no')
+
+    for quotation in supplier_quotations:
+        quotation.signed_id = sign_id(quotation.id)
 
     paginator = Paginator(supplier_quotations, 10)
     page_number = request.GET.get('page', 1)
@@ -376,9 +409,15 @@ def view_supplier_quotations(request, quotation_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def supplier_quotation_submission_detail(request, submission_id):
+def supplier_quotation_submission_detail(request, signed_id):
+    submission_id = unsign_id(signed_id)
+    if submission_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
     items = quotation_submission.items.all()
+
+    quotation_submission.request_quotation.signed_id = sign_id(quotation_submission.request_quotation.id)
 
     STATUS = os.environ.get('QS_STATUS_CHOICES').split(',')
 
@@ -442,6 +481,10 @@ def download_supplier_quotation_pdf(request, quotation_id):
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_invoice_list(request):
     purchase_invoices = PurchaseInvoice.objects.all().order_by('-invoice_no')
+
+    for invoice in purchase_invoices:
+        invoice.signed_id = sign_id(invoice.id)
+
     paginator = Paginator(purchase_invoices, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -459,7 +502,11 @@ def purchase_invoice_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def purchase_invoice_detail(request, pi_id):
+def purchase_invoice_detail(request, signed_id):
+    pi_id = unsign_id(signed_id)
+    if pi_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
     items = purchase_invoice.items.all()
 

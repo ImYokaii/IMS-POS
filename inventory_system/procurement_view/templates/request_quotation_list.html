@@ -41,8 +41,8 @@
                             {% endif %}
                         </td>
                         <td scope="row" class="text-center small">
-                            <a href="{% url 'request_quotation_detail' quotation.id %}" class="btn btn-info btn-sm me-2">Details</a>
-                            <a href="{% url 'view_supplier_quotations' quotation.id %}" class="btn btn-primary btn-sm">Submissions</a>
+                            <a href="{% url 'request_quotation_detail' quotation.signed_id %}" class="btn btn-info btn-sm me-2">Details</a>
+                            <a href="{% url 'view_supplier_quotations' quotation.signed_id %}" class="btn btn-primary btn-sm">Submissions</a>
                         </td>
                     </tr>
                 {% empty %}

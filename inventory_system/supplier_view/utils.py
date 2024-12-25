@@ -79,3 +79,18 @@ def create_digital_invoice(purchase_order):
             quantity=item.quantity,
             unit_price=item.unit_price
         )
+
+
+# ===== URL SIGNER ===== #
+from django.core.signing import Signer, BadSignature
+signer = Signer()
+
+def sign_id(id):
+    return signer.sign(id)
+
+def unsign_id(signed_id):
+    try:
+        return signer.unsign(signed_id)
+    except BadSignature:
+        return None
+# =============================================== #

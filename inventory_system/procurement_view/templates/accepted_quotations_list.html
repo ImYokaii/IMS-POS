@@ -42,7 +42,7 @@
                         </ul>
                     </td>
                     <td class="text-center small">
-                        <a href="{% url 'create_purchase_request_from_quotation' quotation.id %}" class="btn btn-outline-primary btn-sm">Create Purchase Request</a>
+                        <a href="{% url 'create_purchase_request_from_quotation' quotation.signed_id %}" class="btn btn-outline-primary btn-sm">Create Purchase Request</a>
                     </td>
                 </tr>
                 {% empty %}
