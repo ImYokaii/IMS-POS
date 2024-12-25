@@ -12,6 +12,8 @@ import os
 from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.core.paginator import Paginator
+
 
 load_dotenv()
 
@@ -190,8 +192,17 @@ def transaction_invoices(request):
 
         transaction_invoices = search_filter_invoices(invoice_no, transaction_date)
 
+        transaction_invoices = (
+            search_filter_invoices(invoice_no, transaction_date)
+            .order_by('-invoice_no')
+        )
+
+    paginator = Paginator(transaction_invoices, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'transaction_invoices.html', {
-        'transaction_invoices': transaction_invoices,
+        'page_obj': page_obj,
     })
 
 

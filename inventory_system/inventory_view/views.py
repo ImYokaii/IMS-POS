@@ -14,6 +14,7 @@ from .utils import search_filter_products, search_filter_waste_products, restock
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.core.paginator import Paginator
 
 
 load_dotenv()
@@ -32,9 +33,16 @@ def product_list(request):
         category = form.cleaned_data.get('category')
         status = PRODUCT_STATUS[0].strip()
 
-        products = search_filter_products(sku, name, category, status)
+        products = (
+            search_filter_products(sku, name, category, status)
+            .order_by('name')
+        )
 
-    return render(request, 'product_list.html', {'form': form, 'products': products})
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'product_list.html', {'form': form, 'page_obj': page_obj})
 # =============================================== #
 
 
@@ -95,9 +103,16 @@ def restock_product_list(request):
         category = form.cleaned_data.get('category')
         status = PRODUCT_STATUS[0].strip()
 
-        products = search_filter_products(sku, name, category, status)
+        products = (
+            search_filter_products(sku, name, category, status)
+            .order_by('name')
+        )
 
-    return render(request, 'restock_product_list.html', {'form': form, 'products': products})
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'restock_product_list.html', {'form': form, 'page_obj': page_obj})
 # =============================================== #
 
 
@@ -144,9 +159,16 @@ def to_waste_product_list(request):
         category = form.cleaned_data.get('category')
         status = PRODUCT_STATUS[0].strip()
 
-        products = search_filter_products(sku, name, category, status)
+        products = (
+            search_filter_products(sku, name, category, status)
+            .order_by('name')
+        )
 
-    return render(request, 'to_waste_product_list.html', {'form': form, 'products': products})
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'to_waste_product_list.html', {'form': form, 'page_obj': page_obj})
 # =============================================== #
 
 
@@ -199,9 +221,16 @@ def edit_product_list(request):
         category = form.cleaned_data.get('category')
         status = PRODUCT_STATUS[0].strip()
 
-        products = search_filter_products(sku, name, category, status)
+        products = (
+            search_filter_products(sku, name, category, status)
+            .order_by('name')
+        )
 
-    return render(request, 'edit_product_list.html', {'form': form, 'products': products})
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'edit_product_list.html', {'form': form, 'page_obj': page_obj})
 # =============================================== #
 
 

@@ -37,6 +37,8 @@
                 <span class="badge text-bg-primary">{{ purchase_order.status }}</span>
             {% elif purchase_order.status == "Received" %}
                 <span class="badge text-bg-success">{{ purchase_order.status }}</span>
+            {% elif purchase_order.status == "Cancelled" %}
+                <span class="badge text-bg-secondary">{{ purchase_order.status }}</span>
             {% else %}
                 <span class="badge bg-light text-dark">Unavailable</span>
             {% endif %}

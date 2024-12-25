@@ -21,7 +21,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for po in purchase_orders %}
+                {% for po in page_obj %}
                     <tr>
                         <th scope="row" class="small">{{ po.quotation_no }}</th>
                         <td scope="row" class="small">{{ po.date_ordered }}</td>
@@ -51,5 +51,20 @@
                         <td colspan=6 class="text-center">No purchase orders available.</td>
                     </tr>
                 {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="text-primary small">Previous</a>
+        {% endif %}
+    
+        <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="text-primary small">Next</a>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
