@@ -39,7 +39,7 @@
                             {% endif %}
                         </td>
                         <td scope="row" class="text-center small">
-                            <a href="{% url 'purchase_invoice_detail' pi.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            <a href="{% url 'purchase_invoice_detail' pi.signed_id %}" class="btn btn-outline-primary btn-sm">View Details</a>
                         </td>
                     </tr>
                 {% empty %}

@@ -55,3 +55,18 @@ def add_or_update_product(product_name, quantity, cost_price):
             cost_price=cost_price,
         )
 # =============================================== #
+
+
+# ===== URL SIGNER ===== #
+from django.core.signing import Signer, BadSignature
+signer = Signer()
+
+def sign_id(id):
+    return signer.sign(id)
+
+def unsign_id(signed_id):
+    try:
+        return signer.unsign(signed_id)
+    except BadSignature:
+        return None
+# =============================================== #
