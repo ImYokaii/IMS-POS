@@ -3,50 +3,62 @@
 {% block title %}View Request Quotations{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <p class="h2">Request Quotations</p>
-        </div>
-
-        <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th scope="col" class="small">Quotation No.</th>
-                        <th scope="col" class="small">Prepared By</th>
-                        <th scope="col" class="small">Total Amount (VAT Inclusive)</th>
-                        <th scope="col" class="small">Valid Until</th>
-                        <th scope="col" class="small">Status</th>
-                        <th scope="col" class="text-center small">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for quotation in request_quotations %}
-                        <tr>
-                            <th scope="row" class="small">{{ quotation.quotation_no }}</th>
-                            <td class="small">{{ quotation.employee }}</td>
-                            <td class="small">₱ {{ quotation.total_amount_with_vat }}</td>
-                            <td class="small">{{ quotation.quote_valid_until }}</td>
-                            <td class="small">
-                                {% if quotation.status == "Ongoing" %}
-                                    <span class="badge text-bg-success small">{{ quotation.status }}</span>
-                                {% elif quotation.status == "Danger" %}
-                                    <span class="badge text-bg-warning small">{{ quotation.status }}</span>
-                                {% else %}
-                                    <span class="badge text-bg-secondary small">Unavailable</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-center small">
-                                <a href="{% url 'request_quotations_detail' quotation.id %}" class="btn btn-info btn-sm">Details</a>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center text-muted small">No request quotations available.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p class="h2">Request Quotations</p>
     </div>
+
+    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col" class="small">Quotation No.</th>
+                    <th scope="col" class="small">Prepared By</th>
+                    <th scope="col" class="small">Total Amount (VAT Inclusive)</th>
+                    <th scope="col" class="small">Valid Until</th>
+                    <th scope="col" class="small">Status</th>
+                    <th scope="col" class="text-center small">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quotation in page_obj %}
+                    <tr>
+                        <th scope="row" class="small">{{ quotation.quotation_no }}</th>
+                        <td class="small">{{ quotation.employee }}</td>
+                        <td class="small">₱ {{ quotation.total_amount_with_vat }}</td>
+                        <td class="small">{{ quotation.quote_valid_until }}</td>
+                        <td class="small">
+                            {% if quotation.status == "Ongoing" %}
+                                <span class="badge text-bg-success small">{{ quotation.status }}</span>
+                            {% elif quotation.status == "Danger" %}
+                                <span class="badge text-bg-warning small">{{ quotation.status }}</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary small">Unavailable</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center small">
+                            <a href="{% url 'request_quotations_detail' quotation.id %}" class="btn btn-info btn-sm">Details</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted small">No request quotations available.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="text-primary small">Previous</a>
+        {% endif %}
+    
+        <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="text-primary small">Next</a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

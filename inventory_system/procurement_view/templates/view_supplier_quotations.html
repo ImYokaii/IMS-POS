@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for quotation in supplier_quotations %}
+                {% for quotation in page_obj %}
                     <tr>
                         <td scope="row" class="small">{{ quotation.quotation_no }}</td>
                         <td scope="row" class="small">{{ quotation.prepared_by }}</td>
@@ -47,6 +47,18 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="text-primary small">Previous</a>
+        {% endif %}
+    
+        <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="text-primary small">Next</a>
+        {% endif %}
     </div>
 </div>
 

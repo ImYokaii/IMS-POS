@@ -20,6 +20,8 @@ from django.utils import timezone
 from datetime import date
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.core.paginator import Paginator
+
 
 load_dotenv()
 
@@ -31,10 +33,14 @@ def request_quotations_list(request):
     STATUS_1 = STATUS[1]
 
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS_0)
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS_0).order_by('-quotation_no')
+
+    paginator = Paginator(request_quotations, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'request_quotations_list.html', 
-        {'request_quotations': request_quotations,
+        {'page_obj': page_obj,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,})
 
@@ -93,7 +99,11 @@ def download_request_quotations_pdf(request, quotation_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_orders_list(request):
-    purchase_orders = PurchaseOrder.objects.all()
+    purchase_orders = PurchaseOrder.objects.all().order_by('-quotation_no')
+
+    paginator = Paginator(purchase_orders, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
@@ -101,7 +111,7 @@ def purchase_orders_list(request):
     STATUS_2 = STATUS[2]
 
     return render(request, 'purchase_orders_list.html', 
-        {'purchase_orders': purchase_orders,
+        {'page_obj': page_obj,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2})
@@ -183,7 +193,11 @@ def download_purchase_orders_pdf(request, purchase_order_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_invoices_list(request):
-    purchase_invoices = PurchaseInvoice.objects.filter(supplier=request.user)
+    purchase_invoices = PurchaseInvoice.objects.filter(supplier=request.user).order_by('-invoice_no')
+
+    paginator = Paginator(purchase_invoices, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
@@ -191,7 +205,7 @@ def purchase_invoices_list(request):
     STATUS_2 = STATUS[2]
 
     return render(request, 'purchase_invoices_list.html', 
-        {'purchase_invoices': purchase_invoices,
+        {'page_obj': page_obj,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2})
@@ -218,7 +232,10 @@ def purchase_invoices_detail(request, pi_id):
             purchase_invoice.save()
         elif 'voided' in request.POST:
             purchase_invoice.status = STATUS_2
+            purchase_order = purchase_invoice.purchase_order
+            purchase_order.status = "Cancelled"
             purchase_invoice.save()
+            purchase_order.save()
 
         return redirect('purchase_invoices_detail', pi_id=pi_id)
 
@@ -301,10 +318,6 @@ def create_quotation_submission(request, quotation_id):
             total_amount = 0
             for form in formset:
                 if form.cleaned_data:
-                    # Skip forms where all relevant fields are None, blank, or null
-                    # if not any(value for key, value in form.cleaned_data.items() if key != 'DELETE'):
-                    #     continue
-                    
                     quotation_submission_item = form.save(commit=False)
                     quotation_submission_item.quotation_submission = quotation_submission
                     quotation_submission_item.save()
@@ -338,7 +351,11 @@ def create_quotation_submission(request, quotation_id):
 @login_required(login_url=settings.LOGIN_URL)
 def quotation_submission_list(request):
     logged_user = request.user
-    quotation_submission = QuotationSubmission.objects.filter(supplier=logged_user)
+    quotation_submission = QuotationSubmission.objects.filter(supplier=logged_user).order_by('-quotation_no')
+
+    paginator = Paginator(quotation_submission, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     STATUS = os.environ.get('QS_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
@@ -346,7 +363,7 @@ def quotation_submission_list(request):
     STATUS_2 = STATUS[2]
 
     return render(request, 'quotation_submission_list.html', 
-        {'quotation_submission': quotation_submission,
+        {'page_obj': page_obj,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2})

@@ -16,6 +16,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.core.paginator import Paginator
+
 
 load_dotenv()
 
@@ -23,10 +25,14 @@ load_dotenv()
 @login_required(login_url=settings.LOGIN_URL)
 def accepted_quotations_list(request):
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    accepted_quotations = QuotationSubmission.objects.filter(status="Accepted", quote_valid_until__gte=due_date)
+    accepted_quotations = QuotationSubmission.objects.filter(status="Accepted", quote_valid_until__gte=due_date).order_by('-quotation_no')
+
+    paginator = Paginator(accepted_quotations, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'accepted_quotations_list.html', {
-        'accepted_quotations': accepted_quotations,
+        'page_obj': page_obj,
     })
 
 
@@ -146,14 +152,19 @@ def create_request_quotation(request):
 @login_required(login_url=settings.LOGIN_URL)
 def request_quotation_list(request):
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    quotations = RequestQuotation.objects.all()
+    request_quotations = RequestQuotation.objects.all()
+    quotations = request_quotations.order_by('-quotation_no')
+
+    paginator = Paginator(quotations, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
 
     return render(request, 'request_quotation_list.html', 
-        {'quotations': quotations,
+        {'page_obj': page_obj,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1})
 
@@ -259,10 +270,14 @@ def purchase_request_list(request):
     STATUS_1 = STATUS[1]
     STATUS_2 = STATUS[2]
 
-    purchase_request = PurchaseOrder.objects.all()
+    purchase_request = PurchaseOrder.objects.all().order_by('-quotation_no')
+
+    paginator = Paginator(purchase_request, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'purchase_request_list.html', 
-        {'purchase_request': purchase_request,
+        {'page_obj': page_obj,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2})
@@ -350,10 +365,14 @@ def view_supplier_quotations(request, quotation_id):
     except RequestQuotation.DoesNotExist:
         request_quotation = None
 
-    supplier_quotations = QuotationSubmission.objects.filter(request_quotation=request_quotation, quote_valid_until__gte=due_date)
+    supplier_quotations = QuotationSubmission.objects.filter(request_quotation=request_quotation, quote_valid_until__gte=due_date).order_by('-quotation_no')
+
+    paginator = Paginator(supplier_quotations, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'view_supplier_quotations.html',
-        {'supplier_quotations': supplier_quotations,})
+        {'page_obj': page_obj,})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -422,7 +441,10 @@ def download_supplier_quotation_pdf(request, quotation_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_invoice_list(request):
-    purchase_invoices = PurchaseInvoice.objects.all()
+    purchase_invoices = PurchaseInvoice.objects.all().order_by('-invoice_no')
+    paginator = Paginator(purchase_invoices, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
 
     STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
@@ -430,7 +452,7 @@ def purchase_invoice_list(request):
     STATUS_2 = STATUS[2]
 
     return render(request, 'purchase_invoice_list.html', 
-        {'purchase_invoices': purchase_invoices,
+        {'page_obj': page_obj,
          'STATUS_0': STATUS_0,
          'STATUS_1': STATUS_1,
          'STATUS_2': STATUS_2})

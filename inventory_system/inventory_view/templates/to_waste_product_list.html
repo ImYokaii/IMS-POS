@@ -69,8 +69,6 @@
         </a>
     </div>
     
-
-
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover table-sm table-custom">
             <thead>
@@ -85,7 +83,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for product in products %}
+                {% for product in page_obj %}
                 <tr>
                     <td class="text-truncate" style="max-width: 35px;">{{ product.sku }}</td>
                     <td class="text-truncate" style="max-width: 100px;">{{ product.name }}</td>
@@ -104,6 +102,18 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="text-primary small">Previous</a>
+        {% endif %}
+    
+        <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="text-primary small">Next</a>
+        {% endif %}
     </div>
 
 
