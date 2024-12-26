@@ -18,10 +18,10 @@ from django.core.paginator import Paginator
 load_dotenv()
 
 def pos_page(request):
-    invoice = SalesInvoice.objects.filter(status='Pending').first()
+    invoice = SalesInvoice.objects.filter().order_by('-id').first()
     
-    if not invoice:
-        invoice = SalesInvoice.objects.create(employee_id=request.user, total_amount=0, cash_tendered=0, status='Pending')
+    if invoice is None or invoice.status in ["Paid", "Voided", "Refunded"]:
+        invoice = SalesInvoice.objects.create(employee_id=None, total_amount=0, cash_tendered=0, status='Pending')
 
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
     total_amount = sum(item.unit_price * item.quantity for item in items)
@@ -67,10 +67,7 @@ def add_item(request):
             messages.error(request, "This product cannot be added to the invoice because its selling price is 0.")
             return redirect('pos_page')
         
-        invoice = SalesInvoice.objects.filter(status='Pending', employee_id=request.user).first()
-        if not invoice:
-            invoice = SalesInvoice.objects.create(employee_id=request.user, total_amount=0, cash_tendered=0, status='Pending')
-
+        invoice = SalesInvoice.objects.filter().order_by('-id').first()
 
         existing_item = SalesInvoiceItem.objects.filter(invoice=invoice, product_name=product.name).first()
         if existing_item:
@@ -91,13 +88,14 @@ def add_item(request):
 
 
 def complete_invoice(request):
-    invoice = SalesInvoice.objects.filter(status='Pending').first()
+    invoice = SalesInvoice.objects.filter().order_by('-id').first()
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
 
     total_amount = sum(item.unit_price * item.quantity for item in items)
     vat = total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
     total_with_vat = total_amount + vat
 
+    invoice.employee_id = request.user
     invoice.total_amount = total_amount
     invoice.total_amount_with_vat = total_with_vat
     invoice.status = "Completed"

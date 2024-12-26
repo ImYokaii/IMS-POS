@@ -80,7 +80,7 @@ def employee_signup_page(request):
 
             UserPermission.objects.create(
                 user=user,
-                role="Employee",
+                role="employee",
                 is_permitted=False)
             
             return redirect("login")
