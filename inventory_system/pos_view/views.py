@@ -178,8 +178,21 @@ def finish_transaction(request, invoice_id):
         total_amount_with_vat=invoice.total_amount_with_vat,
     )
 
+    return redirect('receipt_page', invoice.id)
+
     messages.success(request, "Transaction finished successfully.")
     return redirect('pos_page')
+
+
+def receipt_page(request, invoice_id):
+    invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    change = invoice.cash_tendered - invoice.total_amount_with_vat
+
+    return render(request, 'receipt_page.html', {
+        'invoice': invoice,
+        'change': change,
+    })
+
 
 def transaction_invoices(request):
     form = InvoiceSearchForm(request.GET)
