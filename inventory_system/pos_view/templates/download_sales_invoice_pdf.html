@@ -10,7 +10,7 @@
     </style>
 </head>
 <body>
-    <p>Software License Number: </p>
+    <p>Software License Number: 123-456-789-00000</p>
     <h1><strong>Sales Invoice No.:</strong> {{ invoice.invoice_no }}</h1>
     
 
@@ -21,16 +21,16 @@
         </thead>
         <tbody>
             <tr>
-                <td><strong>Company Name:</strong> {{ invoice.company_name }}</td>
+                <td colspan="2"><strong>Company Name:</strong> {{ invoice.company_name }}</td>
             </tr>
             <tr>
-                <td rowspan="2"><strong>Company Address:</strong> {{ invoice.company_address }}</td>
+                <td colspan="2"><strong>Company Address:</strong> {{ invoice.company_address }}</td>
             </tr>
             <tr>
-                <td><strong>Company Contact:</strong> {{ invoice.company_contact }}</td>
+                <td colspan="2"><strong>Company Contact:</strong> {{ invoice.company_contact }}</td>
             </tr>
             <tr>
-                <td><strong>Company VAT Reg TIN:</strong> 123-456-789-00000</td>
+                <td colspan="2"><strong>Company VAT Reg TIN:</strong> 123-456-789-00000</td>
             </tr>
             <tr>
                 <td>Cashier:</strong> {{ invoice.employee_id }}</td>
