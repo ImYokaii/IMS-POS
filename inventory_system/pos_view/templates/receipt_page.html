@@ -4,9 +4,15 @@
     <meta charset="UTF-8">
     <title>Sales Invoice - {{ invoice.invoice_no }}</title>
     <script>
-]        window.onload = function () {
+       window.onload = function () {
             window.print();
+            setTimeout(function () {
+            // Redirect to the desired page
+            window.location.href = "{% url 'pos_page' %}";
+        }, 100); // 100ms delay
         }
+         
+          
     </script>
 </head>
 <body>
