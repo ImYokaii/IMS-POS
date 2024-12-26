@@ -96,7 +96,6 @@
 
 <div class="text-center">
     <a href="{% url 'download_sales_invoice_pdf' invoice.id %}" class="btn btn-primary">Download PDF</a>
-    <a href="{% url 'download_official_receipt_pdf' invoice.invoice_no %}" class="btn btn-outline-primary">Download OR</a>
     <a href="{% url 'transaction_invoices' %}" class="btn btn-outline-secondary">Back to List</a>
 </div>
 {% endblock %}
