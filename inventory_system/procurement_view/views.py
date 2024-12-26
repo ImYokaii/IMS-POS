@@ -269,7 +269,7 @@ def edit_unit_price_rq(request, signed_id):
             else:
                 form.save()
                 messages.success(request, "Unit price and validity date updated successfully.")
-                return redirect('request_quotation_detail', item.request_quotation.id)
+                return redirect('request_quotation_detail', signed_id)
         
         else:
             messages.error(request, "Please ensure all required fields are correctly filled.")
@@ -339,7 +339,7 @@ def purchase_request_detail(request, signed_id):
                 cost_price = item.unit_price
                 add_or_update_product(product_name, quantity, cost_price)
         
-        return redirect('purchase_request_detail', pr_id)
+        return redirect('purchase_request_detail', signed_id)
 
     return render(request, 'purchase_request_detail.html', 
         {'purchase_request': purchase_request,
@@ -438,7 +438,7 @@ def supplier_quotation_submission_detail(request, signed_id):
             quotation_submission.status = REJECTED_STATUS
             quotation_submission.save()
 
-        return redirect('supplier_quotation_submission_detail', submission_id=submission_id)
+        return redirect('supplier_quotation_submission_detail', signed_id)
 
     return render(request, 'supplier_quotation_submission_detail.html', 
         {'quotation_submission': quotation_submission, 
@@ -526,7 +526,7 @@ def purchase_invoice_detail(request, signed_id):
         if form.is_valid():
             form.save()
 
-            return redirect('purchase_invoice_detail', pi_id)
+            return redirect('purchase_invoice_detail', signed_id)
 
     else:
         form = PurchaseInvoiceForm()

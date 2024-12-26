@@ -39,7 +39,7 @@
                                 {% endif %}
                         </td>
                         <td class="text-center small">
-                            <a href="{% url 'quotation_submission_detail' qs.id %}" class="btn btn-info btn-sm">Details</a>
+                            <a href="{% url 'quotation_submission_detail' qs.signed_id %}" class="btn btn-info btn-sm">Details</a>
                         </td>
                     </tr>
                 {% empty %}
