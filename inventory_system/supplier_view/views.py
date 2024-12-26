@@ -35,6 +35,9 @@ def request_quotations_list(request):
     due_date = timezone.now().date().strftime('%Y-%m-%d')
     request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS_0).order_by('-quotation_no')
 
+    for quotation in request_quotations:
+        quotation.signed_id = sign_id(quotation.id)
+
     paginator = Paginator(request_quotations, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -46,8 +49,14 @@ def request_quotations_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def request_quotations_detail(request, quotation_id):
+def request_quotations_detail(request, signed_id):
+    quotation_id = unsign_id(signed_id)
+    if quotation_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
     quotation = get_object_or_404(RequestQuotation, id=quotation_id)
+
+    quotation.signed_id = sign_id(quotation.id)
 
     items = quotation.items.all()
     for item in items:
@@ -101,6 +110,9 @@ def download_request_quotations_pdf(request, quotation_id):
 def purchase_orders_list(request):
     purchase_orders = PurchaseOrder.objects.all().order_by('-quotation_no')
 
+    for quotation in purchase_orders:
+        quotation.signed_id = sign_id(quotation.id)
+
     paginator = Paginator(purchase_orders, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -118,7 +130,11 @@ def purchase_orders_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def purchase_orders_detail(request, po_id):
+def purchase_orders_detail(request, signed_id):
+    po_id = unsign_id(signed_id)
+    if po_id is None:
+        return HttpResponse("Invalid request", status=400)
+
     STATUS_CHOICES = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     purchase_order = get_object_or_404(PurchaseOrder, id=po_id)
 
@@ -152,7 +168,7 @@ def purchase_orders_detail(request, po_id):
             if has_pending_submission:
                 messages.error(request, "A digital invoice for this purchase order already exists.")  
 
-        return redirect('purchase_orders_detail', po_id=po_id)
+        return redirect('purchase_orders_detail', signed_id)
 
     return render(request, 'purchase_orders_detail.html', {
         'purchase_order': purchase_order,
@@ -195,6 +211,9 @@ def download_purchase_orders_pdf(request, purchase_order_id):
 def purchase_invoices_list(request):
     purchase_invoices = PurchaseInvoice.objects.filter(supplier=request.user).order_by('-invoice_no')
 
+    for invoice in purchase_invoices:
+        invoice.signed_id = sign_id(invoice.id)
+
     paginator = Paginator(purchase_invoices, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -212,7 +231,11 @@ def purchase_invoices_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def purchase_invoices_detail(request, pi_id):
+def purchase_invoices_detail(request, signed_id):
+    pi_id = unsign_id(signed_id)
+    if pi_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
 
     vat = purchase_invoice.total_amount_payable * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
@@ -237,7 +260,7 @@ def purchase_invoices_detail(request, pi_id):
             purchase_invoice.save()
             purchase_order.save()
 
-        return redirect('purchase_invoices_detail', pi_id=pi_id)
+        return redirect('purchase_invoices_detail', signed_id)
 
     return render(request, 'purchase_invoices_detail.html',
         {'purchase_invoice': purchase_invoice,
@@ -278,7 +301,11 @@ def download_purchase_invoices_pdf(request, purchase_invoice_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def create_quotation_submission(request, quotation_id):
+def create_quotation_submission(request, signed_id):
+    quotation_id = unsign_id(signed_id)
+    if quotation_id is None:
+        return HttpResponse("Invalid request", status=400)
+
     quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
     supplier = Supplier.objects.get(user=request.user)
@@ -353,6 +380,9 @@ def quotation_submission_list(request):
     logged_user = request.user
     quotation_submission = QuotationSubmission.objects.filter(supplier=logged_user).order_by('-quotation_no')
 
+    for quotation in quotation_submission:
+        quotation.signed_id = sign_id(quotation.id)
+
     paginator = Paginator(quotation_submission, 10)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -370,7 +400,11 @@ def quotation_submission_list(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def quotation_submission_detail(request, qs_id):
+def quotation_submission_detail(request, signed_id):
+    qs_id = unsign_id(signed_id)
+    if qs_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
     quotation_submission = get_object_or_404(QuotationSubmission, id=qs_id)
 
     STATUS = os.environ.get('QS_STATUS_CHOICES', '').split(',')
@@ -391,7 +425,7 @@ def quotation_submission_detail(request, qs_id):
         item = get_object_or_404(QuotationSubmissionItem, id=item_id)
         
         if item.price_valid_until and item.price_valid_until <= today:
-            return redirect('edit_unit_price_qs', item_id=item.id)
+            return redirect('edit_unit_price_qs', signed_id)
 
     return render(request, 'quotation_submission_detail.html', 
         {'quotation_submission': quotation_submission,
@@ -433,8 +467,12 @@ def download_quotation_submission_pdf(request, quotation_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-def edit_unit_price_qs(request, item_id):
-    item = get_object_or_404(QuotationSubmissionItem, id=item_id)
+def edit_unit_price_qs(request, signed_id):
+    item_id = unsign_id(signed_id)
+    if item_id is None:
+        return HttpResponse("Invalid request", status=400)
+    
+    item = get_object_or_404(QuotationSubmissionItem, quotation_submission__id=item_id)
 
     if request.method == 'POST':
         form = EditQuotationPriceForm(request.POST, instance=item)
@@ -452,7 +490,7 @@ def edit_unit_price_qs(request, item_id):
             else:
                 form.save()
                 messages.success(request, "Unit price and validity date updated successfully.")
-                return redirect('quotation_submission_detail', item.quotation_submission.id)
+                return redirect('quotation_submission_detail', signed_id)
             
         else:
             messages.error(request, "Please ensure all required fields are correctly filled.")

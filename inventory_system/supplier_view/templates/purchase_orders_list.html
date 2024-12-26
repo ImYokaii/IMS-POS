@@ -38,12 +38,14 @@
                                 <span class="badge text-bg-primary small">{{ po.status }}</span>
                             {% elif po.status == "Received" %}
                                 <span class="badge text-bg-success small">{{ po.status }}</span>
+                                {% elif po.status == "Cancelled" %}
+                                <span class="badge text-bg-secondary small">{{ po.status }}</span>
                             {% else %}
                                 <span class="badge bg-light text-dark small">{{ Unavailable }}</span>
                             {% endif %}
                         </td>
                         <td scope="row" class="text-center small">
-                            <a href="{% url 'purchase_orders_detail' po.id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            <a href="{% url 'purchase_orders_detail' po.signed_id %}" class="btn btn-outline-primary btn-sm">View Details</a>
                         </td>
                     </tr>
                 {% empty %}

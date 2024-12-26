@@ -136,10 +136,12 @@
                                         <td>{{ item.unit_price }}</td>
                                         <td>{{ item_total }}</td>
                                         <td>
-                                            <form method="POST" action="{% url 'delete_item' item.id %}" class="d-inline">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                            </form>
+                                            {% if invoice.status != "Completed" %}
+                                                <form method="POST" action="{% url 'delete_item' item.id %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                </form>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -151,14 +153,24 @@
         </div>
     </div>
 
-    <!-- Complete Transaction -->
-    {% if invoice.status == 'Pending' and has_items %}
-        <div class="text-center">
-            <form action="{% url 'complete_invoice' %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success">Complete Transaction</button>
-            </form>
-        </div>
+    {% if invoice.status == 'Pending' %}
+        {% if has_items %}
+            <div class="text-center">
+                <form action="{% url 'complete_invoice' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Complete Transaction</button>
+                </form>
+            </div>
+        {% endif %}
+    {% elif invoice.status == 'Completed' %}
+        {% if has_items %}
+            <div class="text-center">
+                <form action="{% url 'complete_invoice' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">Complete Transaction</button>
+                </form>
+            </div>
+        {% endif %}
     {% endif %}
 </div>
 {% endblock %}

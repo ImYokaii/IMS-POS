@@ -82,7 +82,7 @@
 
     <div class="text-center mt-2 mb-4">
         {% if quotation.status == STATUS_0 %}
-            <a href="{% url 'create_quotation_submission' quotation.id %}" class="btn btn-primary me-2">Create Quotation Submission</a>
+            <a href="{% url 'create_quotation_submission' quotation.signed_id %}" class="btn btn-primary me-2">Create Quotation Submission</a>
         {% endif %}
 
         <a href="{% url 'download_request_quotation_pdf' quotation.id %}" class="btn btn-primary">Download PDF</a>
