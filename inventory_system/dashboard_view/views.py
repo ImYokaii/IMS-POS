@@ -21,6 +21,7 @@ import matplotlib.dates as mdates
 import numpy as np
 from .forms import ForecastForm
 from collections import defaultdict
+import plotly.graph_objects as go
 
 load_dotenv()
 matplotlib.use('agg')
@@ -159,70 +160,167 @@ def financial_dashboard(request):
     all_dates = dates + forecast_dates
     all_sales = sales + forecast_sales
 
-    # Sales Over Time Graph with Forecast
-    plt.figure(figsize=(8, 6))
-    plt.plot(dates, sales, label='Actual Sales', color='blue')
-    plt.plot(forecast_dates, forecast_sales, label=f'{forecast_period.capitalize()} Forecast', color='green', linestyle='--')
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    plt.gcf().autofmt_xdate()
-    plt.title("Sales Over Time with Forecast")
-    plt.xlabel("Date")
-    plt.ylabel("Sales Amount")
-    plt.legend()
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.1)
-    buffer.seek(0)
-    line_graph_img = buffer.getvalue()
-    plt.close()
-    line_graph = base64.b64encode(line_graph_img).decode('utf-8')
+    # Sales Over Time Graph with Forecast using Plotly
+    fig_sales = go.Figure()
 
-    # Aggregate sales by date
-    aggregated_sales = defaultdict(float)  # Dictionary to store total sales per date
+    # Actual sales
+    fig_sales.add_trace(go.Scatter(
+        x=dates,
+        y=sales,
+        mode='markers',
+        name='Actual Sales',
+        marker=dict(color='blue'),
+        text=[f"Sales: {sale}" for sale in sales],  # Hover text showing sales amount
+        hoverinfo='text'  # Display text on hover
+    ))
+
+    # Forecasted sales
+    fig_sales.add_trace(go.Scatter(
+        x=forecast_dates,
+        y=forecast_sales,
+        mode='lines',
+        name=f'{forecast_period.capitalize()} Forecast',
+        line=dict(color='green', dash='dash'),
+        hoverinfo='none'
+    ))
+
+    # Aggregate sales by date for the second graph
     aggregated_sales = defaultdict(float)
-
     for sale in sales_data:
         aggregated_sales[sale.transaction_date] += float(sale.total_amount_with_vat)
-    dates = sorted(aggregated_sales.keys())  # Sort the dates
-    sales = [aggregated_sales[date] for date in dates]  # Get aggregated sales
+
+    dates_aggregated = sorted(aggregated_sales.keys())  # Sort the dates
+    sales_aggregated = [aggregated_sales[date] for date in dates_aggregated]
+
+    # Linear regression
     regression_line = []
-    # Blank Graph with Linear Regression
-    if len(dates) > 1:
-        numeric_dates = [mdates.date2num(date) for date in dates]
-        # Convert sales (Decimal) to float
-        sales_float = [float(sale) for sale in sales]
-       
-        # Perform linear regression
+    if len(dates_aggregated) > 1:
+        numeric_dates = [mdates.date2num(date) for date in dates_aggregated]
+        sales_float = [float(sale) for sale in sales_aggregated]
         slope, intercept = np.polyfit(numeric_dates, sales_float, 1)
         regression_line = [slope * date + intercept for date in numeric_dates]
-    else:
-        print("Not enough data for regression.")
-    # Plot the graph
-    plt.figure(figsize=(10, 6))  # Set the graph size
-    # Plot actual sales data
-    plt.scatter(dates, sales, label='Aggregated Sales', color='blue', marker='o')
-    # Plot regression line if available
-    if regression_line:
-        plt.plot(dates, regression_line, label='Regression Line', color='red', linestyle='--')
 
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    plt.title("Blank Graph with Linear Regression")
-    plt.xlabel("Date")
-    plt.ylabel("Sales Amount")
-    plt.legend()
-    buffer_blank = BytesIO()
-    plt.savefig(buffer_blank, format='png', bbox_inches='tight', pad_inches=0.1)
-    buffer_blank.seek(0)
-    blank_line_graph_img = buffer_blank.getvalue()
-    plt.close()
-    blank_line_graph = base64.b64encode(blank_line_graph_img).decode('utf-8')
+    # Sales with Regression Line using Plotly
+    fig_regression = go.Figure()
+
+    # Aggregated sales data
+    fig_regression.add_trace(go.Scatter(
+        x=dates_aggregated,
+        y=sales_aggregated,
+        mode='markers',
+        name='Aggregated Sales',
+        marker=dict(color='blue'),
+        text=[f"Sales: {sale}" for sale in sales_aggregated],  # Hover text showing sales amount
+        hoverinfo='text'  # Display text on hover
+    ))
+
+    # Regression line
+    if regression_line:
+        fig_regression.add_trace(go.Scatter(
+            x=dates_aggregated,
+            y=regression_line,
+            mode='lines',
+            name='Regression Line',
+            line=dict(color='red', dash='dash')
+        ))
+
+    
+    # Layout for both graphs (Sales Over Time and Regression Graph)
+    fig_sales.update_layout(
+        title="Sales Over Time with Forecast",
+        xaxis_title="Date",
+        yaxis_title="Sales Amount",
+        template="plotly_dark",
+        xaxis=dict(tickformat="%Y-%m-%d"),
+        dragmode='pan',  # Disable panning and enable zooming
+        hovermode='closest',
+        margin=dict(l=40, r=40, t=40, b=40),  # Increased margin to avoid overlap
+        updatemenus=[{
+            'buttons': [
+                {
+                    'label': 'Daily',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(days=7), today]]
+                },
+                {
+                    'label': 'Weekly',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(weeks=5), today]]
+                },
+                {
+                    'label': 'Monthly',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(weeks=4*5), today]]
+                },
+                {
+                    'label': 'Yearly',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(days=365), today]]
+                }
+            ],
+            'direction': 'down',  # Keep direction down (vertical stack)
+            'showactive': True,
+            'x': 1.0,  # Align horizontally using x
+            'xanchor': 'left',
+            'y': .80,
+            'yanchor': 'top',
+            'pad': {'t': 10, 'r': 10}  # Add padding to move the dropdown away from the hover and zoom buttons
+        }]
+
+    )
+
+    fig_regression.update_layout(
+        title="Sales with Regression Line",
+        xaxis_title="Date",
+        yaxis_title="Sales Amount",
+        dragmode='pan',
+        template="plotly_dark",
+        hovermode="closest",
+        margin=dict(l=40, r=40, t=40, b=40),  # Increased margin to avoid overlap
+        updatemenus=[{
+            'buttons': [
+                {
+                    'label': 'Daily',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(days=7), today]]
+                },
+                {
+                    'label': 'Weekly',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(weeks=5), today]]
+                },
+                {
+                    'label': 'Monthly',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(weeks=4*5), today]]
+                },
+                {
+                    'label': 'Yearly',
+                    'method': 'relayout',
+                    'args': ['xaxis.range', [today - timedelta(days=365), today]]
+                }
+            ],
+            'direction': 'down',  # Keep direction down (vertical stack)
+            'showactive': True,
+            'x': 1.0,  # Align horizontally using x
+            'xanchor': 'left',
+            'y': .80,
+            'yanchor': 'top',
+            'pad': {'t': 10, 'r': 10}  # Add padding to move the dropdown away from the hover and zoom buttons
+        }]
+    )
+
+    # Convert both figures to HTML for embedding
+    line_graph = fig_sales.to_html(full_html=False)
+    blank_line_graph = fig_regression.to_html(full_html=False)
 
     return render(request, 'financial_dashboard.html', {
         'total_revenue': total_revenue,
         'daily_sales': daily_sales,
         'monthly_sales': monthly_sales,
         'yearly_sales': yearly_sales,
-        'line_graph': line_graph,
-        'blank_line_graph': blank_line_graph,
+        'line_graph': line_graph,  # Embed Sales Over Time graph
+        'blank_line_graph': blank_line_graph,  # Embed Aggregated Sales with Regression graph
         'forecast_form': forecast_form,
     })
 # ============================================== #
