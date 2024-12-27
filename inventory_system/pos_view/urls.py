@@ -13,10 +13,10 @@ urlpatterns = [
     path('transaction_summary/<int:invoice_id>/', views.transaction_summary, name='transaction_summary'),
     path('finish_transaction/<int:invoice_id>/', views.finish_transaction, name='finish_transaction'),
 
+    path('receipt_page/<int:invoice_id>/', views.receipt_page, name='receipt_page'),
+
     path('transaction_invoices/', views.transaction_invoices, name='transaction_invoices'),
     path('transaction_invoices_detail/<int:invoice_id>/', views.transaction_invoices_detail, name='transaction_invoices_detail'),
 
     path('download_sales_invoice_pdf/<int:invoice_id>/', views.download_sales_invoice_pdf, name='download_sales_invoice_pdf'),
-    path('download_official_receipt_pdf/<str:invoice_no>/', views.download_official_receipt_pdf, name='download_official_receipt_pdf'),
 ]
-

@@ -24,11 +24,12 @@ class UserPermission(models.Model):
         return f"Username: {self.user.username} (Role: '{self.role}')"
 
 
-class Supplier(models.Model):
+class CompanyProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="suppliers")
-    supplier_company_name = models.CharField(max_length=255)
-    supplier_company_address = models.TextField()
-    supplier_company_contact = models.CharField(max_length=20)
+    company_name = models.CharField(max_length=255)
+    company_address = models.TextField()
+    company_contact = models.CharField(max_length=20)
+    last_edited = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return f"Supplier: {self.user.username}, Company: {self.supplier_company_name}"
+        return f"Supplier: {self.user.username}, Company: {self.company_name}"

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from login_view.models import Supplier
+from login_view.models import CompanyProfile
 
 class UserProfileForm(forms.ModelForm):
     username = forms.CharField(required=True)
@@ -12,11 +12,11 @@ class UserProfileForm(forms.ModelForm):
         fields = ['username', 'first_name', 'last_name']
 
 
-class SupplierProfileForm(forms.ModelForm):
-    supplier_company_name = forms.CharField(required=True)
-    supplier_company_address = forms.CharField(required=True)
-    supplier_company_contact = forms.CharField(required=True)
+class CompanyProfileForm(forms.ModelForm):
+    company_name = forms.CharField(required=True)
+    company_address = forms.CharField(required=True)
+    company_contact = forms.CharField(required=True)
 
     class Meta:
-        model = Supplier
-        fields = ['supplier_company_name', 'supplier_company_address', 'supplier_company_contact']
+        model = CompanyProfile
+        fields = ['company_name', 'company_address', 'company_contact']

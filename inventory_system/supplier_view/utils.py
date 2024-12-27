@@ -51,11 +51,11 @@ def generate_unique_invoice_no(DocumentType, ModelClass):
 # ===== GENERATE ANOTHER UNIQUE PROCUREMENT NO. IF IT CATCHES AN EXISTING ONE  ===== #
 def create_digital_invoice(purchase_order):
     from .models import PurchaseInvoice, PurchaseInvoiceItem
-    from login_view.models import Supplier
+    from login_view.models import CompanyProfile
 
     items = purchase_order.items.all()
 
-    supplier_info = Supplier.objects.get(user=purchase_order.supplier)
+    supplier = CompanyProfile.objects.get(user=purchase_order.supplier)
 
     if not items:
         print("No items found for this purchase order.")
@@ -64,9 +64,9 @@ def create_digital_invoice(purchase_order):
     invoice = PurchaseInvoice.objects.create(
         purchase_order=purchase_order,
         supplier=purchase_order.supplier,
-        supplier_company_name=supplier_info.supplier_company_name,
-        supplier_company_address=supplier_info.supplier_company_address,
-        supplier_company_contact=supplier_info.supplier_company_contact,
+        supplier_company_name=supplier.company_name,
+        supplier_company_address=supplier.company_address,
+        supplier_company_contact=supplier.company_contact,
         total_amount_payable=purchase_order.total_amount,
         total_amount_payable_with_vat=purchase_order.total_amount_with_vat,
     )

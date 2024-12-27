@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.models import User
-from login_view.models import UserPermission, Supplier
-from .forms import UserProfileForm, SupplierProfileForm
+from login_view.models import UserPermission, CompanyProfile
+from .forms import UserProfileForm, CompanyProfileForm
+from django.utils import timezone
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -14,9 +15,10 @@ def edit_profile(request):
 
     user_form = UserProfileForm(request.POST or None, instance=request.user)
     supplier_form = None
+
     if role == 'supplier':
-        supplier = Supplier.objects.get(user=request.user)
-        supplier_form = SupplierProfileForm(request.POST or None, instance=supplier)
+        supplier = CompanyProfile.objects.get(user=request.user)
+        supplier_form = CompanyProfileForm(request.POST or None, instance=supplier)
 
     if request.method == 'POST':
         if user_form.is_valid():
@@ -27,18 +29,29 @@ def edit_profile(request):
                 user_form.save()
 
                 if role == 'supplier' and supplier_form:
+                    if supplier.last_edited:
+                        time_difference = timezone.now().date() - supplier.last_edited
+
+                        if time_difference.days < 7:
+                            days_left = 7 - time_difference.days
+
+                            messages.error(request, f"You can edit your company profile again in {days_left} days.")
+                            return redirect('edit_profile')
+            
                     if supplier_form.is_valid():
-                        company_name = supplier_form.cleaned_data['supplier_company_name']
-                        company_contact = supplier_form.cleaned_data['supplier_company_contact']
+                        company_name = supplier_form.cleaned_data['company_name']
+                        company_contact = supplier_form.cleaned_data['company_contact']
 
-                        if Supplier.objects.exclude(id=supplier.id).filter(supplier_company_name=company_name).exists():
-                            supplier_form.add_error('supplier_company_name', 'This company name is already taken.')
+                        if CompanyProfile.objects.exclude(id=supplier.id).filter(company_name=company_name).exists():
+                            supplier_form.add_error('company_name', 'This company name is already taken.')
 
-                        elif Supplier.objects.exclude(id=supplier.id).filter(supplier_company_contact=company_contact).exists():
-                            supplier_form.add_error('supplier_company_contact', 'This company contact is already taken.')
+                        elif CompanyProfile.objects.exclude(id=supplier.id).filter(company_contact=company_contact).exists():
+                            supplier_form.add_error('company_contact', 'This company contact is already taken.')
 
                         else:
                             supplier_form.save()
+                            supplier.last_edited = timezone.now().date()
+                            supplier.save()
 
                             messages.success(request, "Your profile has been updated successfully!")
                             return redirect('edit_profile')

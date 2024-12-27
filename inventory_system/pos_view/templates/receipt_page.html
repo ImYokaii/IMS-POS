@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Official_Receipt-{{ official_receipt.invoice_no }}</title>
+    <script>
+       window.onload = function () {
+            window.print();
+            setTimeout(function () {
+            // Redirect to the desired page
+            window.location.href = "{% url 'pos_page' %}";
+        }, 100); // 100ms delay
+        }  
+    </script>
+</head>
+<body>
+    <div class="text-center mb-4">
+        <h1 class="text-uppercase fw-bold">Official Receipt</h1>
+        <p class="text-muted">Software License Number</p>
+    </div>
+
+    <div class="mb-4">
+        <h3><strong>Official Receipt No.:</strong> {{ official_receipt.invoice_no }}</h2>
+        <h3><strong>Sales Invoice No.:</strong> {{ official_receipt.sales_invoice.invoice_no }}</h2>
+    </div>
+
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th colspan="2" class="text-center">Official Receipt Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Company Name:</strong></td>
+                <td>{{ official_receipt.company_name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Company Address:</strong></td>
+                <td>{{ official_receipt.company_address }}</td>
+            </tr>
+            <tr>
+                <td><strong>Company VAT Reg TIN:</strong></td>
+                <td>123-456-789-00000</td>
+            </tr>
+            <tr>
+                <td><strong>Issued by:</strong></td>
+                <td>{{ official_receipt.issued_by }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mb-4">
+        <p><strong>Total Amount:</strong> Php {{ official_receipt.total_amount }}</p>
+        <p><strong>VAT (12%):</strong> Php {{ official_receipt.vat|floatformat:2 }}</p>
+        <p><strong>Total (VAT Inclusive):</strong> Php {{ official_receipt.total_amount_with_vat }}</p>
+    </div>
+
+    <div class="mb-4">
+        <p><strong>BIR Permit to Use:</strong> 123-456-789-00000</p>
+        <p class="fw-bold">Invoice is only valid for up to 5 Years upon Issuance.</p>
+        <p><strong>Transaction Date:</strong> {{ official_receipt.receipt_date }}</p>
+    </div>
+
+    <footer class="text-center mt-5">
+        <p>Transaction completed successfully. Thank you for your purchase!</p>
+    </footer>
+</body>
+</html>

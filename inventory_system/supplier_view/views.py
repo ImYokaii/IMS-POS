@@ -8,7 +8,7 @@ from .utils import create_digital_invoice, sign_id, unsign_id
 from .forms import QuotationSubmissionForm, QuotationSubmissionItemForm, QuotationSubmissionItemFormSet, EditQuotationPriceForm, PurchaseInvoiceForm
 from .models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from procurement_view.models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
-from login_view.models import Supplier
+from login_view.models import CompanyProfile
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
@@ -33,7 +33,7 @@ def request_quotations_list(request):
     STATUS_1 = STATUS[1]
 
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gte=due_date, status=STATUS_0).order_by('-quotation_no')
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gt=due_date, status=STATUS_0).order_by('-quotation_no')
 
     for quotation in request_quotations:
         quotation.signed_id = sign_id(quotation.id)
@@ -55,6 +55,10 @@ def request_quotations_detail(request, signed_id):
         return HttpResponse("Invalid request", status=400)
     
     quotation = get_object_or_404(RequestQuotation, id=quotation_id)
+
+    due_date = timezone.now().date()
+    if quotation.quote_valid_until <= due_date:
+        return redirect('invalid_request')
 
     quotation.signed_id = sign_id(quotation.id)
 
@@ -308,7 +312,7 @@ def create_quotation_submission(request, signed_id):
 
     quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
-    supplier = Supplier.objects.get(user=request.user)
+    supplier = CompanyProfile.objects.get(user=request.user)
 
     logged_user = request.user
     has_pending_submission = QuotationSubmission.objects.filter(
@@ -336,9 +340,9 @@ def create_quotation_submission(request, signed_id):
         if form.is_valid() and formset.is_valid():
             quotation_submission = form.save(commit=False)
             quotation_submission.supplier = request.user
-            quotation_submission.supplier_company_name = supplier.supplier_company_name
-            quotation_submission.supplier_company_address = supplier.supplier_company_address
-            quotation_submission.supplier_company_contact = supplier.supplier_company_contact
+            quotation_submission.supplier_company_name = supplier.company_name
+            quotation_submission.supplier_company_address = supplier.company_address
+            quotation_submission.supplier_company_contact = supplier.company_contact
             quotation_submission.request_quotation = quotation_request
             quotation_submission.save()
 
