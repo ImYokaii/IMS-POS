@@ -2,7 +2,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django_recaptcha.fields import ReCaptchaField
 from django import forms
-from .models import UserPermission, Supplier
+from .models import UserPermission, CompanyProfile
 
 
 # ===== USER LOGIN FORM ===== #
@@ -32,9 +32,9 @@ class UserRegistrationForm(UserCreationForm):
 
 
 # ===== SUPPLIER Registration FORM ===== #
-class SupplierRegistrationForm(forms.ModelForm):
+class CompanyRegistrationForm(forms.ModelForm):
     """Form to register a supplier with specific details."""
     class Meta:
-        model = Supplier
-        fields = ['supplier_company_name', 'supplier_company_address', 'supplier_company_contact']
+        model = CompanyProfile
+        fields = ['company_name', 'company_address', 'company_contact']
 # =============================================== #

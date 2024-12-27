@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import UserPermission, Supplier
+from .models import UserPermission, CompanyProfile
 
 
 admin.site.register(UserPermission)
-admin.site.register(Supplier)
+admin.site.register(CompanyProfile)

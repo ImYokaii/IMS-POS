@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import LoginForm, UserRegistrationForm, SupplierRegistrationForm
+from .forms import LoginForm, UserRegistrationForm, CompanyRegistrationForm
 from .models import UserPermission
 from .utils import check_logging_user_role, get_client_ip, increment_failed_login_attempts
 
@@ -104,7 +104,7 @@ def supplier_signup_page(request):
 
     if request.method == "POST":
         form = UserRegistrationForm(request.POST)
-        supplier_form = SupplierRegistrationForm(request.POST)
+        supplier_form = CompanyRegistrationForm(request.POST)
 
         if form.is_valid() and supplier_form.is_valid():
             user = form.save()
@@ -124,7 +124,7 @@ def supplier_signup_page(request):
     
     else:
         form = UserRegistrationForm()
-        supplier_form = SupplierRegistrationForm
+        supplier_form = CompanyRegistrationForm
 
     return render(request, "supplier_signup_page.html", 
         {"form": form,

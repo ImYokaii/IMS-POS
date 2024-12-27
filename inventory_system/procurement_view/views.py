@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RequestQuotationForm, RequestQuotationItemForm, RequestQuotationItemFormSet, EditQuotationPriceForm, PurchaseOrderForm, PurchaseOrderItemFormSet, PurchaseInvoiceForm
 from .models import RequestQuotation, RequestQuotationItem, PurchaseOrder, PurchaseOrderItem
 from .utils import add_or_update_product
-from login_view.models import Supplier
+from login_view.models import CompanyProfile
 from supplier_view.models import QuotationSubmission, QuotationSubmissionItem, PurchaseInvoice, PurchaseInvoiceItem
 from django.http import HttpResponse
 from django.utils import timezone
@@ -56,7 +56,7 @@ def create_purchase_request_from_quotation(request, signed_id):
         return redirect('invalid_request')
     
     items = quotation_submission.items.all()
-    supplier = Supplier.objects.get(user=quotation_submission.supplier)
+    supplier = CompanyProfile.objects.get(user=quotation_submission.supplier)
 
     if request.method == "POST":
         form = PurchaseOrderForm(request.POST)
@@ -67,9 +67,9 @@ def create_purchase_request_from_quotation(request, signed_id):
             purchase_order.supplier = quotation_submission.supplier
             purchase_order.prepared_by = request.user
 
-            purchase_order.supplier_company_name = supplier.supplier_company_name
-            purchase_order.supplier_company_address = supplier.supplier_company_address
-            purchase_order.supplier_company_contact = supplier.supplier_company_contact
+            purchase_order.supplier_company_name = supplier.company_name
+            purchase_order.supplier_company_address = supplier.company_address
+            purchase_order.supplier_company_contact = supplier.company_contact
 
             purchase_order.total_amount = 0
             
