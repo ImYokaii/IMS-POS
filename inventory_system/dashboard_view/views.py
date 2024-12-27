@@ -7,18 +7,20 @@ from inventory_view.models import Product
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Sum, F
-import matplotlib.pyplot as plt
 import matplotlib
 import math
 from io import BytesIO
 import base64
-from django.shortcuts import render
 import cv2
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django import forms
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import numpy as np
+from .forms import ForecastForm
+from collections import defaultdict
 
 load_dotenv()
 matplotlib.use('agg')
@@ -120,92 +122,98 @@ def financial_dashboard(request):
     # Yearly Sales
     yearly_sales = SalesInvoice.objects.filter(status='Paid', transaction_date__gte=first_day_of_year).aggregate(total_sales=Sum('total_amount_with_vat'))['total_sales'] or 0
 
-    # Get historical sales data for plotting (used for all forecast types)
+    # Get historical sales data for plotting
     sales_data = SalesInvoice.objects.filter(status='Paid').order_by('transaction_date')
 
-    # Prepare sales data for plotting
     dates = [sale.transaction_date for sale in sales_data]
     sales = [sale.total_amount_with_vat for sale in sales_data]
 
-    # Calculate average daily sales for forecasting
-    total_sales = sum(sales)
-    days_count = len(sales)
-    avg_daily_sales = total_sales / days_count if days_count > 0 else 0
-
-    # Handle the form submission for forecast period (daily, weekly, monthly, yearly)
+    # Handle the forecast form
     forecast_form = ForecastForm(request.POST or None)
-    forecast_period = 'monthly'  # Default to monthly
+    forecast_period = 'monthly'  # Default forecast period
     if forecast_form.is_valid():
         forecast_period = forecast_form.cleaned_data['forecast_period']
 
-    # Generate forecast based on user selection
+    # Determine the number of forecast days based on the selected period
     if forecast_period == 'weekly':
-        forecast_days = 35  # 5 weeks forecast (7 days * 5)
+        forecast_days = 35  # 5 weeks
     elif forecast_period == 'monthly':
-        forecast_days = 150  # 5 months forecast (30 days * 5)
+        forecast_days = 150  # 5 months
     elif forecast_period == 'yearly':
-        forecast_days = 1825  # 5 years forecast (365 days * 5)
+        forecast_days = 1825  # 5 years
     elif forecast_period == 'daily':
-        forecast_days = 7  # 7 days forecast (for next week)
+        forecast_days = 7  # 7 days
     else:
-        forecast_days = 150  # Default to 5 months forecast
+        forecast_days = 150  # Default
 
-    # Generate forecasted sales (using a straight-line forecast for simplicity)
+    # Generate forecasted sales
+    if len(sales) > 0:
+        avg_daily_sales = sum(sales) / len(sales)
+    else:
+        avg_daily_sales = 0
+
     forecast_dates = [today + timedelta(days=i) for i in range(1, forecast_days + 1)]
-    forecast_sales = [avg_daily_sales * (i + 1) for i in range(forecast_days)]  # Straight-line forecast
+    forecast_sales = [avg_daily_sales * (i + 1) for i in range(forecast_days)]
 
-    # Combine historical sales data with forecasted sales
+    # Combine historical sales and forecast data
     all_dates = dates + forecast_dates
     all_sales = sales + forecast_sales
 
-    # Generate the line graph with actual sales and forecasted sales
-    plt.figure(figsize=(8, 6))  # Adjust figsize to make the graph proportional
+    # Sales Over Time Graph with Forecast
+    plt.figure(figsize=(8, 6))
     plt.plot(dates, sales, label='Actual Sales', color='blue')
-    plt.plot(forecast_dates, forecast_sales, label=f'{forecast_period.capitalize()} Forecasted Sales', color='green', linestyle='--')
-
-    # Formatting the x-axis for better date readability
-    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))
-    if forecast_period == 'weekly':
-        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.WeekdayLocator())
-    elif forecast_period == 'monthly':
-        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.MonthLocator())
-    elif forecast_period == 'yearly':
-        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.YearLocator())
-    elif forecast_period == 'daily':
-        plt.gca().xaxis.set_major_locator(plt.matplotlib.dates.DayLocator())
-
+    plt.plot(forecast_dates, forecast_sales, label=f'{forecast_period.capitalize()} Forecast', color='green', linestyle='--')
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     plt.gcf().autofmt_xdate()
-    plt.title(f"Sales and {forecast_period.capitalize()} Forecasted Sales")
+    plt.title("Sales Over Time with Forecast")
     plt.xlabel("Date")
     plt.ylabel("Sales Amount")
     plt.legend()
-    # Save the graph to a buffer
     buffer = BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.1)
     buffer.seek(0)
     line_graph_img = buffer.getvalue()
     plt.close()
-
-# Encode the image in base64
     line_graph = base64.b64encode(line_graph_img).decode('utf-8')
 
+    # Aggregate sales by date
+    aggregated_sales = defaultdict(float)  # Dictionary to store total sales per date
+    aggregated_sales = defaultdict(float)
 
-# Blank line graph (just a placeholder)
-    plt.figure(figsize=(8, 6))  # Adjust figsize to make the graph proportional
-    plt.plot([], [], label="Blank Graph", color='gray')  # No data, just an empty line
-    plt.gca().xaxis.set_major_formatter(plt.matplotlib.dates.DateFormatter('%Y-%m-%d'))  # Placeholder format
-    plt.title("Blank Line Graph")
+    for sale in sales_data:
+        aggregated_sales[sale.transaction_date] += float(sale.total_amount_with_vat)
+    dates = sorted(aggregated_sales.keys())  # Sort the dates
+    sales = [aggregated_sales[date] for date in dates]  # Get aggregated sales
+    regression_line = []
+    # Blank Graph with Linear Regression
+    if len(dates) > 1:
+        numeric_dates = [mdates.date2num(date) for date in dates]
+        # Convert sales (Decimal) to float
+        sales_float = [float(sale) for sale in sales]
+       
+        # Perform linear regression
+        slope, intercept = np.polyfit(numeric_dates, sales_float, 1)
+        regression_line = [slope * date + intercept for date in numeric_dates]
+    else:
+        print("Not enough data for regression.")
+    # Plot the graph
+    plt.figure(figsize=(10, 6))  # Set the graph size
+    # Plot actual sales data
+    plt.scatter(dates, sales, label='Aggregated Sales', color='blue', marker='o')
+    # Plot regression line if available
+    if regression_line:
+        plt.plot(dates, regression_line, label='Regression Line', color='red', linestyle='--')
+
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    plt.title("Blank Graph with Linear Regression")
     plt.xlabel("Date")
     plt.ylabel("Sales Amount")
     plt.legend()
-    # Save the blank graph to a buffer
     buffer_blank = BytesIO()
     plt.savefig(buffer_blank, format='png', bbox_inches='tight', pad_inches=0.1)
     buffer_blank.seek(0)
     blank_line_graph_img = buffer_blank.getvalue()
     plt.close()
-
-    # Encode the blank graph in base64
     blank_line_graph = base64.b64encode(blank_line_graph_img).decode('utf-8')
 
     return render(request, 'financial_dashboard.html', {
@@ -213,8 +221,8 @@ def financial_dashboard(request):
         'daily_sales': daily_sales,
         'monthly_sales': monthly_sales,
         'yearly_sales': yearly_sales,
-        'line_graph': line_graph,  # Pass the line graph to the template
-        'blank_line_graph': blank_line_graph,  # Pass the blank graph to the template
-        'forecast_form': forecast_form,  # Pass the form to the template
+        'line_graph': line_graph,
+        'blank_line_graph': blank_line_graph,
+        'forecast_form': forecast_form,
     })
-# =============================================== #
+# ============================================== #
