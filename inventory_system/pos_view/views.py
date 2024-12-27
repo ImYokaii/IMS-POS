@@ -172,14 +172,24 @@ def finish_transaction(request, invoice_id):
     OfficialReceipt.objects.create(
         sales_invoice=invoice,
         issued_by=request.user,
-        invoice_no=invoice.invoice_no,
         vat=vat,
         total_amount=invoice.total_amount,
         total_amount_with_vat=invoice.total_amount_with_vat,
     )
 
+    return redirect('receipt_page', invoice.id)
+
     messages.success(request, "Transaction finished successfully.")
     return redirect('pos_page')
+
+
+def receipt_page(request, invoice_id):
+    official_receipt = get_object_or_404(OfficialReceipt, sales_invoice__id=invoice_id)
+
+    return render(request, 'receipt_page.html', {
+        'official_receipt': official_receipt,
+    })
+
 
 def transaction_invoices(request):
     form = InvoiceSearchForm(request.GET)
@@ -256,26 +266,6 @@ def download_sales_invoice_pdf(request, invoice_id):
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="sales-invoice_{invoice.invoice_no}.pdf"'
-    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
-
-    if pisa_status.err:
-        return HttpResponse('Error generating PDF', status=500)
-
-    return response
-
-
-def download_official_receipt_pdf(request, invoice_no):
-    official_receipt = get_object_or_404(OfficialReceipt, sales_invoice__invoice_no__endswith=invoice_no)
-
-    context = {
-        'official_receipt': official_receipt,
-    }
-
-    template = get_template('download_official_receipt_pdf.html')
-    html = template.render(context)
-
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="official-receipt_{official_receipt.invoice_no}.pdf"'
     pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=response)
 
     if pisa_status.err:
