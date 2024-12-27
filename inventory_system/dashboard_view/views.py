@@ -175,18 +175,25 @@ def financial_dashboard(request):
     plt.close()
     line_graph = base64.b64encode(line_graph_img).decode('utf-8')
 
+    regression_line = []
     # Blank Graph with Linear Regression
     if len(dates) > 1:
         numeric_dates = [mdates.date2num(date) for date in dates]
-        slope, intercept = np.polyfit(numeric_dates, sales, 1)
+        # Convert sales (Decimal) to float
+        sales_float = [float(sale) for sale in sales]
+       
+        # Perform linear regression
+        slope, intercept = np.polyfit(numeric_dates, sales_float, 1)
         regression_line = [slope * date + intercept for date in numeric_dates]
-
-        plt.figure(figsize=(8, 6))
-        plt.plot(dates, sales, label='Actual Sales', color='blue')
-        plt.plot(dates, regression_line, label='Regression Line', color='red', linestyle='--')
     else:
-        plt.figure(figsize=(8, 6))
-        plt.plot([], [], label="Not enough data for regression", color='gray')
+        print("Not enough data for regression.")
+    # Plot the graph
+    plt.figure(figsize=(10, 6))  # Set the graph size
+    # Plot actual sales data
+    plt.scatter(dates, sales, label='Actual Sales', color='blue', marker='o')  
+    # Plot regression line if available
+    if regression_line:
+        plt.plot(dates, regression_line, label='Regression Line', color='red', linestyle='--')
 
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     plt.title("Blank Graph with Linear Regression")
