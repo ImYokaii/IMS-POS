@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
 from .forms import ForecastForm
+from collections import defaultdict
 
 load_dotenv()
 matplotlib.use('agg')
@@ -175,6 +176,14 @@ def financial_dashboard(request):
     plt.close()
     line_graph = base64.b64encode(line_graph_img).decode('utf-8')
 
+    # Aggregate sales by date
+    aggregated_sales = defaultdict(float)  # Dictionary to store total sales per date
+    aggregated_sales = defaultdict(float)
+
+    for sale in sales_data:
+        aggregated_sales[sale.transaction_date] += float(sale.total_amount_with_vat)
+    dates = sorted(aggregated_sales.keys())  # Sort the dates
+    sales = [aggregated_sales[date] for date in dates]  # Get aggregated sales
     regression_line = []
     # Blank Graph with Linear Regression
     if len(dates) > 1:
@@ -190,7 +199,7 @@ def financial_dashboard(request):
     # Plot the graph
     plt.figure(figsize=(10, 6))  # Set the graph size
     # Plot actual sales data
-    plt.scatter(dates, sales, label='Actual Sales', color='blue', marker='o')  
+    plt.scatter(dates, sales, label='Aggregated Sales', color='blue', marker='o')
     # Plot regression line if available
     if regression_line:
         plt.plot(dates, regression_line, label='Regression Line', color='red', linestyle='--')
