@@ -22,6 +22,9 @@ from .utils import sign_id, unsign_id
 
 load_dotenv()
 
+def invalid_request(request):
+    return render(request, 'invalid_request.html')
+
 
 @login_required(login_url=settings.LOGIN_URL)
 def accepted_quotations_list(request):
@@ -47,6 +50,11 @@ def create_purchase_request_from_quotation(request, signed_id):
         return HttpResponse("Invalid request", status=400)
 
     quotation_submission = get_object_or_404(QuotationSubmission, id=quotation_id)
+
+    due_date = timezone.now().date()
+    if quotation_submission.quote_valid_until <= due_date:
+        return redirect('invalid_request')
+    
     items = quotation_submission.items.all()
     supplier = Supplier.objects.get(user=quotation_submission.supplier)
 
@@ -415,6 +423,11 @@ def supplier_quotation_submission_detail(request, signed_id):
         return HttpResponse("Invalid request", status=400)
     
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
+
+    due_date = timezone.now().date()
+    if quotation_submission.request_quotation.quote_valid_until >= due_date:
+        return redirect('invalid_request')
+
     items = quotation_submission.items.all()
 
     quotation_submission.request_quotation.signed_id = sign_id(quotation_submission.request_quotation.id)

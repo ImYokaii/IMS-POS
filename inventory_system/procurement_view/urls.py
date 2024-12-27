@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('invalid_request/', views.invalid_request, name="invalid_request"),
+
     path('create_request_quotation/', views.create_request_quotation, name="create_request_quotation"),
     path('accepted_quotations_list/', views.accepted_quotations_list, name="accepted_quotations_list"),
     
