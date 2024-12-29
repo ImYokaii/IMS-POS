@@ -2,6 +2,17 @@
 <nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
     <div class="position-sticky">
         <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="{% url 'edit_profile' %}">
+                    <i class="bi bi-person me-2"></i>
+                    <strong>Edit Profile</strong>
+                </a>
+
+                <a class="nav-link text-white" href="{% url 'change_password' %}">
+                    <i class="bi bi-key me-2"></i>
+                    <strong>Change Password</strong>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

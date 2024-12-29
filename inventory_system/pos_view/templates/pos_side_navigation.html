@@ -1,13 +1,14 @@
 <nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
     <div class="position-sticky">
         <ul class="nav flex-column">
-
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'transaction_invoices' %}">
-                    <strong>Transaction Invoices</strong>
-                </a>
-            </li>
             
+            {% if request.user.userpermission.role == "manager" %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'transaction_invoices' %}">
+                        <strong>Transaction Invoices</strong>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
