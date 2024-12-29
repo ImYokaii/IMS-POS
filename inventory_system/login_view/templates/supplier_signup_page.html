@@ -20,7 +20,7 @@
                                 <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}">
                                 {% if form.username.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid username.
+                                        {{ form.username.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -30,7 +30,7 @@
                                 <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}">
                                 {% if form.first_name.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid first name.
+                                        {{ form.first_name.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -40,7 +40,7 @@
                                 <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}">
                                 {% if form.last_name.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid last name.
+                                        {{ form.last_name.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -53,7 +53,7 @@
                                 <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{{ form.email.value|default:'' }}">
                                 {% if form.email.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid email address.
+                                        {{ form.email.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -63,7 +63,7 @@
                                 <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="password1" name="password1" value="{{ form.password1.value|default:'' }}">
                                 {% if form.password1.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid password.
+                                        {{ form.password1.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -73,7 +73,7 @@
                                 <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="password2" name="password2" value="{{ form.password2.value|default:'' }}">
                                 {% if form.password2.errors %}
                                     <div class="invalid-feedback">
-                                        Passwords do not match.
+                                        {{ form.password2.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -89,7 +89,7 @@
                                 <input type="text" class="form-control {% if supplier_form.company_name.errors %}is-invalid{% endif %}" id="company_name" name="company_name" value="{{ supplier_form.company_name.value|default:'' }}">
                                 {% if supplier_form.company_name.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid company name.
+                                        {{ form.company_name.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -99,7 +99,7 @@
                                 <input type="text" class="form-control {% if supplier_form.company_address.errors %}is-invalid{% endif %}" id="company_address" name="company_address" value="{{ supplier_form.company_address.value|default:'' }}">
                                 {% if supplier_form.company_address.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid company address.
+                                        {{ form.company_address.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -111,7 +111,7 @@
                                 <input type="text" class="form-control {% if supplier_form.company_contact.errors %}is-invalid{% endif %}" id="company_contact" name="company_contact" value="{{ supplier_form.company_contact.value|default:'' }}">
                                 {% if supplier_form.company_contact.errors %}
                                     <div class="invalid-feedback">
-                                        Invalid contact details.
+                                        {{ form.compant_contact.errors }}
                                     </div>
                                 {% endif %}
                             </div>
@@ -123,7 +123,7 @@
                         {{ form.captcha }}
                         {% if form.captcha.errors %}
                             <div class="invalid-feedback">
-                                Invalid captcha.
+                                Invalid Captcha
                             </div>
                         {% endif %}
                     </div>

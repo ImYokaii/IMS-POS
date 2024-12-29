@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, UserRegistrationForm, CompanyRegistrationForm
 from .models import UserPermission
 from .utils import check_logging_user_role, get_client_ip, increment_failed_login_attempts
+from django.contrib.auth.models import User
 
 
 # ===== LOGIN PAGE ===== #
@@ -76,17 +77,21 @@ def employee_signup_page(request):
         form = UserRegistrationForm(request.POST)
 
         if form.is_valid():
-            user = form.save()
+            if User.objects.filter(username=form.cleaned_data['username']).exists(): 
+                form.add_error('username', 'This username is already taken.')
 
-            UserPermission.objects.create(
-                user=user,
-                role="employee",
-                is_permitted=False)
+            elif User.objects.filter(email=form.cleaned_data['email']).exists(): 
+                form.add_error('email', 'This email is already taken.')
+
+            else:
+                user = form.save()
+
+                UserPermission.objects.create(
+                    user=user,
+                    role="employee",
+                    is_permitted=False)
             
-            return redirect("login")
-        
-        else:
-            return HttpResponse("Invalid Credentials")
+                return redirect("login")
     
     else:
         form = UserRegistrationForm()
@@ -107,20 +112,24 @@ def supplier_signup_page(request):
         supplier_form = CompanyRegistrationForm(request.POST)
 
         if form.is_valid() and supplier_form.is_valid():
-            user = form.save()
-            supplier = supplier_form.save(commit=False)
-            supplier.user = user
-            supplier.save()
+            if User.objects.filter(username=form.cleaned_data['username']).exists(): 
+                form.add_error('username', 'This username is already taken.')
 
-            UserPermission.objects.create(
-                user=user,
-                role="supplier",
-                is_permitted=False)
-            
-            return redirect("login")
-        
-        else:
-            return HttpResponse("Invalid Credentials")
+            elif User.objects.filter(email=form.cleaned_data['email']).exists(): 
+                form.add_error('email', 'This email is already taken.')
+
+            else:
+                user = form.save()
+                supplier = supplier_form.save(commit=False)
+                supplier.user = user
+                supplier.save()
+
+                UserPermission.objects.create(
+                    user=user,
+                    role="supplier",
+                    is_permitted=False)
+                
+                return redirect("login")
     
     else:
         form = UserRegistrationForm()

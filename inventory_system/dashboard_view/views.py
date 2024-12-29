@@ -2,8 +2,9 @@ import os
 from dotenv import load_dotenv
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from pos_view.models import SalesInvoice, SalesInvoiceItem
-from procurement_view.models import PurchaseOrder
-from inventory_view.models import Product
+from procurement_view.models import RequestQuotation, PurchaseOrder
+from supplier_view.models import PurchaseInvoice
+from inventory_view.models import Product, WasteProduct
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Sum, F
@@ -30,56 +31,36 @@ matplotlib.use('agg')
 # ===== Dashboard Page ===== #
 @login_required(login_url="/login/")
 def dashboard(request):
-    total_products = Product.objects.all().count()
-    pending_orders = PurchaseOrder.objects.filter(status="Pending").count()
+    total_products = Product.objects.filter(status="Active").count()
     low_stock_products = Product.objects.filter(quantity__lte=F('reorder_level')).count()
 
-    categories = os.environ.get('PRODUCT_CATEGORIES').split(',')
-    product_category = []
-    product_category_qty = []
+    # Inventory Dashboard
+    total_inventory = Product.objects.aggregate(total=Sum(F('quantity')))['total']
+    total_inventory_value = Product.objects.aggregate(total=Sum(F('quantity') * F('cost_price')))['total']
+    total_waste = WasteProduct.objects.aggregate(total=Sum('quantity'))['total']
+    waste_cost = WasteProduct.objects.aggregate(total=Sum(F('quantity') * F('product__cost_price')))['total']
+    top_wasted_product = WasteProduct.objects.values('product__name').annotate(total_waste=Sum('quantity')).order_by('-total_waste').first()
 
-    for category in categories:
-        # filter objects per category then summing all quantity for same categories
-        total_qty = Product.objects.filter(category=category).aggregate(total=Sum('quantity', default=0))
-        product_category.append(category)
-        product_category_qty.append(total_qty['total'])
-
-        # Check for None or NaN values
-        qty = total_qty['total']
-        if qty is None or math.isnan(qty):
-            qty = 0 # Placeholder
-
-        product_category_qty.append(qty)
-
-        if not any(product_category_qty):
-            product_category_qty = [1]  # Placeholder
-            product_category = ["No Data"]
-
-    # just setting the pie chart specifications
-    plt.figure(figsize=(4, 4))
-    plt.pie(product_category_qty, labels=None,  autopct='%1.1f%%',  pctdistance=1.15, textprops={'fontsize': 8})
-    plt.legend(labels=product_category, title="Categories", loc="upper right", bbox_to_anchor=(2, 1), fontsize=8)
-
-    # for donut circle chart
-    centre_circle = plt.Circle((0,0), 0.7, color='white')
-    fig = plt.gcf()
-    fig.gca().add_artist(centre_circle)
-
-    # saving plotted pie chart to be able to render in html
-    buffer = BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight', pad_inches=0.1)
-    buffer.seek(0)
-    pie_chart_img = buffer.getvalue()
-    plt.close()
-
-    pie_chart = base64.b64encode(pie_chart_img)
-    pie_chart = pie_chart.decode('utf-8')
+    # Procurement Dashboard
+    total_ongoing_rq = RequestQuotation.objects.filter(status="Ongoing").count()
+    total_pending_pr = PurchaseOrder.objects.filter(status="Pending").count()
+    total_approved_pr = PurchaseOrder.objects.filter(status="Approved").count()
+    total_delivered_pr = PurchaseOrder.objects.filter(status="Delivered").count()
+    total_pi_to_pay = PurchaseInvoice.objects.filter(status="Pending").count()
 
     return render(request, 'dashboard.html', 
         {'total_products': total_products,
-         'pending_orders': pending_orders,
          'low_stock_products': low_stock_products,
-         'pie_chart': pie_chart})
+         'total_inventory': total_inventory,
+         'total_inventory_value': total_inventory_value,
+         'total_waste': total_waste,
+         'waste_cost': waste_cost,
+         'top_wasted_product': top_wasted_product,
+         'total_ongoing_rq': total_ongoing_rq,
+         'total_pending_pr': total_pending_pr,
+         'total_approved_pr': total_approved_pr,
+         'total_delivered_pr': total_delivered_pr,
+         'total_pi_to_pay': total_pi_to_pay,})
 # =============================================== #
 
 

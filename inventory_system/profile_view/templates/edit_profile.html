@@ -3,79 +3,81 @@
 {% block title %} Edit Profile {% endblock %}
 
 {% block content %}
-    <div class="container mt-5">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-dark text-white">
-                <h2 class="mb-0">Edit Profile</h2>
-            </div>
-            
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-dark text-white">
+            <h2 class="mb-0">Edit Profile</h2>
+        </div>
+        
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
 
-                    <h4 class="text-muted mb-4">Update Your Information</h4>
+                <h4 class="text-muted mb-4">Update Your Information</h4>
+
+                <div class="row g-4">
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-bold mb-0">Username</label>
+                        <input type="text" style="max-width:300px;" class="form-control {% if user_form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ user_form.username.value|default:'' }}">
+                        {% if user_form.username.errors %}
+                            <div class="invalid-feedback">{{ user_form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label fw-bold mb-0">First Name</label>
+                        <input type="text" style="max-width:300px;" class="form-control {% if user_form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ user_form.first_name.value|default:'' }}">
+                        {% if user_form.first_name.errors %}
+                            <div class="invalid-feedback">{{ user_form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label fw-bold mb-0">Last Name</label>
+                        <input type="text" style="max-width:300px;" class="form-control {% if user_form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ user_form.last_name.value|default:'' }}">
+                        {% if user_form.last_name.errors %}
+                            <div class="invalid-feedback">{{ user_form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if role == 'supplier' %}
+                    <div class="custom-separator"></div>
+
+                    <h4 class="text-muted mt-4 mb-4">Update Your Company Information</h4>
 
                     <div class="row g-4">
                         <div class="mb-3">
-                            <label for="username" class="form-label fw-bold mb-0">Username</label>
-                            <input type="text" style="max-width:300px;" class="form-control {% if user_form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ user_form.username.value|default:'' }}">
-                            {% if user_form.username.errors %}
-                                <div class="invalid-feedback">{{ user_form.username.errors }}</div>
+                            <label for="company_name" class="form-label fw-bold mb-0">Supplier Company Name</label>
+                            <input type="text" style="max-width:300px;" class="form-control {% if supplier_form.company_name.errors %}is-invalid{% endif %}" id="company_name" name="company_name" value="{{ supplier_form.company_name.value|default:'' }}">
+                            {% if supplier_form.company_name.errors %}
+                                <div class="invalid-feedback">{{ supplier_form.company_name.errors }}</div>
                             {% endif %}
                         </div>
 
                         <div class="mb-3">
-                            <label for="first_name" class="form-label fw-bold mb-0">First Name</label>
-                            <input type="text" style="max-width:300px;" class="form-control {% if user_form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ user_form.first_name.value|default:'' }}">
-                            {% if user_form.first_name.errors %}
-                                <div class="invalid-feedback">{{ user_form.first_name.errors }}</div>
+                            <label for="company_address" class="form-label fw-bold mb-0">Supplier Company Address</label>
+                            <input type="text" style="max-width:300px;" class="form-control {% if supplier_form.company_address.errors %}is-invalid{% endif %}" id="company_address" name="company_address" value="{{ supplier_form.company_address.value|default:'' }}">
+                            {% if supplier_form.company_address.errors %}
+                                <div class="invalid-feedback">{{ supplier_form.company_address.errors }}</div>
                             {% endif %}
                         </div>
 
                         <div class="mb-3">
-                            <label for="last_name" class="form-label fw-bold mb-0">Last Name</label>
-                            <input type="text" style="max-width:300px;" class="form-control {% if user_form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ user_form.last_name.value|default:'' }}">
-                            {% if user_form.last_name.errors %}
-                                <div class="invalid-feedback">{{ user_form.last_name.errors }}</div>
+                            <label for="company_contact" class="form-label fw-bold mb-0">Supplier Company Contact</label>
+                            <input type="text" style="max-width:300px;" class="form-control {% if supplier_form.company_contact.errors %}is-invalid{% endif %}" id="company_contact" name="company_contact" value="{{ supplier_form.company_contact.value|default:'' }}">
+                            {% if supplier_form.company_contact.errors %}
+                                <div class="invalid-feedback">{{ supplier_form.company_contact.errors }}</div>
                             {% endif %}
                         </div>
                     </div>
+                {% endif %}
 
-                    {% if role == 'supplier' %}
-                        <div class="custom-separator"></div>
-
-                        <h4 class="text-muted mt-4 mb-4">Update Your Company Information</h4>
-
-                        <div class="row g-4">
-                            <div class="mb-3">
-                                <label for="company_name" class="form-label fw-bold mb-0">Supplier Company Name</label>
-                                <input type="text" style="max-width:300px;" class="form-control {% if supplier_form.company_name.errors %}is-invalid{% endif %}" id="company_name" name="company_name" value="{{ supplier_form.company_name.value|default:'' }}">
-                                {% if supplier_form.company_name.errors %}
-                                    <div class="invalid-feedback">{{ supplier_form.company_name.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="company_address" class="form-label fw-bold mb-0">Supplier Company Address</label>
-                                <input type="text" style="max-width:300px;" class="form-control {% if supplier_form.company_address.errors %}is-invalid{% endif %}" id="company_address" name="company_address" value="{{ supplier_form.company_address.value|default:'' }}">
-                                {% if supplier_form.company_address.errors %}
-                                    <div class="invalid-feedback">{{ supplier_form.company_address.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="company_contact" class="form-label fw-bold mb-0">Supplier Company Contact</label>
-                                <input type="text" style="max-width:300px;" class="form-control {% if supplier_form.company_contact.errors %}is-invalid{% endif %}" id="company_contact" name="company_contact" value="{{ supplier_form.company_contact.value|default:'' }}">
-                                {% if supplier_form.company_contact.errors %}
-                                    <div class="invalid-feedback">{{ supplier_form.company_contact.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
         </div>
+
+        <a href="{% url 'change_password' %}" class="m-4 mt-1">Change Password?</a>
     </div>
+</div>
 {% endblock %}

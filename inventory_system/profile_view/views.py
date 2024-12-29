@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth import authenticate, update_session_auth_hash
 from django.conf import settings
 from django.contrib.auth.models import User
 from login_view.models import UserPermission, CompanyProfile
-from .forms import UserProfileForm, CompanyProfileForm
+from .forms import UserProfileForm, PasswordChangeForm,CompanyProfileForm
 from django.utils import timezone
 
 
@@ -22,9 +23,9 @@ def edit_profile(request):
 
     if request.method == 'POST':
         if user_form.is_valid():
-            if User.objects.exclude(id=request.user.id).filter(username=user_form.cleaned_data['username']).exists():
+            if User.objects.exclude(id=request.user.id).filter(username=user_form.cleaned_data['username']).exists(): 
                 user_form.add_error('username', 'This username is already taken.')
-            
+
             else:
                 user_form.save()
 
@@ -71,3 +72,30 @@ def edit_profile(request):
         'supplier_form': supplier_form,
         'role': role,
     })
+
+
+@login_required(login_url=settings.LOGIN_URL)
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.POST)
+
+        if form.is_valid():
+            current_password = form.cleaned_data['current_password']
+            new_password = form.cleaned_data['new_password']
+
+            user = authenticate(request, username=request.user.username, password=current_password)
+            
+            if user is not None:
+                user.set_password(new_password)
+                user.save()
+
+                update_session_auth_hash(request, user)
+
+                messages.success(request, 'Your password has been updated successfully.')
+                return redirect('change_password')
+            else:
+                form.add_error('current_password', 'Your current password is incorrect.')
+    else:
+        form = PasswordChangeForm()
+
+    return render(request, 'change_password.html', {'form': form})
