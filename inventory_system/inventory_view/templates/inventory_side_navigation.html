@@ -1,27 +1,25 @@
-<!-- Sidebar Navigation -->
 <nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
     <div class="position-sticky">
         <ul class="nav flex-column">
-            <!-- View Products Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'product_list' %}">
-                    <i class="bi bi-box me-2"></i> <!-- Bootstrap Icon for Products -->
+                    <i class="bi bi-box me-2"></i>
                     <strong>View Products</strong>
                 </a>
             </li>
 
-            <!-- Add New Stock Link -->
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'add_new_product' %}">
-                    <i class="bi bi-plus-circle me-2"></i> <!-- Bootstrap Icon for Add Stock -->
-                    <strong>Add New Stock</strong>
-                </a>
-            </li>
+            {% if request.user.userpermission.role == "manager" %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'add_new_product' %}">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <strong>Add New Stock</strong>
+                    </a>
+                </li>
+            {% endif %}
 
-            <!-- View Product Waste Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'wasted_product_list' %}">
-                    <i class="bi bi-trash me-2"></i> <!-- Bootstrap Icon for Waste -->
+                    <i class="bi bi-trash me-2"></i>
                     <strong>View Product Waste</strong>
                 </a>
             </li>
@@ -29,7 +27,7 @@
     </div>
 </nav>
 
-<!-- Custom CSS for Hover Animations and Styling -->
+
 <style>
     .nav-link {
         transition: background-color 0.3s ease, transform 0.3s ease;

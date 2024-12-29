@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, UserRegistrationForm, CompanyRegistrationForm
-from .models import UserPermission
+from .models import UserPermission, CompanyProfile
 from .utils import check_logging_user_role, get_client_ip, increment_failed_login_attempts
 from django.contrib.auth.models import User
 
@@ -90,6 +90,12 @@ def employee_signup_page(request):
                     user=user,
                     role="employee",
                     is_permitted=False)
+                
+                CompanyProfile.objects.create(
+                    user=user,
+                    company_name=None,
+                    company_address=None,
+                    company_contact=None)
             
                 return redirect("login")
     

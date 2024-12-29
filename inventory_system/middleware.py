@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.shortcuts import redirect, HttpResponse
 from django.http import HttpResponseForbidden
+from django.contrib.auth import logout
 
 load_dotenv()
 
@@ -70,13 +71,16 @@ class PermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
+        self.LOGIN_URL = settings.LOGIN_URL
         self.LOGOUT_URL = os.environ.get('LOGOUT_URL')
-        self.ROLE_1_URL = os.environ.get('ROLE_1_URL')
+        self.ROLE_1_URL = os.environ.get('ROLE_1_URL').split(",")
         self.ROLE_2_URL = os.environ.get('ROLE_2_URL').split(",")
         self.ROLE_3_URL = os.environ.get('ROLE_3_URL').split(",")
+        self.ROLE_4_URL = os.environ.get('ROLE_4_URL').split(",")
         self.ROLE_1 = os.environ.get('ROLE_1')
         self.ROLE_2 = os.environ.get('ROLE_2')
         self.ROLE_3 = os.environ.get('ROLE_3')
+        self.ROLE_4 = os.environ.get('ROLE_4')
 
     def __call__(self, request):
         path = request.path
@@ -88,42 +92,64 @@ class PermissionMiddleware:
 
         if request.user.is_authenticated:
 
+            print(f"Request path: {path}") # Check requested path (debugging)
+
+            permission = request.user.userpermission
+
+            if path == self.LOGIN_URL:
+                if permission.role == self.ROLE_1:
+                    return redirect(self.ROLE_1_URL[0])
+                
+                elif permission.role == self.ROLE_2:
+                    return redirect(self.ROLE_2_URL[0])
+                
+                elif permission.role == self.ROLE_3:
+                    return redirect(self.ROLE_3_URL[0])
+                
+                elif permission.role == self.ROLE_4:
+                    return redirect(self.ROLE_4_URL[0])
+                
+                else:
+                    logout(request)
+                    return redirect(self.LOGIN_URL)
+
             if path == self.LOGOUT_URL:
                 return self.get_response(request)
         
             if request.user.is_superuser:
                 return self.get_response(request)
-
-            print(f"Request path: {path}") # Check requested path (debugging)
-
-            permission = request.user.userpermission
             
-            # if not permission.is_permitted:
-            #     if not (path.startswith(self.LOGOUT_URL)): # Unrestricted site for unpermitted users
-            #         print(f"Path: {path}") 
-            #         return HttpResponseForbidden("Wait for permission.")
+            if not permission.is_permitted:
+                if not (path.startswith(self.LOGOUT_URL)): # Unrestricted site for unpermitted users
+                    print(f"Path: {path}") 
+                    return HttpResponseForbidden("Wait for permission.")
 
-            # else:
-            #     print(f"Role: {permission.role}")
-            #     if permission.role == self.ROLE_1:
-            #         if not path.startswith(self.ROLE_1_URL):
-            #             print(f"Path: {path}") # Check visited path (debugging)
-            #             return HttpResponse("Role does not match.")
+            else:
+                print(f"Role: {permission.role}")
+                if permission.role == self.ROLE_1:
+                    if not any(path.startswith(url.strip()) for url in self.ROLE_1_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return redirect(self.ROLE_1_URL[0])
 
-            #     elif permission.role == self.ROLE_2:
-            #         if not any(path.startswith(url.strip()) for url in self.ROLE_2_URL):
-            #             print(f"Path: {path}") # Check visited path (debugging)
-            #             return HttpResponse("Role does not match.")
+                elif permission.role == self.ROLE_2:
+                    if not any(path.startswith(url.strip()) for url in self.ROLE_2_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return redirect(self.ROLE_2_URL[0])
 
-            #     elif permission.role == self.ROLE_3:
-            #         if not any(path.startswith(url.strip()) for url in self.ROLE_3_URL):
-            #             print(f"Path: {path}") # Check visited path (debugging)
-            #             return HttpResponse("Role does not match.")
+                elif permission.role == self.ROLE_3:
+                    if not any(path.startswith(url.strip()) for url in self.ROLE_3_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return redirect(self.ROLE_3_URL[0])
+                    
+                elif permission.role == self.ROLE_4:
+                    if not any(path.startswith(url.strip()) for url in self.ROLE_4_URL):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return redirect(self.ROLE_4_URL[0])
 
-            #     else:
-            #         if not (path.startswith(self.LOGOUT_URL)):
-            #             print(f"Path: {path}") # Check visited path (debugging)
-            #             return HttpResponse("Wait for role permission.")
+                else:
+                    if not (path.startswith(self.LOGOUT_URL)):
+                        print(f"Path: {path}") # Check visited path (debugging)
+                        return HttpResponse("Wait for role permission.")
                 
         response = self.get_response(request)
         return response

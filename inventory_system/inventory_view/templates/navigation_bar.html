@@ -1,42 +1,65 @@
 <div class="nav-bar">
     <nav class="navbar navbar-expand-lg navbar-light bg-dark shadow-sm" style="top: 0; height: 7vh; z-index: 10;">
-        <!-- Branding -->
         <a class="navbar-brand text-light font-weight-bold" href="#">
             <strong>My Hardware Store</strong>
         </a>
 
         <!-- Toggler for mobile view -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon primary"></span>
         </button>
 
-        <!-- Navbar Links -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'pos_page' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-cart"></i> 
-                        <strong>POS</strong>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'dashboard' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-house-door"></i> 
-                        <strong>Dashboard</strong>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'product_list' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-box"></i> 
-                        <strong>Inventory</strong>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'request_quotation_list' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-file-earmark-plus"></i> 
-                        <strong>Procurement</strong>
-                    </a>
-                </li>
+                {% if request.user.userpermission.role == "manager" %}
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'pos_page' %}" style="transition: color 0.3s ease;">
+                            <i class="bi bi-cart"></i> 
+                            <strong>POS</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'dashboard' %}" style="transition: color 0.3s ease;">
+                            <i class="bi bi-house-door"></i> 
+                            <strong>Dashboard</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'product_list' %}" style="transition: color 0.3s ease;">
+                            <i class="bi bi-box"></i> 
+                            <strong>Inventory</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'request_quotation_list' %}" style="transition: color 0.3s ease;">
+                            <i class="bi bi-file-earmark-plus"></i> 
+                            <strong>Procurement</strong>
+                        </a>
+                    </li>
+
+                {% elif request.user.userpermission.role == "employee" %}
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'pos_page' %}" style="transition: color 0.3s ease;">
+                            <i class="bi bi-cart"></i> 
+                            <strong>POS</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'dashboard' %}" style="transition: color 0.3s ease;">
+                            <i class="bi bi-house-door"></i> 
+                            <strong>Dashboard</strong>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="{% url 'product_list' %}" style="transition: color 0.3s ease;">
+                            <i class="bi bi-box"></i> 
+                            <strong>Inventory</strong>
+                        </a>
+                    </li>
+
+                {% elif request.user.userpermission.role == "supplier" %}
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link text-light" href="{% url 'edit_profile' %}" style="transition: color 0.3s ease;">
                         <i class="bi bi-person-fill"></i> 
@@ -53,42 +76,3 @@
         </div>
     </nav>
 </div>
-
-<!-- Custom CSS for hover and animation effects -->
-<style>
-    /* Ensures navbar stays on top of the sidebar */
-    .nav-bar {
-        z-index: 10;
-    }
-
-    .navbar-brand:hover {
-        transform: scale(1.1); /* Slightly enlarge brand name on hover */
-    }
-
-    .nav-link:hover {
-        color: #f0ad4e !important; /* Highlight color for links */
-        text-decoration: underline; /* Underline text on hover */
-    }
-
-    /* Mobile navbar collapse animations */
-    .navbar-collapse {
-        transition: max-height 0.5s ease-in-out;
-    }
-
-    .navbar-toggler-icon {
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .navbar-toggler.collapsed .navbar-toggler-icon {
-        transform: rotate(0deg);
-    }
-
-    .navbar-toggler:not(.collapsed) .navbar-toggler-icon {
-        transform: rotate(90deg);
-    }
-
-    /* Optional: Add icons size adjustments */
-    .nav-link i {
-        margin-right: 8px; /* Space between icon and text */
-    }
-</style>

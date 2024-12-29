@@ -50,23 +50,25 @@
         </button>
     </a>
 
-    <a href="{% url 'restock_product_list' %}">
-        <button class="btn btn-success btn-sm me-2">
-            <i class="bi bi-plus-circle"></i> Restock
-        </button>
-    </a>
+    {% if request.user.userpermission.role == "manager" %}
+        <a href="{% url 'restock_product_list' %}">
+            <button class="btn btn-success btn-sm me-2">
+                <i class="bi bi-plus-circle"></i> Restock
+            </button>
+        </a>
 
-    <a href="{% url 'to_waste_product_list' %}">
-        <button class="btn btn-danger btn-sm me-2">
-            <i class="bi bi-trash"></i> To Waste
-        </button>
-    </a>
+        <a href="{% url 'to_waste_product_list' %}">
+            <button class="btn btn-danger btn-sm me-2">
+                <i class="bi bi-trash"></i> To Waste
+            </button>
+        </a>
 
-    <a href="{% url 'edit_product_list' %}">
-        <button class="btn btn-warning btn-sm">
-            <i class="bi bi-pencil-square"></i> Edit
-        </button>
-    </a>
+        <a href="{% url 'edit_product_list' %}">
+            <button class="btn btn-warning btn-sm">
+                <i class="bi bi-pencil-square"></i> Edit
+            </button>
+        </a>
+    {% endif %}
 </div>
 
 
