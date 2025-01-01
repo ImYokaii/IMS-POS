@@ -49,7 +49,10 @@ def product_list(request):
 # ===== VIEW PRODUCT DETAILS PAGE ===== #
 @login_required(login_url=settings.LOGIN_URL)
 def product_view(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return redirect('invalid_request')
     
     # Data for QR Code and Barcode
     qr_data = f"{product.sku}"
@@ -119,7 +122,10 @@ def restock_product_list(request):
 # ===== RESTOCKING EXISTING PRODUCT PAGE ===== #
 @login_required(login_url=settings.LOGIN_URL)
 def restock_product_quantity(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return redirect('invalid_request')
 
     if request.method == 'POST':
         form = RestockProductForm(request.POST)
@@ -175,7 +181,10 @@ def to_waste_product_list(request):
 # ===== TRANSFER PRODUCT TO WASTE PAGE ===== #
 @login_required(login_url=settings.LOGIN_URL)
 def transfer_to_waste(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return redirect('invalid_request')
     
     if request.method == 'POST':
         form = WasteProductForm(request.POST)
@@ -237,7 +246,10 @@ def edit_product_list(request):
 # ===== SUBMIT EDIT PRODUCT PAGE ===== #
 @login_required(login_url=settings.LOGIN_URL)
 def edit_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return redirect('invalid_request')
 
     if request.method == 'POST':
         form = EditProductForm(request.POST, instance=product)
@@ -314,3 +326,7 @@ def wasted_product_list(request):
 
     return render(request, 'wasted_product_list.html', {'form': form, 'products': products})
 # =============================================== #
+
+
+def invalid_request(request):
+    return render(request, 'invalid_request.hthml')

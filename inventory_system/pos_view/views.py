@@ -87,8 +87,15 @@ def add_item(request):
     return redirect('pos_page')
 
 
-def complete_invoice(request):
-    invoice = SalesInvoice.objects.filter().order_by('-id').first()
+def complete_invoice(request, invoice_id):
+    try:
+        invoice = SalesInvoice.objects.get(id=invoice_id)
+    except SalesInvoice.DoesNotExist:
+        return redirect('invalid_request')
+    
+    if invoice.status != "Pending" or invoice.status != "Completed":
+        return redirect('pos_page')
+    
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
 
     total_amount = sum(item.unit_price * item.quantity for item in items)
@@ -106,19 +113,27 @@ def complete_invoice(request):
 
 def input_cash(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    try:
+        or_exists = OfficialReceipt.objects.get(sales_invoice=invoice)
+    except OfficialReceipt.DoesNotExist:
+        or_exists = None
+    
+    if or_exists:
+        return redirect("pos_page")
+    
+    else:
+        if request.method == 'POST':
+            cash_tendered = Decimal(request.POST.get('cash_tendered', 0))
+            
+            if cash_tendered >= invoice.total_amount_with_vat:
+                invoice.cash_tendered = cash_tendered
+                invoice.save()
 
-    if request.method == 'POST':
-        cash_tendered = Decimal(request.POST.get('cash_tendered', 0))
-        
-        if cash_tendered >= invoice.total_amount_with_vat:
-            invoice.cash_tendered = cash_tendered
-            invoice.save()
-
-            return redirect('transaction_summary', invoice.id)
-        
-        else:
-            messages.error(request, "Cash tendered is less than the total amount payable.")
-            return redirect('input_cash', invoice.id)
+                return redirect('transaction_summary', invoice.id)
+            
+            else:
+                messages.error(request, "Cash tendered is less than the total amount payable.")
+                return redirect('input_cash', invoice.id)
 
     return render(request, 'input_cash.html', {
         'invoice': invoice,
@@ -127,24 +142,45 @@ def input_cash(request, invoice_id):
 
 
 def edit_item(request, item_id):
-    item = get_object_or_404(SalesInvoiceItem, id=item_id)
+    try:
+        item = SalesInvoiceItem.objects.get(id=item_id)
+    except SalesInvoiceItem.DoesNotExist:
+        return redirect('invalid_request')
+    
     if request.method == 'POST':
         new_quantity = int(request.POST.get('quantity', item.quantity))
         item.quantity = new_quantity
         item.save()
+
     return redirect('pos_page')
 
 
 def delete_item(request, item_id):
-    item = get_object_or_404(SalesInvoiceItem, id=item_id)
+    try:
+        item = SalesInvoiceItem.objects.get(id=item_id)
+    except SalesInvoiceItem.DoesNotExist:
+        return redirect('invalid_request')
+    
     item.delete()
     return redirect('pos_page')
 
 
 def transaction_summary(request, invoice_id):
-    invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    try:
+        invoice = SalesInvoice.objects.get(id=invoice_id)
+    except SalesInvoice.DoesNotExist:
+        return redirect('invalid_request')
 
-    change = invoice.cash_tendered - invoice.total_amount_with_vat
+    try:
+        or_exists = OfficialReceipt.objects.get(sales_invoice=invoice)
+    except OfficialReceipt.DoesNotExist:
+        or_exists = None
+    
+    if or_exists:
+        return redirect("invalid_request")
+    
+    else:
+        change = invoice.cash_tendered - invoice.total_amount_with_vat
 
     return render(request, 'transaction_summary.html', {
         'invoice': invoice,
@@ -153,7 +189,18 @@ def transaction_summary(request, invoice_id):
 
 
 def finish_transaction(request, invoice_id):
-    invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    try:
+        invoice = SalesInvoice.objects.get(id=invoice_id)
+    except SalesInvoice.DoesNotExist:
+        return redirect('invalid_request')
+    
+    try:
+        or_exists = OfficialReceipt.objects.get(sales_invoice=invoice)
+    except OfficialReceipt.DoesNotExist:
+        or_exists = None
+    
+    if or_exists:
+        return redirect('invalid_request')
 
     invoice.status = 'Paid'
     invoice.save()
@@ -169,6 +216,7 @@ def finish_transaction(request, invoice_id):
             product.save()
 
     vat = invoice.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
+    
     OfficialReceipt.objects.create(
         sales_invoice=invoice,
         issued_by=request.user,
@@ -177,17 +225,21 @@ def finish_transaction(request, invoice_id):
         total_amount_with_vat=invoice.total_amount_with_vat,
     )
 
+    messages.success(request, "Transaction was successful.")
     return redirect('receipt_page', invoice.id)
-
-    messages.success(request, "Transaction finished successfully.")
-    return redirect('pos_page')
 
 
 def receipt_page(request, invoice_id):
-    official_receipt = get_object_or_404(OfficialReceipt, sales_invoice__id=invoice_id)
+    try:
+        official_receipt = OfficialReceipt.objects.get(sales_invoice__id=invoice_id)
+    except OfficialReceipt.DoesNotExist:
+        return redirect('invalid_request')
+
+    invoice_items = SalesInvoiceItem.objects.filter(invoice__id=invoice_id)
 
     return render(request, 'receipt_page.html', {
         'official_receipt': official_receipt,
+        'invoice_items': invoice_items,
     })
 
 
@@ -215,7 +267,11 @@ def transaction_invoices(request):
 
 
 def transaction_invoices_detail(request, invoice_id):
-    invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    try:
+        invoice = SalesInvoice.objects.get(id=invoice_id)
+    except SalesInvoice.DoesNotExist:
+        return redirect('transaction_invoices')
+    
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
     
     for item in items:
@@ -247,7 +303,11 @@ def transaction_invoices_detail(request, invoice_id):
 
 
 def download_sales_invoice_pdf(request, invoice_id):
-    invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+    try:
+        invoice = SalesInvoice.objects.get(SalesInvoice, id=invoice_id)
+    except SalesInvoice.DoesNotExist:
+        return redirect('transaction_invoices')
+
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
 
     for item in items:
@@ -272,3 +332,7 @@ def download_sales_invoice_pdf(request, invoice_id):
         return HttpResponse('Error generating PDF', status=500)
 
     return response
+
+
+def invalid_request(request):
+    return render(request, 'invalid_request.html')
