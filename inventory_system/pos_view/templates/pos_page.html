@@ -156,7 +156,7 @@
     {% if invoice.status == 'Pending' %}
         {% if has_items %}
             <div class="text-center">
-                <form action="{% url 'complete_invoice' invoice.id %}" method="POST">
+                <form action="{% url 'complete_invoice' %}" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success">Complete Transaction</button>
                 </form>
@@ -165,7 +165,7 @@
     {% elif invoice.status == 'Completed' %}
         {% if has_items %}
             <div class="text-center">
-                <form action="{% url 'complete_invoice' invoice.id %}" method="POST">
+                <form action="{% url 'complete_invoice' %}" method="POST">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success">Complete Transaction</button>
                 </form>

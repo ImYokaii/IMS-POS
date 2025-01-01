@@ -52,12 +52,9 @@ def request_quotations_list(request):
 def request_quotations_detail(request, signed_id):
     quotation_id = unsign_id(signed_id)
     if quotation_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
-    try:
-        quotation = RequestQuotation.objects.get(id=quotation_id)
-    except RequestQuotation.DoesNotExist:
-        return redirect('invalid_request')
+    quotation = get_object_or_404(RequestQuotation, id=quotation_id)
 
     due_date = timezone.now().date()
     if quotation.quote_valid_until <= due_date:
@@ -86,11 +83,7 @@ def request_quotations_detail(request, signed_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def download_request_quotations_pdf(request, quotation_id):
-    try:
-        request_quotation = RequestQuotation.objects.get(id=quotation_id)
-    except RequestQuotation.DoesNotExist:
-        return redirect('invalid_request')
-    
+    request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)
     items = request_quotation.items.all()
 
     for item in items:
@@ -144,14 +137,10 @@ def purchase_orders_list(request):
 def purchase_orders_detail(request, signed_id):
     po_id = unsign_id(signed_id)
     if po_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
 
     STATUS_CHOICES = os.environ.get('PO_STATUS_CHOICES', '').split(',')
-
-    try:
-        purchase_order = PurchaseOrder.objects.get(id=po_id)
-    except PurchaseOrder.DoesNotExist:
-        return redirect('invalid_request')
+    purchase_order = get_object_or_404(PurchaseOrder, id=po_id)
 
     vat = purchase_order.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
 
@@ -195,11 +184,7 @@ def purchase_orders_detail(request, signed_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def download_purchase_orders_pdf(request, purchase_order_id):
-    try:
-        purchase_order = PurchaseOrder.objects.get(id=purchase_order_id)
-    except PurchaseOrder.DoesNotExist:
-        return redirect('invalid_request')
-
+    purchase_order = get_object_or_404(PurchaseOrder, id=purchase_order_id)
     items = purchase_order.items.all()
 
     for item in items:
@@ -253,13 +238,10 @@ def purchase_invoices_list(request):
 def purchase_invoices_detail(request, signed_id):
     pi_id = unsign_id(signed_id)
     if pi_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
-    try:
-        purchase_invoice = PurchaseInvoice.objects.get(id=pi_id)
-    except PurchaseInvoice.DoesNotExist:
-        return redirect('invalid_request')
-    
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
+
     vat = purchase_invoice.total_amount_payable * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
 
     items = purchase_invoice.items.all()
@@ -295,11 +277,7 @@ def purchase_invoices_detail(request, signed_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def download_purchase_invoices_pdf(request, purchase_invoice_id):
-    try:
-        purchase_invoice = PurchaseInvoice.objects.get(id=purchase_invoice_id)
-    except PurchaseInvoice.DoesNotExist:
-        return redirect('invalid_request')
-    
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=purchase_invoice_id)
     items = purchase_invoice.items.all()
 
     for item in items:
@@ -330,13 +308,9 @@ def download_purchase_invoices_pdf(request, purchase_invoice_id):
 def create_quotation_submission(request, signed_id):
     quotation_id = unsign_id(signed_id)
     if quotation_id is None:
-        return redirect('invalid_request')
-    
-    try:
-        quotation_request = RequestQuotation.objects.get(id=quotation_id)
-    except RequestQuotation.DoesNotExist:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
 
+    quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
     supplier = CompanyProfile.objects.get(user=request.user)
 
@@ -433,13 +407,10 @@ def quotation_submission_list(request):
 def quotation_submission_detail(request, signed_id):
     qs_id = unsign_id(signed_id)
     if qs_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
-    try:
-        quotation_submission = QuotationSubmission.objects.get(id=qs_id)
-    except QuotationSubmission.DoesNotExist:
-        return redirect('invalid_request')
-    
+    quotation_submission = get_object_or_404(QuotationSubmission, id=qs_id)
+
     STATUS = os.environ.get('QS_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
     STATUS_1 = STATUS[1]
@@ -472,11 +443,7 @@ def quotation_submission_detail(request, signed_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def download_quotation_submission_pdf(request, quotation_id):
-    try:
-        quotation_submission = QuotationSubmission.objects.get(id=quotation_id)
-    except QuotationSubmission.DoesNotExist:
-        return redirect('invalid_request')
-    
+    quotation_submission = get_object_or_404(QuotationSubmission, id=quotation_id)
     items = quotation_submission.items.all()
 
     for item in items:
@@ -507,13 +474,10 @@ def download_quotation_submission_pdf(request, quotation_id):
 def edit_unit_price_qs(request, signed_id):
     item_id = unsign_id(signed_id)
     if item_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
-    try:
-        item = QuotationSubmissionItem.objects.get(quotation_submission__id=item_id)
-    except QuotationSubmissionItem.DoesNotExist:
-        return redirect('invalid_request')
-    
+    item = get_object_or_404(QuotationSubmissionItem, quotation_submission__id=item_id)
+
     if request.method == 'POST':
         form = EditQuotationPriceForm(request.POST, instance=item)
 
@@ -541,7 +505,3 @@ def edit_unit_price_qs(request, signed_id):
     return render(request, 'edit_unit_price_qs.html', 
         {'form': form, 
          'item': item})
-
-
-def invalid_request(request):
-    return render(request, 'invalid_request.html')
