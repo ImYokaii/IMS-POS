@@ -1,30 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Official_Receipt-{{ official_receipt.invoice_no }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Receipt - {{ official_receipt.invoice_no }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script>
-       window.onload = function () {
+        window.onload = function () {
             window.print();
             setTimeout(function () {
-            // Redirect to the desired page
-            window.location.href = "{% url 'pos_page' %}";
-        }, 100); // 100ms delay
-        }  
+                window.location.href = "{% url 'pos_page' %}";
+            }, 100);
+        }
     </script>
+    <style>
+        body {
+            font-size: 14px;
+            color: #212529;
+        }
+
+        h1, h3 {
+            font-size: 1.5rem;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .text-truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+
+        footer {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+    </style>
 </head>
-<body>
+<body class="container py-4">
     <div class="text-center mb-4">
-        <h1 class="text-uppercase fw-bold">Official Receipt</h1>
+        <h1 class="text-uppercase fw-bold">Service Invoice</h1>
         <p class="text-muted">Software License Number</p>
     </div>
 
     <div class="mb-4">
-        <h3><strong>Official Receipt No.:</strong> {{ official_receipt.invoice_no }}</h2>
-        <h3><strong>Sales Invoice No.:</strong> {{ official_receipt.sales_invoice.invoice_no }}</h2>
+        <h3><strong>No.:</strong> {{ official_receipt.invoice_no }}</h3>
+        <h3><strong>Sales Invoice No.:</strong> {{ official_receipt.sales_invoice.invoice_no }}</h3>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered mb-4">
         <thead class="table-light">
             <tr>
                 <th colspan="2" class="text-center">Official Receipt Details</th>
@@ -50,10 +81,57 @@
         </tbody>
     </table>
 
+    <div class="table-responsive mb-4">
+        <table class="table table-hover table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Qty.</th>
+                    <th>Measurement</th>
+                    <th>Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in invoice_items %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.measurement }}</td>
+                    <td>₱{{ item.unit_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="fw-bold">In Settlement of the Following</h3>
+
     <div class="mb-4">
-        <p><strong>Total Amount:</strong> Php {{ official_receipt.total_amount }}</p>
-        <p><strong>VAT (12%):</strong> Php {{ official_receipt.vat|floatformat:2 }}</p>
-        <p><strong>Total (VAT Inclusive):</strong> Php {{ official_receipt.total_amount_with_vat }}</p>
+        <p><strong>Total (VAT Inclusive):</strong> ₱ {{ official_receipt.total_amount_with_vat }}</p>
+        <p><strong>Less VAT:</strong></p>
+        <p><strong>Total Amount:</strong></p>
+        <p><strong>Add VAT:</strong></p>
+        <p><strong>Amount Due:</strong></p>
+    </div>
+
+    <div class="mb-4">
+        <p><strong>VATable Sales:</strong></p>
+        <p><strong>VAT-Exempt Sales:</strong></p>
+        <p><strong>VAT Zero Rated Sales:</strong></p>
+        <p><strong>VAT Amount:</strong></p>
+        <p><strong>Total Sales:</strong></p>
+    </div>
+
+    <div class="mb-4">
+        <h4 class="fw-bold">Form of Payment</h4>
+        <p><strong>Cash:</strong> <i class="bi bi-square"></i></p>
+        <p><strong>Check:</strong> <i class="bi bi-square"></i></p>
+        <p><strong>Card:</strong> <i class="bi bi-square"></i></p>
+        <p><strong>Check No.:</strong></p>
+        <p><strong>Date:</strong></p>
+        <p><strong>Bank:</strong></p>
+        <p><strong>Branch:</strong></p>
+        <p><strong>Total Payment:</strong></p>
     </div>
 
     <div class="mb-4">
@@ -65,5 +143,9 @@
     <footer class="text-center mt-5">
         <p>Transaction completed successfully. Thank you for your purchase!</p>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.js"></script>
 </body>
 </html>

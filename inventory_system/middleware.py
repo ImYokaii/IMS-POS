@@ -91,6 +91,8 @@ class PermissionMiddleware:
         print(f"User: {request.user.username}") # Check username (debugging)
 
         if request.user.is_authenticated:
+            if request.user.is_superuser:
+                return self.get_response(request)
 
             print(f"Request path: {path}") # Check requested path (debugging)
 
@@ -114,9 +116,6 @@ class PermissionMiddleware:
                     return redirect(self.LOGIN_URL)
 
             if path == self.LOGOUT_URL:
-                return self.get_response(request)
-        
-            if request.user.is_superuser:
                 return self.get_response(request)
             
             if not permission.is_permitted:

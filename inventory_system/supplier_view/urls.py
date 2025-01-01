@@ -20,4 +20,6 @@ urlpatterns = [
     path('purchase_invoices_list/', views.purchase_invoices_list, name="purchase_invoices_list"),
     path('purchase_invoices_detail/<str:signed_id>', views.purchase_invoices_detail, name="purchase_invoices_detail"),
     path('download_purchase_invoices_pdf/<int:purchase_invoice_id>', views.download_purchase_invoices_pdf, name="download_purchase_invoices_pdf"),
+
+    path('invalid_request/', views.invalid_request, name="invalid_request"),
 ]

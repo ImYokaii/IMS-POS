@@ -49,7 +49,7 @@ class SalesInvoiceItem(models.Model):
 
 
 class OfficialReceipt(models.Model):
-    sales_invoice = models.ForeignKey('SalesInvoice', on_delete=models.CASCADE, related_name='official_receipt')
+    sales_invoice = models.ForeignKey(SalesInvoice, on_delete=models.CASCADE, related_name='official_receipt')
     issued_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='issued_receipts')
     invoice_no = models.CharField(max_length=50, unique=True)
     company_name = models.CharField(max_length=255, default=STORE_COMPANY_NAME, null=True, blank=True)
