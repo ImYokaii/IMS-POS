@@ -47,12 +47,9 @@ def accepted_quotations_list(request):
 def create_purchase_request_from_quotation(request, signed_id):
     quotation_id = unsign_id(signed_id)
     if quotation_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
 
-    try:
-        quotation_submission = QuotationSubmission.objects.get(id=quotation_id)
-    except QuotationSubmission.DoesNotExist:
-        return redirect('invalid_request')
+    quotation_submission = get_object_or_404(QuotationSubmission, id=quotation_id)
 
     due_date = timezone.now().date()
     if quotation_submission.quote_valid_until <= due_date:
@@ -195,13 +192,9 @@ def request_quotation_list(request):
 def request_quotation_detail(request, signed_id):
     quotation_id = unsign_id(signed_id)
     if quotation_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
-    try:
-        request_quotation = RequestQuotation.objects.get(id=quotation_id)
-    except QuotationSubmission.DoesNotExist:
-        return redirect('invalid_request')
-    
+    request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)
     items = request_quotation.items.all()
 
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
@@ -233,11 +226,7 @@ def request_quotation_detail(request, signed_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def download_request_quotation_pdf(request, quotation_id):
-    try:
-        request_quotation = RequestQuotation.objects.get(id=quotation_id)
-    except QuotationSubmission.DoesNotExist:
-        return redirect('invalid_request')
-    
+    request_quotation = get_object_or_404(RequestQuotation, id=quotation_id)
     items = request_quotation.items.all()
 
     for item in items:
@@ -268,7 +257,7 @@ def download_request_quotation_pdf(request, quotation_id):
 def edit_unit_price_rq(request, signed_id):
     item_id = unsign_id(signed_id)
     if item_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
         
     item = get_object_or_404(RequestQuotationItem, request_quotation__id=item_id)
 
@@ -328,7 +317,7 @@ def purchase_request_list(request):
 def purchase_request_detail(request, signed_id):
     pr_id = unsign_id(signed_id)
     if pr_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
 
     STATUS = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
@@ -405,14 +394,14 @@ def download_purchase_order_pdf(request, purchase_order_id):
 def view_supplier_quotations(request, signed_id):
     quotation_id = unsign_id(signed_id)
     if quotation_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
     due_date = timezone.now().date().strftime('%Y-%m-%d')
     
     try:
         request_quotation = RequestQuotation.objects.get(id=quotation_id, quote_valid_until__lte=due_date)
     except RequestQuotation.DoesNotExist:
-        return redirect('invalid_request')
+        request_quotation = None
 
     supplier_quotations = QuotationSubmission.objects.filter(request_quotation=request_quotation, quote_valid_until__gte=due_date).order_by('-quotation_no')
 
@@ -431,12 +420,9 @@ def view_supplier_quotations(request, signed_id):
 def supplier_quotation_submission_detail(request, signed_id):
     submission_id = unsign_id(signed_id)
     if submission_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
-    try:
-        quotation_submission = QuotationSubmission.objects.get(id=submission_id)
-    except QuotationSubmission.DoesNotExist:
-        return redirect('invalid_request')
+    quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
 
     due_date = timezone.now().date()
     if quotation_submission.request_quotation.quote_valid_until >= due_date:
@@ -478,11 +464,7 @@ def supplier_quotation_submission_detail(request, signed_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def download_supplier_quotation_pdf(request, quotation_id):
-    try:
-        supplier_quotation = QuotationSubmission.objects.get(id=quotation_id)
-    except QuotationSubmission.DoesNotExist:
-        return redirect('invalid_request')
-    
+    supplier_quotation = get_object_or_404(QuotationSubmission, id=quotation_id)
     items = supplier_quotation.items.all()
 
     for item in items:
@@ -536,13 +518,9 @@ def purchase_invoice_list(request):
 def purchase_invoice_detail(request, signed_id):
     pi_id = unsign_id(signed_id)
     if pi_id is None:
-        return redirect('invalid_request')
+        return HttpResponse("Invalid request", status=400)
     
-    try:
-        purchase_invoice = PurchaseInvoice.objects.get(id=pi_id)
-    except PurchaseInvoice.DoesNotExist:
-        return redirect('invalid_request')
-    
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
     items = purchase_invoice.items.all()
 
     STATUS = os.environ.get('PI_STATUS_CHOICES', '').split(',')
@@ -578,11 +556,7 @@ def purchase_invoice_detail(request, signed_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def download_purchase_invoice_pdf(request, purchase_invoice_id):
-    try:
-        purchase_invoice = PurchaseInvoice.objects.get(id=purchase_invoice_id)
-    except PurchaseInvoice.DoesNotExist:
-        return redirect('invalid_request')
-    
+    purchase_invoice = get_object_or_404(PurchaseInvoice, id=purchase_invoice_id)
     items = purchase_invoice.items.all()
 
     for item in items:

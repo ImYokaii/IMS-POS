@@ -8,7 +8,7 @@ urlpatterns = [
     path('edit_item/<int:item_id>/', views.edit_item, name='edit_item'),
     path('delete_item/<int:item_id>/', views.delete_item, name='delete_item'),
 
-    path('complete_invoice/<int:invoice_id>/', views.complete_invoice, name='complete_invoice'),
+    path('complete_invoice/', views.complete_invoice, name='complete_invoice'),
     path('input_cash/<int:invoice_id>/', views.input_cash, name='input_cash'),
     path('transaction_summary/<int:invoice_id>/', views.transaction_summary, name='transaction_summary'),
     path('finish_transaction/<int:invoice_id>/', views.finish_transaction, name='finish_transaction'),
@@ -19,6 +19,4 @@ urlpatterns = [
     path('transaction_invoices_detail/<int:invoice_id>/', views.transaction_invoices_detail, name='transaction_invoices_detail'),
 
     path('download_sales_invoice_pdf/<int:invoice_id>/', views.download_sales_invoice_pdf, name='download_sales_invoice_pdf'),
-
-    path('invalid_request/', views.invalid_request, name='invalid_request'),
 ]
