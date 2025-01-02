@@ -94,7 +94,7 @@ class PermissionMiddleware:
 
             print(f"Request path: {path}") # Check requested path (debugging)
 
-            permission = request.user.userpermission
+            permission = getattr(request.user, 'userpermission', None)
 
             if path == self.LOGIN_URL and permission:
                 if not request.user.is_authenticated:
