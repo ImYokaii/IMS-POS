@@ -7,6 +7,8 @@ STORE_COMPANY_NAME = "AR. DJ Hardware Trading"
 STORE_ADDRESS = "street bergal maligaya park, 77 Bautista, Caloocan, Metro Manila"
 
 class QuotationSubmission(models.Model):
+    from procurement_view.models import RequestQuotation
+    
     request_quotation = models.ForeignKey(RequestQuotation, on_delete=models.CASCADE, related_name="quotation_submissions", null=True, blank=True)
     supplier = models.ForeignKey(User, on_delete=models.CASCADE)
     buyer_company_name = models.CharField(max_length=255, default=STORE_COMPANY_NAME)
