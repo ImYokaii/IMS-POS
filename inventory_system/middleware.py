@@ -96,7 +96,10 @@ class PermissionMiddleware:
 
             permission = request.user.userpermission
 
-            if path == self.LOGIN_URL:
+            if path == self.LOGIN_URL and permission:
+                if not request.user.is_authenticated:
+                    return self.get_response(request)
+                                
                 if permission.role == self.ROLE_1:
                     return redirect(self.ROLE_1_URL[0])
                 
