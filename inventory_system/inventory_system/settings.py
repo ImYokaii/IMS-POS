@@ -109,7 +109,7 @@ WSGI_APPLICATION = 'inventory_system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'try',
+        'NAME': 'stockord',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'stockord.cfiu6ag8csta.ap-southeast-1.rds.amazonaws.com',  # Default is 'localhost'
