@@ -30,9 +30,9 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['52.221.254.132']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -157,12 +157,7 @@ LOGIN_URL = "/login/"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-MEDIA_URL = 'media/'
 
-MEDIA_ROOT = BASE_DIR / 'media'
-
-
-STATIC_URL = 'static/'
 
 
 # Default primary key field type
@@ -190,7 +185,8 @@ CSP_STYLE_SRC = (
     "'self'",
     "'unsafe-inline'",  # Needed for inline styles
     "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
-    "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css",
+    "https://fonts.googleapis.com",  # Add this to allow Google Fonts
 )
 CSP_IMG_SRC = ("'self'", "data:")  # Image sources
 CSP_FONT_SRC = ("'self'", 
@@ -198,24 +194,30 @@ CSP_FONT_SRC = ("'self'",
     "https://fonts.gstatic.com",
     "https://cdn.jsdelivr.net"
 )  # Font sources
+
+CSP_STYLE_SRC_ELEM = (
+    "'self'",
+    "'unsafe-inline'",
+    "https://cdn.jsdelivr.net",  # Allow external stylesheets
+     "https://fonts.googleapis.com",
+)
+
 CSP_CONNECT_SRC = ("'self'",)  # API sources
 CSP_FRAME_SRC = ("https://www.google.com")  # Prevent framing unless necessary
 
-# Static files settings for Whitenoise
-STATIC_URL = '/static/'
+
 
 # Whitenoise settings
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Static files directories
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# Set the static files URL path
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This should point to your 'staticfiles' folder
+# Set STATICFILES_DIRS to the path where your static files are located
+
 
 # Optional: Configure admin media files path
 ADMIN_MEDIA_PREFIX = '/static/admin/'
-
-# Set up Static Root for deployment
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 # Media URL for user-uploaded files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
