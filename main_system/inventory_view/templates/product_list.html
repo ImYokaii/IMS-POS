@@ -3,6 +3,7 @@
 {% block title %}Product List{% endblock %}
 
 {% block content %}
+<script src="{% static 'inventory-qr-scanner.js' %}"></script>
 <h1>View Product List</h1>
 
 <form method="get" id="filterForm" class="mb-3">
@@ -143,5 +144,4 @@
     }
 </style>
 
-<script src="{% static 'inventory-qr-scanner.js' %}"></script>
 {% endblock %}
