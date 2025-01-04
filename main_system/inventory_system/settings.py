@@ -221,3 +221,8 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Media URL for user-uploaded files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://stockord.win",
+    "https://www.stockord.win",  # Include both if applicable
+]
