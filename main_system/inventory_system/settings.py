@@ -30,9 +30,9 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['www.stockord.win', 'stockord.win', '13.214.241.49']
+ALLOWED_HOSTS = ['www.stockord.win', 'stockord.win', '13.214.241.49', '*']
 
 
 # Application definition
@@ -171,15 +171,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RECAPTCHA_PUBLIC_KEY = os.environ.get('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.environ.get('RECAPTCHA_PRIVATE_KEY')
 
+
+CSP_CONNECT_SRC = ("'self'",)  # API sources
+CSP_FRAME_SRC = ("https://www.google.com")  # Prevent framing unless necessary
+
 # CONTENT SECURITY POLICY
-CSP_DEFAULT_SRC = ("'self'",)
+CSP_DEFAULT_SRC = ("'self'",f"https://stockordbucket.s3.amazonaws.com")
 CSP_SCRIPT_SRC = (
     "'self'",
     "'unsafe-inline'",
     "https://unpkg.com",
     "https://cdn.jsdelivr.net",
     "https://www.google.com",       # Allow reCAPTCHA scripts
-    "https://www.gstatic.com"
+    "https://www.gstatic.com",
+    "https://stockordbucket.s3.amazonaws.com",
+    "https://stockordbucket.s3-ap-southeast-1.amazonaws.com",  # Region-specific S3 URL
+    # '*', #For Debugging only
 )
 CSP_STYLE_SRC = (
     "'self'",
@@ -187,40 +194,50 @@ CSP_STYLE_SRC = (
     "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css",
     "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css",
     "https://fonts.googleapis.com",  # Add this to allow Google Fonts
+    "https://stockordbucket.s3.amazonaws.com",
+    "https://stockordbucket.s3-ap-southeast-1.amazonaws.com",  # Region-specific S3 URL
+    # '*', #For Debugging only
 )
 CSP_IMG_SRC = ("'self'", "data:")  # Image sources
-CSP_FONT_SRC = ("'self'", 
+CSP_FONT_SRC = (
+    "'self'", 
     "https://fonts.googleapis.com", 
     "https://fonts.gstatic.com",
     "https://cdn.jsdelivr.net"
-)  # Font sources
+    # '*', #For Debugging only
+)  
 
-CSP_STYLE_SRC_ELEM = (
-    "'self'",
-    "'unsafe-inline'",
-    "https://cdn.jsdelivr.net",  # Allow external stylesheets
-     "https://fonts.googleapis.com",
-)
+CSP_STYLE_SRC_ELEM = CSP_STYLE_SRC
 
-CSP_CONNECT_SRC = ("'self'",)  # API sources
-CSP_FRAME_SRC = ("https://www.google.com")  # Prevent framing unless necessary
 
 
 
 # Whitenoise settings
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Set the static files URL path
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This should point to your 'staticfiles' folder
-# Set STATICFILES_DIRS to the path where your static files are located
+# # Set the static files URL path
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # This should point to your 'staticfiles' folder
+# # Set STATICFILES_DIRS to the path where your static files are located
 
 
-# Optional: Configure admin media files path
-ADMIN_MEDIA_PREFIX = '/static/admin/'
-# Media URL for user-uploaded files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# # Optional: Configure admin media files path
+# ADMIN_MEDIA_PREFIX = '/static/admin/'
+# # Media URL for user-uploaded files
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_KEY')
+AWS_STORAGE_BUCKET_NAME = 'stockordbucket'
+AWS_S3_REGION_NAME = 'ap-southeast-1'  # e.g., 'us-east-1'
+AWS_QUERYSTRING_AUTH = False  # Disable query parameter authentication for static files
+
+# Use S3 for static files
+STATIC_URL = f'https://stockordbucket.s3.amazonaws.com/'
+
+# Use S3 for static file storage
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 CSRF_TRUSTED_ORIGINS = [
     "https://stockord.win",
