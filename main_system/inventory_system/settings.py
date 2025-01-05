@@ -198,7 +198,7 @@ CSP_STYLE_SRC = (
     "https://stockordbucket.s3-ap-southeast-1.amazonaws.com",  # Region-specific S3 URL
     # '*', #For Debugging only
 )
-CSP_IMG_SRC = ("'self'", "data:")  # Image sources
+CSP_IMG_SRC = ("'self'", "data:", "https://stockordbucket.s3-ap-southeast-1.amazonaws.com",)  # Image sources
 CSP_FONT_SRC = (
     "'self'", 
     "https://fonts.googleapis.com", 
