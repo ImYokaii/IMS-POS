@@ -1,46 +1,28 @@
-<nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; left: 0; height: 90vh;">
-    <div class="position-sticky">
-        <ul class="nav flex-column">
-
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'dashboard' %}">
-                    <i class="bi bi-house-door me-2"></i>
-                    <strong>View Dashboard</strong>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-white" href={% url 'financial_dashboard' %}>
-                    <i class="bi bi-bar-chart-line me-2"></i>
-                    <strong>View Financial Dashboard</strong>
-                </a>
-            </li>
-            
-        </ul>
-    </div>
-</nav>
-
-
 <style>
-    .nav-link {
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-
-    .nav-link:hover {
-        background-color: #0275d8; /* Lighter shade of blue on hover */
-        transform: scale(1.05); /* Slight scale up effect on hover */
-    }
-
-    .nav-link i {
-        transition: transform 0.3s ease;
-    }
-
-    .nav-link:hover i {
-        transform: translateX(5px); /* Slight move of the icon to the right on hover */
-    }
-
-    /* Optional: Adjust font size for better readability */
-    .nav-link strong {
-        font-size: 1.1rem;
-    }
+.side-nav-container {
+    padding: 20px;
+    position: sticky;
+    display: flex;
+    flex-direction: column;
+    background-color: Blue;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 300px;
+    gap: 10px;
+}
 </style>
+
+<div class="side-nav-container">
+    <div class="nav-item">
+        <a class="nav-link text-white fw-bold" href="{% url 'dashboard' %}">
+            <strong>View Dashboard</strong>
+        </a>
+    </div>
+
+    <div class="nav-item">
+        <a class="nav-link text-white fw-bold" href={% url 'financial_dashboard' %}>
+            <strong>View Financial Dashboard</strong>
+        </a>
+    </div>
+</div>
