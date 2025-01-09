@@ -4,122 +4,240 @@
 
 {% block content %}
 <style>
-@media screen and (max-width: 1441px) {
-    .card-body {
-        padding: 40px;
-        max-height: 550px;
-        max-width: 500px;
-        background-color: white;
-        border-radius: 30px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    h1 {
-        font-size: 32px;
-    }
-
-    label {
-        font-size: 14px;
-        margin-left: 10px;
-    }
-
-    a {
-        font-size: 13px;
-        text-decoration: none; 
-        color: black;
-    }
-
-    .invalid-feedback {
-        margin-top: 5px;
-        font-size: 12px;
-        position: absolute;
-        top: 100%;
-        left: 0;
+@media screen and (max-width: 1550px) {
+    .box-container {
+        display: flex;
+        height: 100%;
         width: 100%;
-        max-width: 100%;
-        color: red;
-        display: block;
     }
 
-    .input-group {
-        position: relative;
-    }
-
-    .form-control {
-        border-style: solid;
-        border-color: rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
-        height: 35px;
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .btn {
-        font-size: 16px;
-        border-radius: 10px;
-        height: 50px;
-    }
-}
-
-@media screen and (max-width: 769px) { 
-    .card-body {
-        max-height: 100%;
-        max-width: 100%;
-        border-radius: 0px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0);
-    }
-}
-
-@media screen and (max-width: 577px) {
-    h1 {
-        font-size: 28px;
-    }
-
-    .btn {
-        font-size: 12px;
-        max-width: 75%;
-    }
-
-    label {
-        font-size: 12px;
-    }
-
-    form {
+    .left-box-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 20px;
+        height: 100%;
+        width: 55%;
+        padding: 40px;
     }
 
-    .mb-3 {
-        width: 75%;
-    }
-
-    .captcha-container {
+    .left-box-container .back-button-container {
         display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .left-box-container .back-button-container a {
+        text-decoration: none;
+        color: black;
+    }
+
+    .left-box-container .title-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
-        transform: scale(0.7);
+        width: 100%;
+    }
+
+    .left-box-container .title-container h3 {
+        color:#CA1717;
+        font-weight: bolder;
+        font-size: 42px;
+        text-align: center;
+    }
+
+    .left-box-container .title-container p {
+        color: rgba(0, 0, 0, 0.5);
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .left-box-container .form-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .left-box-container .form-container .form-label {
+        font-size: 16px;
+    }
+
+    .left-box-container .form-field input {
+        height: 50px;
+        width: 300px;
+        border-radius: 30px;
+        border-color: black;
+    }
+
+    .left-box-container .login-button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .left-box-container .login-button-container button {
+        font-weight: bolder;
+        color: white;
+        background-color: #CA1717;
+        height: 40px;
+        width: 180px;
+        border-style: none;
+        border-radius: 30px;
+    }
+
+
+    .right-box-container {
+        background-color: #CA1717;
+        background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 40px ), repeating-linear-gradient( #CA1717, #CA2525 );
+        /* background-image: radial-gradient(circle at center center, #CA1717, #CA2525), repeating-radial-gradient(circle at center center, #CA1717, #CA1717, 10px, transparent 20px, transparent 10px); */
+        background-blend-mode: multiply;
+        height: 100%;
+        width: 45%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5%;
+        box-shadow: -3px 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+
+    .right-box-container .title-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex-wrap: wrap;
+        background-color: rgba(255, 255, 255, 0.303);
+        border-radius: 30px;
+        height: 100%;
+        width: 100%;
+        padding: 40px;
+    }
+
+    .right-box-container .company-logo {
+        display: flex;
+        align-items: center;
+        position: relative;
+        top: -20%;
+        left: -30%;
+    }
+
+    .right-box-container h2 {
+        color: white;
+        font-weight: bolder;
+        font-size: 28px;
+    }
+
+    .right-box-container h1 {
+        display: flex;
+        flex-wrap: wrap;
+        color: white;
+        font-weight: bold;
+        font-size: 56px;
     }
 }
+
+@media screen and (max-width: 1350px) {
+    .right-box-container .title-container {
+        height: 80%;
+        width: 100%;
+    }
+
+    .right-box-container .title-container h1 {
+        font-size: 42px;
+    }
+
+    .right-box-container .title-container h2 {
+        font-size: 22px;
+    }
+}
+
+@media screen and (max-width: 820px) {
+    .left-box-container {
+        gap: 20px;
+        transform: scale(.8);
+    }
+
+    .right-box-container .title-container h2 {
+        font-size: 14px;
+    }
+
+    .right-box-container .title-container h1 {
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .box-container {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .left-box-container {
+        height: 85%;
+        width: 100%;
+        padding: 10px;
+        gap: 20px;
+        transform: scale(.7);
+    }
+
+    .right-box-container {
+        height: 15%;
+        width: 100%;
+    }
+
+
+    .right-box-container .title-container {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0);
+    }
+
+    .right-box-container .company-logo {
+        top: -20%;
+        left: -10%
+    }
+
+    .right-box-container h2 {
+        font-size: 20px;
+    }
+
+    .right-box-container .title-container h1 {
+        visibility: hidden;
+    }
+}
+
+
 </style>
 
-<div class="card-body d-flex position-relative flex-column justify-content-center align-items-center w-100 h-100">
-    <div class="d-flex position-relative align-items-center justify-content-start mb-5 w-75">
-        <a href="{% url 'landing_page' %}">
-            <i class="bi bi-arrow-left fs-5" placeholder="Back"></i>
-        </a>
-        <h1 class="card-title text-center w-100">Log In</h1>
-    </div>
-
-    <form method="post">
+<div class="box-container">
+    <form method="post" class="left-box-container">
         {% csrf_token %}
+        
+        <div class="back-button-container">
+            <a href="{% url 'landing_page' %}">
+                <i class="bi bi-arrow-left fs-5" placeholder="Back"></i>
+                Back
+            </a>
+        </div>
 
-        <div class="mb-3">
-            <label for="username" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+        <div class="title-container">
+            <h3>Log In</h3>
+            <p>Hello again! Let's get you back in.</p>
+        </div>
+
+        <div class="form-container">
+            <div class="form-label">
                 <i class="bi bi-person-fill"></i>
                 Username
-            </label>
-            <div class="input-group has-validation position w-100">
+            </div>
+
+            <div class="form-field">
                 <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
                 {% if form.username.errors %}
                     <div class="invalid-feedback">
@@ -129,12 +247,13 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label for="password" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+        <div class="form-container">
+            <label class="form-label">
                 <i class="bi bi-key-fill"></i>
                 Password
             </label>
-            <div class="input-group has-validation position w-100">
+
+            <div class="form-field">
                 <input type="password" class="form-control" id="password" name="password" value="{{ form.password.value|default:'' }}" placeholder="********">
                 {% if form.password.errors %}
                     <div class="invalid-feedback">
@@ -144,8 +263,8 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <label for="captcha" class="form-label text-start fw-bold w-100 mb-1">Captcha</label>
+        <div class="form-container">
+            <label class="form-label">Captcha</label>
             <div class="captcha-container">
                 {{ form.captcha }}
             </div>
@@ -156,9 +275,20 @@
             {% endif %}
         </div>
 
-        <div class="d-flex position-relative flex-column align-items-center justif-content-center w-100">
-            <button type="submit" class="btn btn-primary w-100 fw-bold d-flex justify-content-center align-items-center">Login</button>
+        <div class="login-button-container">
+            <button type="submit">Login</button>
         </div>
     </form>
+
+    <div class="right-box-container">
+        <div class="title-container">
+            <div class="company-logo">
+                <img src="#" aria-placeholder="logo" />
+                <h2>Stockord</h2>
+            </div>
+
+            <h1>WELCOME BACK TO STOCKORD!</h1>
+        </div>
+    </div>
 </div>
 {% endblock %}
