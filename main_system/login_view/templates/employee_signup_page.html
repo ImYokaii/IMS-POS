@@ -3,99 +3,275 @@
 {% block title %}Employee Sign Up Page{% endblock %}
 
 {% block content %}
-    <div class="container-fluid" style="height: 100vh;">
-        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-            <div class="card shadow-lg" style="width: 100%; max-width: 800px; border-radius: 12px; padding: 20px;">
-                <div class="card-body">
-                    <h1 class="card-title text-center mb-4" style="font-size: 1.8rem; color: #333;">Sign Up</h1>
+<style>
+@media screen and (max-width: 1441px) {
+    .card-body {
+        padding: 40px;
+        max-height: 600px;
+        max-width: 550px;
+        background-color: white;
+        border-radius: 30px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
-                    <form method="post">
-                        {% csrf_token %}
+    h1 {
+        font-size: 32px;
+    }
 
-                        <div class="row">
-                            <!-- Column 1: Personal Details -->
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}">
-                                    {% if form.username.errors %}
-                                        <div class="invalid-feedback">
-                                            Invalid username.
-                                        </div>
-                                    {% endif %}
-                                </div>
+    label {
+        font-size: 14px;
+        margin-left: 10px;
+    }
 
-                                <div class="mb-3">
-                                    <label for="first_name" class="form-label">First Name</label>
-                                    <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}">
-                                    {% if form.first_name.errors %}
-                                        <div class="invalid-feedback">
-                                            Invalid first name.
-                                        </div>
-                                    {% endif %}
-                                </div>
+    a {
+        font-size: 13px;
+        text-decoration: none;
+        color: black;
+    }
 
-                                <div class="mb-3">
-                                    <label for="last_name" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}">
-                                    {% if form.last_name.errors %}
-                                        <div class="invalid-feedback">
-                                            Invalid last name.
-                                        </div>
-                                    {% endif %}
-                                </div>
+    .invalid-feedback {
+        margin-top: 5px;
+        font-size: 12px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        color: red;
+        display: block;
+    }
+
+    .input-group {
+        position: relative;
+    }
+
+    .form-control {
+        border-style: solid;
+        border-color: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        height: 35px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .btn {
+        font-size: 16px;
+        border-radius: 10px;
+        height: 50px;
+    }
+}
+
+@media screen and (max-width: 769px) {
+    .card-body {
+        height: 100%;
+        max-width: 100%;
+        border-radius: 0px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0);
+        overflow-y: auto;
+    }
+    
+    .header-container {
+        margin-top: 30px;
+    }
+}
+
+@media screen and (max-width: 577px) {
+    .card-body {
+        max-height: 100%;
+        max-width: 100%;
+        border-radius: 0px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0);
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .header-container {
+        margin-top: 300px;
+        display: flex;
+        justify-content: start;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    .btn {
+        font-size: 12px;
+        max-width: 75%;
+    }
+
+    label {
+        font-size: 12px;
+    }
+
+    .col-md-6 {
+        max-width: 280px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mb-3 {
+        width: 90%;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .recaptcha-container {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+    }
+
+    .recaptcha-container label {
+        margin-left: 100px;
+    }
+
+    .recaptcha-container .invalid-feedback {
+        margin-left: 100px;
+    }
+
+    .captcha-container {
+        display: flex;
+        justify-content: center;
+        transform: scale(0.7);
+    }
+}
+
+</style>
+
+<div class="card-body d-flex position-relative flex-column justify-content-center align-items-center w-100 h-100">
+    <div class="header-container d-flex position-relative align-items-center justify-content-start mb-5 w-100">
+        <a href="{% url 'landing_page' %}">
+            <i class="bi bi-arrow-left fs-5 ms-4" placeholder="Back"></i>
+        </a>
+        <h1 class="card-title text-center w-100">Employee Sign Up</h1>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="username" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                        <i class="bi bi-person-fill"></i>
+                        Username
+                    </label>
+                    <div class="input-group has-validation w-100">
+                        <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                Invalid username.
                             </div>
+                        {% endif %}
+                    </div>
+                </div>
 
-                            <!-- Column 2: Credentials & Captcha -->
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{{ form.email.value|default:'' }}">
-                                    {% if form.email.errors %}
-                                        <div class="invalid-feedback">
-                                            Invalid email address.
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password1" class="form-label">Password</label>
-                                    <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="password1" name="password1" value="{{ form.password1.value|default:'' }}">
-                                    {% if form.password1.errors %}
-                                        <div class="invalid-feedback">
-                                            Invalid password.
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password2" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="password2" name="password2" value="{{ form.password2.value|default:'' }}">
-                                    {% if form.password2.errors %}
-                                        <div class="invalid-feedback">
-                                            Passwords do not match.
-                                        </div>
-                                    {% endif %}
-                                </div>
+                <div class="mb-3">
+                    <label for="first_name" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                        <i class="bi bi-person-add"></i>
+                        First Name
+                    </label>
+                    <div class="input-group has-validation w-100">
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="First Name">
+                        {% if form.first_name.errors %}
+                            <div class="invalid-feedback">
+                                Invalid first name.
                             </div>
-                        </div>
+                        {% endif %}
+                    </div>
+                </div>
 
-                        <div class="mb-3">
-                            <label for="captcha" class="form-label">Captcha</label>
-                            {{ form.captcha }}
-                            {% if form.captcha.errors %}
-                                <div class="invalid-feedback">
-                                    Invalid captcha.
-                                </div>
-                            {% endif %}
-                        </div>
+                <div class="mb-3">
+                    <label for="last_name" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                        <i class="bi bi-person-add"></i>
+                        Last Name
+                    </label>
+                    <div class="input-group has-validation w-100">
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Last Name">
+                        {% if form.last_name.errors %}
+                            <div class="invalid-feedback">
+                                Invalid last name.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
 
-                        <div class="btn-container text-center">
-                            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; border-radius: 8px; background-color: #2575fc; border: none; padding: 10px;">Submit</button>
-                        </div>
-                    </form>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="email" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                        <i class="bi bi-envelope-fill"></i>
+                        Email Address
+                    </label>
+                    <div class="input-group has-validation w-100">
+                        <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="Email">
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                Invalid email address.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password1" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                        <i class="bi bi-key-fill"></i>
+                        Password
+                    </label>
+                    <div class="input-group has-validation w-100">
+                        <input type="password" class="form-control" id="password1" name="password1" value="{{ form.password1.value|default:'' }}" placeholder="********">
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback">
+                                Invalid password.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password2" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                        <i class="bi bi-key"></i>
+                        Confirm Password
+                    </label>
+                    <div class="input-group has-validation w-100">
+                        <input type="password" class="form-control" id="password2" name="password2" value="{{ form.password2.value|default:'' }}" placeholder="********">
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback">
+                                Passwords do not match.
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        
+        <div class="recaptcha-container my-5 d-flex position-relative justify-content-center align-items-center gap-3 w-100">
+            <label for="captcha" class="form-label text-start fw-bold w-100">Captcha:</label>
+            <div class="captcha-container">
+                {{ form.captcha }}
+            </div>
+            {% if form.captcha.errors %}
+                <div class="invalid-feedback">
+                    Invalid captcha.
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="d-flex position-relative flex-column align-items-center justify-content-center w-100">
+            <button type="submit" class="btn btn-primary w-100 fw-bold d-flex justify-content-center align-items-center">Submit</button>
+        </div>
+    </form>
+</div>
 {% endblock %}
