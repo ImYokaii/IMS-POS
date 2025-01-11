@@ -23,6 +23,7 @@ import numpy as np
 from .forms import ForecastForm
 from collections import defaultdict
 import plotly.graph_objects as go
+from django.db.models.functions import TruncMonth
 
 load_dotenv()
 matplotlib.use('agg')
@@ -72,6 +73,39 @@ def low_stock_products(request):
     return render(request, 'low_stock_products.html', {'product_instance': product_instance})
 # =============================================== #
 
+def generate_monthly_sales_graph():
+    # Aggregate sales data by month
+    monthly_sales = (
+        SalesInvoice.objects.filter(status="Paid")
+        .annotate(month=TruncMonth("transaction_date"))
+        .values("month")
+        .annotate(total_sales=Sum("total_amount_with_vat"))
+        .order_by("month")
+    )
+
+    months = [entry["month"].strftime("%B %Y") for entry in monthly_sales]
+    totals = [entry["total_sales"] for entry in monthly_sales]
+
+    # Create a bar graph using Plotly
+    fig = go.Figure(
+        data=[
+            go.Bar(
+                x=months,
+                y=totals,
+                marker=dict(color="rgba(55, 128, 191, 0.7)"),
+                name="Monthly Sales",
+            )
+        ]
+    )
+    fig.update_layout(
+        title="Total Sales Per Month",
+        xaxis_title="Month",
+        yaxis_title="Sales Amount",
+        template="plotly_dark",
+        xaxis=dict(tickangle=-45),
+        margin=dict(l=40, r=40, t=40, b=80),
+    )
+    return fig.to_html(full_html=False)
 
 # ===== Financial Dashboard Page ===== #
 class ForecastForm(forms.Form):
@@ -216,37 +250,6 @@ def financial_dashboard(request):
         dragmode='pan',  # Disable panning and enable zooming
         hovermode='closest',
         margin=dict(l=40, r=40, t=40, b=40),  # Increased margin to avoid overlap
-        updatemenus=[{
-            'buttons': [
-                {
-                    'label': 'Daily',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(days=7), today]]
-                },
-                {
-                    'label': 'Weekly',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(weeks=5), today]]
-                },
-                {
-                    'label': 'Monthly',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(weeks=4*5), today]]
-                },
-                {
-                    'label': 'Yearly',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(days=365), today]]
-                }
-            ],
-            'direction': 'down',  # Keep direction down (vertical stack)
-            'showactive': True,
-            'x': 1.0,  # Align horizontally using x
-            'xanchor': 'left',
-            'y': .80,
-            'yanchor': 'top',
-            'pad': {'t': 10, 'r': 10}  # Add padding to move the dropdown away from the hover and zoom buttons
-        }]
 
     )
 
@@ -258,43 +261,15 @@ def financial_dashboard(request):
         template="plotly_dark",
         hovermode="closest",
         margin=dict(l=40, r=40, t=40, b=40),  # Increased margin to avoid overlap
-        updatemenus=[{
-            'buttons': [
-                {
-                    'label': 'Daily',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(days=7), today]]
-                },
-                {
-                    'label': 'Weekly',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(weeks=5), today]]
-                },
-                {
-                    'label': 'Monthly',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(weeks=4*5), today]]
-                },
-                {
-                    'label': 'Yearly',
-                    'method': 'relayout',
-                    'args': ['xaxis.range', [today - timedelta(days=365), today]]
-                }
-            ],
-            'direction': 'down',  # Keep direction down (vertical stack)
-            'showactive': True,
-            'x': 1.0,  # Align horizontally using x
-            'xanchor': 'left',
-            'y': .80,
-            'yanchor': 'top',
-            'pad': {'t': 10, 'r': 10}  # Add padding to move the dropdown away from the hover and zoom buttons
-        }]
+        
     )
 
     # Convert both figures to HTML for embedding
-    line_graph = fig_sales.to_html(full_html=False)
+    line_graph = fig_sales.to_html(full_html=False,)
     blank_line_graph = fig_regression.to_html(full_html=False)
 
+    bar_graph = generate_monthly_sales_graph()
+    
     return render(request, 'financial_dashboard.html', {
         'total_revenue': total_revenue,
         'daily_sales': daily_sales,
@@ -303,5 +278,6 @@ def financial_dashboard(request):
         'line_graph': line_graph,  # Embed Sales Over Time graph
         'blank_line_graph': blank_line_graph,  # Embed Aggregated Sales with Regression graph
         'forecast_form': forecast_form,
+        "bar_graph": bar_graph,
     })
 # ============================================== #
