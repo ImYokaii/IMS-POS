@@ -61,6 +61,7 @@
                                 <tr>
                                     <th>Product Name</th>
                                     <th>SKU</th>
+                                    <th>Qty.</th>
                                     <th>Unit Price</th>
                                     <th>Action</th>
                                 </tr>
@@ -70,6 +71,7 @@
                                     <tr>
                                         <td>{{ product.name }}</td>
                                         <td>{{ product.sku }}</td>
+                                        <td>{{ product.quantity }}</td>
                                         <td>₱{{ product.selling_price }}</td>
                                         <td>
                                             <form method="POST" action="{% url 'add_item' %}">
