@@ -198,7 +198,7 @@ CSP_STYLE_SRC = (
     "https://stockordbucket.s3-ap-southeast-1.amazonaws.com",  # Region-specific S3 URL
     # '*', #For Debugging only
 )
-CSP_IMG_SRC = ("'self'", "data:", "https://stockordbucket.s3-ap-southeast-1.amazonaws.com",)  # Image sources
+CSP_IMG_SRC = ("'self'", "data:", "https://stockordbucket.s3.amazonaws.com", "https://stockordbucket.s3-ap-southeast-1.amazonaws.com",)  # Image sources
 CSP_FONT_SRC = (
     "'self'", 
     "https://fonts.googleapis.com", 
@@ -235,7 +235,7 @@ AWS_QUERYSTRING_AUTH = False  # Disable query parameter authentication for stati
 
 # Use S3 for static files
 STATIC_URL = f'https://stockordbucket.s3.amazonaws.com/'
-
+MEDIA_URL = f'https://stockordbucket.s3.amazonaws.com/media/'
 # Use S3 for static file storage
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
