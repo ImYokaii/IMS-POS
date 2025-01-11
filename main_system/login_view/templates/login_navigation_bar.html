@@ -1,0 +1,45 @@
+<style>
+    @media screen and (max-width: 1441px) {
+        nav {
+            top: 0; 
+            height: 10vh; 
+            z-index: 10;
+        }
+    }
+
+    @media screen and (max-width: 769px) {
+        #navbarNav {
+            background-color: gray;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+        }
+    }
+</style>
+
+<div class="nav-bar">
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm">
+        <a class="navbar-brand text-dark font-weight-bold mx-4" href="{% url 'landing_page' %}">
+            <strong>Stockord</strong>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon primary"></span>
+        </button>
+
+        <div class="collapse navbar-collapse mx-4" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="#" style="transition: color 0.3s ease;">
+                        <i class="bi bi-info-circle-fill"></i> 
+                        <strong>About</strong>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

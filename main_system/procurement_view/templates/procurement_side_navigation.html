@@ -1,27 +1,24 @@
-<!-- Sidebar Navigation -->
-<nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 93vh;">
+<nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 90vh;">
     <div class="position-sticky">
         <ul class="nav flex-column">
-            <!-- View Request Quotations Link -->
+
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'request_quotation_list' %}">
-                    <i class="bi bi-file-earmark-text me-2"></i> <!-- Icon for View Request Quotations -->
+                    <i class="bi bi-file-earmark-text me-2"></i>
                     <strong>Request Quotations</strong>
                 </a>
             </li>
 
-            <!-- View Purchase Requests Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'purchase_request_list' %}">
-                    <i class="bi bi-folder me-2"></i> <!-- Icon for View Purchase Requests -->
+                    <i class="bi bi-folder me-2"></i>
                     <strong>Purchase Requests</strong>
                 </a>
             </li>
 
-            <!-- View Purchase Invoices Link -->
             <li class="nav-item">
                 <a class="nav-link text-white" href="{% url 'purchase_invoice_list' %}">
-                    <i class="bi bi-file-earmark-post me-2"></i> <!-- Icon for View Purchase Invoices -->
+                    <i class="bi bi-file-earmark-post me-2"></i>
                     <strong>Purchase Invoices</strong>
                 </a>
             </li>
@@ -30,7 +27,7 @@
     </div>
 </nav>
 
-<!-- Custom CSS for Hover Animations and Styling -->
+
 <style>
     .nav-link {
         transition: background-color 0.3s ease, transform 0.3s ease;

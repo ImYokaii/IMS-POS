@@ -3,127 +3,117 @@
 {% load custom_filters %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row mb-4">
-        <div class="col text-center">
-            <h1 class="fw-bold">Overview  </h1>
-        </div>
+<style>
+    .title-container {
+        display: flex;
+        align-items-center;
+        justify-content: start;
+        margin: 40px;
+    }
+
+    .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start;
+        margin: 40px;
+        gap: 20px;
+    }
+
+    .dashboard-datas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        height: 150px;
+        width: 150px;
+    }
+</style>
+
+<div class="title-container">
+    <h3>Inventory Dashboard</h3>
+</div>
+
+<div class="dashboard-container">
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_products|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-box-seam"></i>
+        <span class="fixed-width-title fw-bold">Total Products</span>
     </div>
 
-    <h3 class="text-left">Inventory Dashboard</h3>
-    <div class="row align-items-start justify-content-center flex-wrap full-width-container">
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_products|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-box-seam"></i>
-            <span class="fixed-width-title fw-bold">Total Products</span>
-        </div>
-    
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ low_stock_products|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-exclamation-circle"></i>
-            <span class="fixed-width-title fw-bold">Low Stock Products</span>
-            <a href="{% url 'low_stock_products' %}" class="text-decoration-none text-secondary small">
-                Click to View
-            </a>
-        </div>
-    
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_inventory|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-box2"></i>
-            <span class="fixed-width-title fw-bold">Estimated Inventory</span>
-        </div>
-    
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">₱{{ total_inventory_value|format_large_number|default:"0.00" }}</h3>
-            <i class="icon bi bi-cash-coin"></i>
-            <span class="fixed-width-title fw-bold">Estimated Inventory Value</span>
-        </div>
-    
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_waste|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-trash"></i>
-            <span class="fixed-width-title fw-bold">Estimated Waste</span>
-        </div>
-    
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">₱{{ waste_cost|format_large_number|default:"0.00" }}</h3>
-            <i class="icon bi bi-cash"></i>
-            <span class="fixed-width-title fw-bold">Estimated Waste Cost</span>
-        </div>
-    
-        <div class="col-md-4 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ top_wasted_product.product__name|default:"N/A" }}</h3>
-            <i class="icon bi bi-trash-fill"></i>
-            <span class="fixed-width-title fw-bold">Top Wasted Product</span>
-        </div>
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ low_stock_products|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-exclamation-circle"></i>
+        <span class="fixed-width-title fw-bold">Low Stock Products</span>
+        <a href="{% url 'low_stock_products' %}" class="text-decoration-none text-secondary small">
+            Click to View
+        </a>
     </div>
 
-    <hr class="my-4" style="border-top: 2px solid #ccc;">
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_inventory|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-box2"></i>
+        <span class="fixed-width-title fw-bold">Estimated Inventory</span>
+    </div>
 
-    <h3 class="text-left">Procurement Dashboard</h3>
-    <div class="row align-items-start justify-content-center flex-wrap full-width-container">
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_ongoing_rq|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-file-earmark-post"></i> 
-            <span class="fixed-width-title fw-bold">Ongoing Quotations</span>
-        </div>
-        
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_pending_pr|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-hourglass-split"></i> 
-            <span class="fixed-width-title fw-bold">Purchase Requests to Approve</span>
-        </div>
-        
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_approved_pr|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-truck"></i> 
-            <span class="fixed-width-title fw-bold">Purchase Orders to Deliver</span>
-        </div>
-        
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-box-arrow-in-left"></i> 
-            <span class="fixed-width-title fw-bold">Purchase Orders to Receive</span>
-        </div>
-        
-        <div class="col-md-2 inventory-db-icons d-flex flex-column align-items-center text-center">
-            <h3 class="number-value fw-bold text-secondary">{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-credit-card"></i>
-            <span class="fixed-width-title fw-bold">Purchase Orders to be Paid</span>
-        </div>
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">₱{{ total_inventory_value|format_large_number|default:"0.00" }}</h3>
+        <i class="icon bi bi-cash-coin"></i>
+        <span class="fixed-width-title fw-bold">Estimated Inventory Value</span>
+    </div>
+
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_waste|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-trash"></i>
+        <span class="fixed-width-title fw-bold">Estimated Waste</span>
+    </div>
+
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">₱{{ waste_cost|format_large_number|default:"0.00" }}</h3>
+        <i class="icon bi bi-cash"></i>
+        <span class="fixed-width-title fw-bold">Estimated Waste Cost</span>
+    </div>
+
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ top_wasted_product.product__name|default:"N/A" }}</h3>
+        <i class="icon bi bi-trash-fill"></i>
+        <span class="fixed-width-title fw-bold">Top Wasted Product</span>
     </div>
 </div>
 
-<style>
-    .inventory-db-icons {
-        width: 160px;
-        margin: 10px;
-    }
 
-    .number-value {
-        font-size: 2rem; /* Ensures consistent font size for numbers */
-        margin-bottom: 5px;
-    }
+<div class="title-container">
+    <h3>Procurement Dashboard</h3>
+</div>
 
-    .icon {
-        font-size: 1.5rem; /* Adjusts icon size */
-        margin-bottom: 5px;
-    }
-
-    .fixed-width-title {
-        display: block;
-        font-size: 1rem; /* Consistent font size for titles */
-        text-align: center;
-    }
-
-    .small {
-        font-size: 0.85rem; /* For "Click to View" text */
-        margin-top: 3px;
-    }
-
-    .full-width-container {
-        max-width: 100%; /* Ensures full-width layout */
-        margin: auto;
-    }
-</style>
+<div class="dashboard-container">
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_ongoing_rq|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-file-earmark-post"></i> 
+        <span class="fixed-width-title fw-bold">Ongoing Quotations</span>
+    </div>
+    
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_pending_pr|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-hourglass-split"></i> 
+        <span class="fixed-width-title fw-bold">Purchase Requests to Approve</span>
+    </div>
+    
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_approved_pr|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-truck"></i> 
+        <span class="fixed-width-title fw-bold">Purchase Orders to Deliver</span>
+    </div>
+    
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-box-arrow-in-left"></i> 
+        <span class="fixed-width-title fw-bold">Purchase Orders to Receive</span>
+    </div>
+    
+    <div class="dashboard-datas">
+        <h3 class="text-secondary">{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
+        <i class="icon bi bi-credit-card"></i>
+        <span class="fixed-width-title fw-bold">Purchase Orders to be Paid</span>
+    </div>
+</div>
 {% endblock %}
