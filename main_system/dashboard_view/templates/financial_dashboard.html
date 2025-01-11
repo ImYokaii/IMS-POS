@@ -78,6 +78,27 @@
         <!-- Line Separator -->
         <hr class="my-4" style="border-top: 2px solid #ccc;">
 
+        <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only"></span>
+        </div>
+        <p>Grabbing Finance Data. . .</p>
+    </div>
+
+        <!-- Bar Graph Section -->
+        <div class="mb-4">
+            <h2 class="mb-3">Monthly Sales</h2>
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body text-center">
+                    <div class="bar-graph-container" style="max-width: 100%; overflow-x: auto;">
+                        <!-- Render the bar graph -->
+                        <div id="bar-graph-container">{{ bar_graph|safe }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Linear Forecasting Section -->
         <div class="mb-4">
             <h2 class="mb-3">Sales Forecast</h2>
@@ -107,12 +128,53 @@
     </div>
 
     <style>
-        .line-graph-container {
-            width: 100%;  /* Make sure the container spans the full width */
-            text-align: center;
-        }
-        .line-graph-container div {
-            width: 100%;  /* Ensure the Plotly container uses full width */
-        }
+        .loading-screen {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 1);
+        z-index: 1000;
+    }
+
+    .loading-screen p {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    .line-graph-container {
+        width: 100%;
+        text-align: center;
+    }
+    .line-graph-container div {
+        width: 100%;
+    }
     </style>
+
+<script>
+    // Show loading screen when the page starts loading
+    document.addEventListener('DOMContentLoaded', function () {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const graphContainers = [
+            document.getElementById('graphContainer'),
+            document.getElementById('forecastContainer'),
+            document.getElementById('regressionContainer')
+        ];
+
+        loadingScreen.style.display = 'flex';
+
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+            graphContainers.forEach(container => {
+                container.style.display = 'block';
+            });
+        }, 2000); // Adjust timeout to match graph loading time
+    });
+</script>
 {% endblock %}
