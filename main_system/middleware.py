@@ -153,7 +153,7 @@ class PermissionMiddleware:
                     if not (path.startswith(self.LOGOUT_URL)):
                         print(f"Path: {path}") # Check visited path (debugging)
                         return HttpResponse("Wait for role permission.")
-                
+        
         response = self.get_response(request)
         return response
 # =============================================== #

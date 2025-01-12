@@ -22,6 +22,7 @@ from .utils import sign_id, unsign_id
 
 load_dotenv()
 
+@login_required(login_url="/login/")
 def invalid_request(request):
     return render(request, 'invalid_request.html')
 
