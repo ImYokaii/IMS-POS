@@ -1,17 +1,96 @@
 {% extends 'pos_base.html' %}
 
 {% block content %}
-<h1>Transaction Summary</h1>
+<style>
+.box-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    overflow-y: auto;
+}
 
-<p>Invoice No: {{ invoice.invoice_no }}</p>
-<p>Total Amount: ₱ {{ invoice.total_amount|floatformat:2 }}</p>
-<p>Cash Tendered: ₱ {{ invoice.cash_tendered|floatformat:2 }}</p>
-<p>Change: ₱ {{ change|floatformat:2 }}</p>
+.square-container {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    width: 400px;
+    border-radius: 30px;
+    padding: 40px;
+    gap: 20px;
+}
 
-<a href="{% url 'input_cash' invoice.id %}" class="btn btn-secondary">Back</a>
+.summary-container {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    margin-top: 10px;
+    gap: 3px;
+}
 
-<form method="POST" action="{% url 'finish_transaction' invoice.id %}">
-    {% csrf_token %}
-    <button type="submit">Finish Transaction</button>
-</form>
+.summary-container p {
+    margin-bottom: 0px;
+}
+
+.form-container {
+    width: 100%;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
+@media screen and (max-width: 820px) {
+    .box-container {
+        gap: 0px;
+        overflow-x: hidden;
+    }
+
+    .title-container {
+        margin-top: 100px;
+        margin-bottom: 0px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .square-container {
+        transform: scale(.7);
+    }
+}
+</style>
+
+<div class="box-container">
+    <div class="title-container">
+        <h1>Transaction Summary</h1>
+    </div>
+
+    <div class="square-container">
+        <h5>Invoice Details</h5>
+
+        <div class="summary-container">
+            <p><strong style="font-weight: bold;">Invoice No:</strong> {{ invoice.invoice_no }}</p>
+            <p><strong style="font-weight: bold;">Total Amount:</strong> ₱{{ invoice.total_amount|floatformat:2 }}</p>
+            <p><strong style="font-weight: bold;">Total Amount (VAT Inclusive):</strong> ₱{{ invoice.total_amount|floatformat:2 }}</p>
+            <p><strong style="font-weight: bold;">Cash Tendered:</strong> ₱{{ invoice.cash_tendered|floatformat:2 }}</p>
+            <p><strong style="font-weight: bold;">Change:</strong> ₱{{ change|floatformat:2 }}</p>
+        </div>
+
+        <div class="btn-container">
+            <a href="{% url 'input_cash' invoice.id %}" class="btn btn-danger">Back</a>
+            <form method="POST" action="{% url 'finish_transaction' invoice.id %}" class="form-container">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success w-100">Finish Transaction</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
