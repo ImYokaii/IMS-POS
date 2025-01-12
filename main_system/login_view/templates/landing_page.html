@@ -1,5 +1,5 @@
 {% extends 'login_base.html' %}
-
+{% load static %}
 {% block title %}Welcome!{% endblock %}
 
 {% block content %}
@@ -282,7 +282,7 @@
     <div class="right-box-container">
         <div class="title-container">
             <div class="company-logo">
-                <img src="{% static 'login_view/static/images/logo.png' %}" aria-placeholder="logo" />
+                <img src="{% static 'images/logo.png' %}" alt="Logo">
             </div>
 
             <h1>WELCOME TO STOCKORD!</h1>
