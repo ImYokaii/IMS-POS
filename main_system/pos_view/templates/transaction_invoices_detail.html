@@ -3,7 +3,30 @@
 {% block title %}View Transaction Invoice Details{% endblock %}
 
 {% block content %}
-<div class="card mt-5 mb-5 m-auto p-5 w-75">
+<style>
+.card {
+    width: 90%;
+    padding: 40px;
+}
+
+@media screen and (max-width: 520px) {
+    .card {
+        padding: 20px;
+        overflow-x: hidden;
+    }
+
+    table {
+        overflow-x: auto;
+    }
+
+    .card p {
+        font-size: 8px;
+        margin-bottom: 1px;
+    }
+}
+</style>
+
+<div class="card mt-5 mb-5 m-auto">
     <h1 class="mb-4 text-center">Transaction Invoice Details</h1>
     
     <div class="row mb-2">

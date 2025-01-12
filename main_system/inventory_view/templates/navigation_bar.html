@@ -1,100 +1,195 @@
 <style>
-    @media screen and (max-width: 1441px) {
-        nav {
-            top: 0; 
-            height: 10vh; 
-            z-index: 10;
-        }
+/* General Styles */
+.nav-bar {
+    width: 100%;
+}
+
+nav {
+    background-color: #8E0D0D;
+    top: 0;
+    height: 10vh;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.navbar-brand {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.navbar-nav {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    gap: 10px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    transition: 0.5s ease;
+}
+
+.nav-item a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    background-color: #A21E1E;
+}
+
+/* Hamburger Menu Styles */
+.hamburger-container {
+    display: none;
+}
+
+.hamburger {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 769px) {
+    .hamburger-container {
+        width: 94.5%;
+        display: flex;
+        justify-content: flex-end;
+        position: fixed;
     }
 
-    @media screen and (max-width: 769px) {
-        #navbarNav {
-            background-color: gray;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 60px;
-        }
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+        margin-top: 10px;
     }
+
+    .navbar-nav.show {
+        z-index: 15;
+        background-color: gray;
+        display: flex;
+        position: absolute;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        left: 0px;
+        top: 8vh;
+        width: 100%;
+        height: 90%;
+    }
+
+    .nav-item {
+        width: 100%;
+    }
+
+    .nav-link {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
 </style>
 
 <div class="nav-bar">
-    <nav class="navbar navbar-expand-lg navbar-light bg-dark shadow-sm">
-        <a class="navbar-brand text-light font-weight-bold" href="#">
-            <strong>My Hardware Store</strong>
+    <nav>
+        <a class="navbar-brand" href="#">
+            My Hardware Store
         </a>
+        
+        <div class="hamburger-container">
+            <div class="hamburger" id="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon primary"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                {% if request.user.userpermission.role == "manager" %}
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'pos_page' %}" style="transition: color 0.3s ease;">
-                            <i class="bi bi-cart"></i> 
-                            <strong>POS</strong>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'dashboard' %}" style="transition: color 0.3s ease;">
-                            <i class="bi bi-house-door"></i> 
-                            <strong>Dashboard</strong>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'product_list' %}" style="transition: color 0.3s ease;">
-                            <i class="bi bi-box"></i> 
-                            <strong>Inventory</strong>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'request_quotation_list' %}" style="transition: color 0.3s ease;">
-                            <i class="bi bi-file-earmark-plus"></i> 
-                            <strong>Procurement</strong>
-                        </a>
-                    </li>
-
-                {% elif request.user.userpermission.role == "employee" %}
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'pos_page' %}" style="transition: color 0.3s ease;">
-                            <i class="bi bi-cart"></i> 
-                            <strong>POS</strong>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'dashboard' %}" style="transition: color 0.3s ease;">
-                            <i class="bi bi-house-door"></i> 
-                            <strong>Dashboard</strong>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'product_list' %}" style="transition: color 0.3s ease;">
-                            <i class="bi bi-box"></i> 
-                            <strong>Inventory</strong>
-                        </a>
-                    </li>
-
-                {% elif request.user.userpermission.role == "supplier" %}
-                {% endif %}
-
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'edit_profile' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-person-fill"></i> 
-                        <strong>Profile</strong>
+        <div class="navbar-nav" id="navbarNav">
+            {% if request.user.userpermission.role == "manager" %}
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'pos_page' %}">
+                        <i class="bi bi-cart"></i>
+                        POS
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="{% url 'logout' %}" style="transition: color 0.3s ease;">
-                        <i class="bi bi-box-arrow-right"></i> 
-                        <strong>Logout</strong>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">
+                        <i class="bi bi-house-door"></i>
+                        Dashboard
                     </a>
-                </li>
-            </ul>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'product_list' %}">
+                        <i class="bi bi-box"></i>
+                        Inventory
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'request_quotation_list' %}">
+                        <i class="bi bi-file-earmark-plus"></i>
+                        Procurement
+                    </a>
+                </div>
+            {% elif request.user.userpermission.role == "employee" %}
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'pos_page' %}">
+                        <i class="bi bi-cart"></i>
+                        POS
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">
+                        <i class="bi bi-house-door"></i>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="{% url 'product_list' %}">
+                        <i class="bi bi-box"></i>
+                        Inventory
+                    </a>
+                </div>
+            {% elif request.user.userpermission.role == "supplier" %}
+            {% endif %}
+            
+            <div class="nav-item">
+                <a class="nav-link" href="{% url 'edit_profile' %}">
+                    <i class="bi bi-person"></i>
+                    Profile
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Logout
+                </a>
+            </div>
         </div>
     </nav>
 </div>
+
+<script>
+    const hamburger = document.getElementById('hamburger');
+    const navbarNav = document.getElementById('navbarNav');
+
+    hamburger.addEventListener('click', () => {
+        navbarNav.classList.toggle('show');
+    });
+</script>

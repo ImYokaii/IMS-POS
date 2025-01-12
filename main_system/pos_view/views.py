@@ -17,6 +17,7 @@ from django.core.paginator import Paginator
 
 load_dotenv()
 
+@login_required(login_url="/login/")
 def pos_page(request):
     invoice = SalesInvoice.objects.filter().order_by('-id').first()
     
@@ -56,6 +57,7 @@ def pos_page(request):
     })
 
 
+@login_required(login_url="/login/")
 def add_item(request):
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
@@ -87,6 +89,7 @@ def add_item(request):
     return redirect('pos_page')
 
 
+@login_required(login_url="/login/")
 def complete_invoice(request):
     invoice = SalesInvoice.objects.filter().order_by('-id').first()
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
@@ -104,6 +107,7 @@ def complete_invoice(request):
     return redirect('input_cash', invoice.id)
 
 
+@login_required(login_url="/login/")
 def input_cash(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
 
@@ -126,6 +130,7 @@ def input_cash(request, invoice_id):
     })
 
 
+@login_required(login_url="/login/")
 def edit_item(request, item_id):
     item = get_object_or_404(SalesInvoiceItem, id=item_id)
     if request.method == 'POST':
@@ -135,12 +140,14 @@ def edit_item(request, item_id):
     return redirect('pos_page')
 
 
+@login_required(login_url="/login/")
 def delete_item(request, item_id):
     item = get_object_or_404(SalesInvoiceItem, id=item_id)
     item.delete()
     return redirect('pos_page')
 
 
+@login_required(login_url="/login/")
 def transaction_summary(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
 
@@ -152,6 +159,7 @@ def transaction_summary(request, invoice_id):
     })
 
 
+@login_required(login_url="/login/")
 def finish_transaction(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
 
@@ -183,6 +191,7 @@ def finish_transaction(request, invoice_id):
     return redirect('pos_page')
 
 
+@login_required(login_url="/login/")
 def receipt_page(request, invoice_id):
     official_receipt = get_object_or_404(OfficialReceipt, sales_invoice__id=invoice_id)
 
@@ -191,6 +200,7 @@ def receipt_page(request, invoice_id):
     })
 
 
+@login_required(login_url="/login/")
 def transaction_invoices(request):
     form = InvoiceSearchForm(request.GET)
 
@@ -214,6 +224,7 @@ def transaction_invoices(request):
     })
 
 
+@login_required(login_url="/login/")
 def transaction_invoices_detail(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
@@ -246,6 +257,7 @@ def transaction_invoices_detail(request, invoice_id):
     })
 
 
+@login_required(login_url="/login/")
 def download_sales_invoice_pdf(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
     items = SalesInvoiceItem.objects.filter(invoice=invoice)

@@ -4,153 +4,317 @@
 
 {% block content %}
 <style>
-@media screen and (max-width: 1441px) {
-    .card-body {
+@media screen and (max-width: 1550px) {
+    .box-container {
+        display: flex;
+        height: 100%;
+        width: 100%;
+    }
+
+    .right-left-form-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .left-column-signup,
+    .right-column-signup {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .left-box-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        height: 100%;
+        width: 55%;
         padding: 40px;
-        max-height: 600px;
-        max-width: 800px;
-        background-color: white;
-        border-radius: 30px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        overflow-y: auto;
     }
 
-    h1 {
-        font-size: 32px;
+    .left-box-container .back-button-container {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        gap: 10px;
+        width: 100%;
+        margin-top: 220px;
     }
 
-    label {
-        font-size: 14px;
-        margin-left: 10px;
-    }
-
-    a {
-        font-size: 13px;
+    .left-box-container .back-button-container a {
         text-decoration: none;
         color: black;
     }
 
-    .invalid-feedback {
-        margin-top: 5px;
-        font-size: 12px;
-        position: absolute;
-        top: 100%;
-        left: 0;
+    .left-box-container .title-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         width: 100%;
-        max-width: 100%;
-        color: red;
-        display: block;
     }
 
-    .input-group {
-        position: relative;
+    .left-box-container .title-container h3 {
+        color:#CA1717;
+        font-weight: bolder;
+        font-size: 42px;
+        text-align: center;
     }
 
-    .form-control {
-        border-style: solid;
-        border-color: rgba(0, 0, 0, 0.3);
-        border-radius: 10px;
+    .left-box-container .title-container p {
+        color: rgba(0, 0, 0, 0.5);
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .left-box-container .form-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .left-box-container .form-container .form-label {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .left-box-container .form-field input {
         height: 35px;
         width: 100%;
-        max-width: 100%;
+        border-radius: 30px;
+        border-color: black;
     }
 
-    .btn {
-        font-size: 16px;
-        border-radius: 10px;
-        height: 50px;
+    .left-box-container .lower-form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 12px;
     }
-}
 
-@media screen and (max-width: 769px) {
-    .card-body {
+    .left-box-container .lower-form-field input {
+        height: 35px;
+        width: 420px;
+        border-radius: 30px;
+        border-color: black;
+    }
+
+    .left-box-container .signup-button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .left-box-container .signup-button-container button {
+        font-weight: bolder;
+        color: white;
+        background-color: #CA1717;
+        height: 40px;
+        width: 180px;
+        border-style: none;
+        border-radius: 30px;
+    }
+
+
+    .right-box-container {
+        background-color: #CA1717;
+        background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 40px ), repeating-linear-gradient( #CA1717, #CA2525 );
+        /* background-image: radial-gradient(circle at center center, #CA1717, #CA2525), repeating-radial-gradient(circle at center center, #CA1717, #CA1717, 10px, transparent 20px, transparent 10px); */
+        background-blend-mode: multiply;
         height: 100%;
-        max-width: 100%;
-        border-radius: 0px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0);
-        overflow-y: auto;
+        width: 45%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5%;
+        box-shadow: -3px 0 5px rgba(0, 0, 0, 0.5);
     }
 
-    .header-container {
-        margin-top: 30px;
+
+    .right-box-container .title-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex-wrap: wrap;
+        background-color: rgba(255, 255, 255, 0.303);
+        border-radius: 30px;
+        height: 100%;
+        width: 100%;
+        padding: 40px;
+    }
+
+    .right-box-container .company-logo {
+        display: flex;
+        align-items: center;
+        position: relative;
+        top: -20%;
+        left: -30%;
+    }
+
+    .right-box-container h2 {
+        color: white;
+        font-weight: bolder;
+        font-size: 28px;
+    }
+
+    .right-box-container h1 {
+        display: flex;
+        flex-wrap: wrap;
+        color: white;
+        font-weight: bold;
+        font-size: 56px;
     }
 }
 
-@media screen and (max-width: 577px) {
-    .card-body {
-        overflow-x: hidden;
-    }
-    
-    .input-fields-container {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .header-container {
-        margin-top: 600px;
+@media screen and (max-width: 1350px) {
+    .left-box-container {
+        gap: 20px;
     }
 
-    h1 {
-        font-size: 22px;
+    .right-box-container .title-container {
+        height: 80%;
+        width: 100%;
     }
 
-    .btn {
+    .right-box-container .title-container h1 {
+        font-size: 42px;
+    }
+}
+
+@media screen and (max-width: 820px) {
+    .left-box-container {
+        gap: 20px;
+    }
+
+    .left-box-container .back-button-container {
+        margin-top: 410px;
+    }
+
+    .left-box-container .title-container h3 {
+        font-size: 32px;
+    }
+
+    .left-box-container .title-container p {
         font-size: 12px;
-        max-width: 75%;
     }
 
-    label {
+    .right-box-container .title-container h2 {
+        font-size: 14px;
+    }
+
+    .right-box-container .title-container h1 {
+        font-size: 24px;
+    }
+
+    .lower-form-container .lower-form-field input {
+        width: 340px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .box-container {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .left-box-container {
+        height: 85%;
+        width: 100%;
+        padding: 10px;
+        gap: 20px;
+    }
+
+    .left-box-container .back-button-container {
+        margin-top: 435px;
+    }
+
+    .left-box-container .right-left-form-container {
+        gap: 20px;
+    }
+
+    .left-box-container .form-container span {
         font-size: 12px;
     }
 
-    .col-md-4 {
-        width: 230px;
+    .left-box-container .form-container input {
+        height: 30px;
+        width: 130px;
     }
 
-    .recaptcha-container {
-        margin-top: 20px;
-        margin-bottom: 20px;
-        width: 40%;
-        display: flex;
-        flex-direction: column;
-        gap: 0;
+    .right-box-container {
+        height: 15%;
+        width: 100%;
     }
 
-    .recaptcha-container label {
-        margin-left: 100px;
+
+    .right-box-container .title-container {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0);
     }
 
-    .recaptcha-container .invalid-feedback {
-        margin-left: 100px;
+    .right-box-container .company-logo {
+        top: -20%;
+        left: -10%
+    }
+
+    .right-box-container h2 {
+        font-size: 20px;
+    }
+
+    .right-box-container .title-container h1 {
+        visibility: hidden;
     }
 
     .captcha-container {
-        display: flex;
-        justify-content: center;
-        transform: scale(0.7);
+        transform: scale(0.8);
+    }
+
+    .lower-form-container .lower-form-field input {
+        width: 280px;
     }
 }
 </style>
 
-<div class="card-body d-flex position-relative flex-column justify-content-center align-items-center w-100 h-100">
-    <div class="header-container d-flex position-relative align-items-center justify-content-start mb-5 w-100">
-        <a href="{% url 'landing_page' %}">
-            <i class="bi bi-arrow-left fs-5 ms-2" placeholder="Back"></i>
-        </a>
-        <h1 class="card-title text-center w-100">Supplier Sign Up</h1>
-    </div>
+<div class="box-container">
 
-
-    <form method="post">
+    <form method="post" class="left-box-container">
         {% csrf_token %}
 
-        <div class="input-fields-container d-flex align-items-center justify-content-center gap-4">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="username" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+        <div class="back-button-container">
+            <a href="{% url 'landing_page' %}">
+                <i class="bi bi-arrow-left fs-5 ms-2" placeholder="Back"></i>
+                Back
+            </a>
+        </div>
+
+        <div class="title-container">
+            <h3>Supplier Sign Up</h3>
+            <p class="text-center">Your workplace at your fingertips. Sign up to get started!</p>
+        </div>
+
+        <div class="right-left-form-container">
+            <div class="left-column-signup">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-person-fill"></i>
-                        Username
+                        <span>Username</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="form-field">
                         <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
                         {% if form.username.errors %}
                             <div class="invalid-feedback">
@@ -160,12 +324,12 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="first_name" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-person-add"></i>
-                        First Name
+                        <span>First Name</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="form-field">
                         <input type="text" class="form-control" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="First Name">
                         {% if form.first_name.errors %}
                             <div class="invalid-feedback">
@@ -175,12 +339,12 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="last_name" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-person-add"></i>
-                        Last Name
+                        <span>Last Name</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="form-field">
                         <input type="text" class="form-control" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Last Name">
                         {% if form.last_name.errors %}
                             <div class="invalid-feedback">
@@ -191,13 +355,13 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="email" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+            <div class="right-column-signup">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-envelope-fill"></i>
-                        Email Address
+                        <span>Email Address</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="form-field">
                         <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="Email">
                         {% if form.email.errors %}
                             <div class="invalid-feedback">
@@ -207,12 +371,12 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="password1" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-key-fill"></i>
-                        Password
+                        <span>Password</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="form-field">
                         <input type="password" class="form-control" id="password1" name="password1" value="{{ form.password1.value|default:'' }}" placeholder="********">
                         {% if form.password1.errors %}
                             <div class="invalid-feedback">
@@ -222,12 +386,12 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="password2" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-key"></i>
-                        Confirm Password
+                        <span>Confirm Password</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="form-field">
                         <input type="password" class="form-control" id="password2" name="password2" value="{{ form.password2.value|default:'' }}" placeholder="********">
                         {% if form.password2.errors %}
                             <div class="invalid-feedback">
@@ -237,14 +401,16 @@
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="company_name" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+        <div class="bottom-container">
+            <div class="lower-form-container">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-building"></i>
-                        Company Name
+                        <span>Company Name</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="lower-form-field">
                         <input type="text" class="form-control" id="company_name" name="company_name" value="{{ supplier_form.company_name.value|default:'' }}" placeholder="Company Name">
                         {% if supplier_form.company_name.errors %}
                             <div class="invalid-feedback">
@@ -254,12 +420,12 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="company_address" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-geo-alt-fill"></i>
-                        Company Address
+                        <span>Company Address</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="lower-form-field">
                         <input type="text" class="form-control" id="company_address" name="company_address" value="{{ supplier_form.company_address.value|default:'' }}" placeholder="Company Address">
                         {% if supplier_form.company_address.errors %}
                             <div class="invalid-feedback">
@@ -269,12 +435,12 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="company_contact" class="form-label d-flex align-items-center text-start fw-bold gap-1">
+                <div class="form-container">
+                    <label class="form-label">
                         <i class="bi bi-telephone-fill"></i>
-                        Company Contact
+                        <span>Company Contact</span>
                     </label>
-                    <div class="input-group has-validation w-100">
+                    <div class="lower-form-field">
                         <input type="text" class="form-control" id="company_contact" name="company_contact" value="{{ supplier_form.company_contact.value|default:'' }}" placeholder="Company Contact">
                         {% if supplier_form.company_contact.errors %}
                             <div class="invalid-feedback">
@@ -286,8 +452,8 @@
             </div>
         </div>
 
-        <div class="recaptcha-container my-5 d-flex position-relative justify-content-center align-items-center gap-3 w-100">
-            <label for="captcha" class="form-label text-start fw-bold w-100">Captcha:</label>
+        <div class="form-container">
+            <label class="form-label">Captcha:</label>
             <div class="captcha-container">
                 {{ form.captcha }}
             </div>
@@ -298,9 +464,20 @@
             {% endif %}
         </div>
 
-        <div class="d-flex justify-content-center align-items-center w-100">
-            <button type="submit" class="btn btn-primary w-50 fw-bold">Submit</button>
+        <div class="signup-button-container">
+            <button type="submit">Submit</button>
         </div>
     </form>
+
+    <div class="right-box-container">
+        <div class="title-container">
+            <div class="company-logo">
+                <img src="#" aria-placeholder="logo" />
+                <h2>Stockord</h2>
+            </div>
+
+            <h1>WELCOME TO STOCKORD!</h1>
+        </div>
+    </div>
 </div>
 {% endblock %}
