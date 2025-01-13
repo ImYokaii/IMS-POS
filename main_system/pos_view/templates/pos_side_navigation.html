@@ -44,10 +44,6 @@
         </a>
     </div>
 
-    <div class="separator">
-        <span style="color: white;">/</span>
-    </div>
-
     <div class="nav-item">
         {% if request.user.userpermission.role == "manager" %}
             <a class="nav-link text-white" href="{% url 'transaction_invoices' %}">

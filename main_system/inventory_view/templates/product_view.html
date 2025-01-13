@@ -3,81 +3,342 @@
 {% block title %}Product View{% endblock %}
 
 {% block content %}
-    <a href="{% url 'product_list' %}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left"></i> 
-        Back
-    </a>
-
-    <p class="h1">View Product: 
-        <small class="text-muted">{{ product.name }}</small>
-    </p>
-    
-    <!-- QR Code Display -->
-    <div class="code-container-wrapper">
-        <div class="code-container">
-            <img src="{{ qr_code }}" alt="QR Code for {{ product.name }}" />
-            
-
-            <img src="{{ barcode }}" alt="Barcode for {{ product.name }}" />
-        </div>
-    </div>
-
-    
-    <div class="mb-3">
-        <div class="col-md-6 mb-3">
-            <p class="h3">SKU:</p>
-            <small class="text-muted">{{ product.sku }}</small>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <p class="h3">Category:</p>
-            <small class="text-muted">{{ product.category }}</small>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Quantity:</p>
-            <small class="text-muted">{{ product.quantity }}</small>
-        </div>
-    
-        <div class="col-md-6 mb-3">
-            <p class="h3">Measurement:</p>
-            <small class="text-muted">{{ product.measurement }}</small>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Reorder Level:</p>
-            <small class="text-muted">{{ product.reorder_level }}</small>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Selling Price:</p>
-            <small class="text-muted">₱{{ product.selling_price }}</small>
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <p class="h3">Cost Price:</p>
-            <small class="text-muted">₱{{ product.cost_price }}</small>
-        </div>
-    </div>
-{% endblock %}
-
-
 <style>
-    .code-container-wrapper {
+.box-container {
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+.left-box-container {
+    height: 100%;
+    width: 400px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    border-radius: 30px;
+    border-style: none;
+    background-color: white;
+}
+
+.upper-section {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-container {
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .25);
+    border-width: .5px;
+    border-radius: 30px;
+    height: 200px;
+    width: 200px;
+    padding: 15px;
+}
+
+.qr-title-container h2 {
+    font-weight: bold;
+}
+
+.qr-container img {
+    height: 100%;
+    width: 100%;
+}
+
+.lower-section {
+    height: 40%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.barcode-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, .25);
+    border-width: .5px;
+    border-radius: 30px;
+    height: 170px;
+    width: 200px;
+    padding: 15px;
+}
+
+.barcode-title-container h4 {
+    font-weight: bold;
+}
+
+.barcode-container img {    
+    height: 80%;
+    width: 100%;
+}
+
+.right-box-container {
+    height: 100%;
+    width: 900px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    border-radius: 30px;
+    border-style: none;
+    background-color: white;
+}
+
+.right-box-container .title-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 40px;
+}
+
+.title-container h2 {
+    font-weight: bold;
+}
+
+.product-attribute {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.product-attribute p {
+    margin: 0px;
+}
+
+.section-1 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.other-section {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.section-2 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 160px;
+}
+
+.section-3 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 85px;
+}
+
+@media screen and (max-width: 820px) {
+    .box-container {
+        gap: 20px;
+    }
+
+    .qr-title-container h2 {
+        font-size: 18px;
+    }
+
+    .qr-container {
+        height: 150px;
+        width: 150px;
+    }
+
+    .barcode-title-container h4 {
+        font-size: 13px;
+    }
+
+    .barcode-container {
+        width: 150px;
+        height: 120px;
+    }
+
+    .right-box-container .title-container h2 {
+        font-size: 18px;
+    }
+
+    .product-attribute p {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .box-container {
         display: flex;
-        flex-direction: row;
-        gap: 10px; /* Adjust as needed to reduce or increase space */
-        justify-content: flex-start; /* Align items to the start, keeping them next to each other */
-        align-items: center; /* Vertically center if they have different heights */
+        flex-direction: column-reverse;
     }
-    .code-container {
-        text-align: center;
-        width: 120px; /* Set fixed width if you want both to be equal in size */
+
+    .right-box-container {
+        margin-top: 400px;
+        width: 100%;
+        height: 100%;
     }
-    .code-container img {
-        max-width: 100px; /* Control the image size */
-        height: auto;
+
+    .right-box-container .title-container {
+        margin-bottom: 10px;
     }
+
+    .right-box-container .title-container h2 {
+        font-size: 14px;
+    }
+
+    .section-1 {
+        gap: 0px;
+        justify-content: space-between;
+    }
+
+    .section-2 {
+        gap: 0px;
+        justify-content: space-between;
+    }
+
+    .section-3 {
+        gap: 0px;
+        justify-content: space-between;
+    }
+
+    .product-attribute p {
+        font-size: 9px;
+    }
+
+    .qr-title-container h2 {
+        font-size: 14px;
+    }
+
+    .left-box-container {
+        width: 100%;
+    }
+
+}
+
 </style>
+
+<div class="box-container">    
+    <div class="left-box-container">
+        <div class="upper-section">
+            <div class="qr-title-container">
+                <h2>QR Code</h2>
+            </div>
+
+            <div class="qr-container">
+                <img src="{{ qr_code }}" alt="QR Code for {{ product.name }}" />
+            </div>
+        </div>
+
+        <div class="lower-section">
+            <div class="barcode-title-container">
+                <h4>Barcode</h4>
+            </div>
+
+            <div class="barcode-container">
+                <img src="{{ barcode }}" alt="Barcode for {{ product.name }}" />
+            </div>
+        </div>
+    </div>
+
+    <div class="right-box-container">
+        <div class="title-container">
+            <h2>Product Details</h2>
+        </div>
+
+        <div class="section-1">
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Product Name:
+                    <span class="text-muted fw-normal">{{ product.name }}</span>
+                </p>
+            </div>
+
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    SKU:
+                    <span class="text-muted fw-normal">{{ product.sku }}</span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="other-section">
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Category:
+                    <span class="text-muted fw-normal">{{ product.category }}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="other-section">
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Measurement:
+                    <span class="text-muted fw-normal">{{ product.measurement }}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="other-section" style="overflow-y: auto;">
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Description:
+                    <span class="text-muted fw-normal">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+                        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 
+                        enim ad minim veniam, quis nostrud exercitation ullamco laboris 
+                        nisi ut aliquip ex ea commodo consequat.
+                    </span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="section-2">
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Quantity:
+                    <span class="text-muted fw-normal">{{ product.quantity }}</span>
+                </p>
+            </div>
+
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Reorder Level:
+                    <span class="text-muted fw-normal">{{ product.reorder_level }}</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="section-3">
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Selling Price:
+                    <span class="text-muted fw-normal">₱{{ product.selling_price }}</span>
+                </p>
+            </div>
+
+            <div class="product-attribute">
+                <p class="fw-bold">
+                    Cost Price:
+                    <span class="text-muted fw-normal">₱{{ product.cost_price }}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

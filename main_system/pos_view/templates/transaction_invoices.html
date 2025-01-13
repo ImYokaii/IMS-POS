@@ -37,6 +37,7 @@
 
 .search-field input {
     height: 40px;
+    width: 220px;
     border-radius: 30px;
     border-style: none;
 }
@@ -56,8 +57,41 @@
     padding: 0px 20px;
 }
 
+@media screen and (max-width: 850px) {
+    .title-container {
+        padding-top: 400px;
+    }
+}
+
 @media screen and (max-width: 520px) {
-    overflow-x: hidden;
+    body {
+        overflow-x: hidden;
+    }
+
+    .title-container {
+        padding-top: 600px;
+    }
+
+    .upper-section-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+    }
+
+    .upper-section-container button {
+        height: 30px;
+    }
+
+    .search-bar-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-bar-container input {
+        height: 30px;
+        width: 200px;
+    }
 }
 </style>
 
