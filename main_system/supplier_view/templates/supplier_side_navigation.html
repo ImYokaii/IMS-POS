@@ -1,25 +1,69 @@
-<nav class="col-md-2 d-md-block bg-primary text-white sidebar" style="position: sticky; top: 0; height: 90vh;">
-    <div class="position-sticky">
-        <ul class="nav flex-column">
+<style>
+.side-nav-container {
+    background-color: #8E0D0D;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 10vh;
+    left: 0px;
+    height: 7vh;
+    width: 100%;
+    gap: 10px;
+}
 
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'request_quotations_list' %}">
-                    <strong>View Request Quotations</strong>
-                </a>
+.side-nav-container .nav-item {
+    padding: 10px;
+    transition: 0.5s ease;
+}
 
-                <a class="nav-link text-white" href="{% url 'quotation_submission_list' %}">
-                    <strong>View Submitted Quotations</strong>
-                </a>
+.side-nav-container .nav-item:hover {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
 
-                <a class="nav-link text-white" href="{% url 'purchase_orders_list' %}">
-                    <strong>View Purchase Orders</strong>
-                </a>
+.nav-item strong {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
 
-                <a class="nav-link text-white" href="{% url 'purchase_invoices_list' %}">
-                    <strong>View Purchase Invoices</strong>
-                </a>
-            </li>
-            
-        </ul>
+@media screen and (max-width: 820px) {
+    .side-nav-container {
+        gap: 3px;
+    }
+
+    .nav-item strong {
+        font-size: 10px;
+    }
+}
+</style>
+
+<div class="side-nav-container">
+    <div class="nav-item">
+        <a class="nav-link text-white" href="{% url 'request_quotations_list' %}">
+            <strong>Quotations</strong>
+        </a>
     </div>
-</nav>
+
+    <div class="nav-item">
+        <a class="nav-link text-white" href="{% url 'quotation_submission_list' %}">
+            <strong>Submissions</strong>
+        </a>
+    </div>
+
+    <div class="nav-item">
+        <a class="nav-link text-white" href="{% url 'purchase_orders_list' %}">
+            <strong>Orders</strong>
+        </a>
+    </div>
+
+    <div class="nav-item">
+        <a class="nav-link text-white" href="{% url 'purchase_invoices_list' %}">
+            <strong>Invoices</strong>
+        </a>
+    </div>
+</div>

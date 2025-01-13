@@ -175,6 +175,12 @@ nav {
                     </a>
                 </div>
             {% elif request.user.userpermission.role == "supplier" %}
+            <div class="nav-item">
+                <a class="nav-link" href="{% url 'request_quotations_list' %}">
+                    <i class="bi bi-house-door"></i>
+                    Home
+                </a>
+            </div>
             {% endif %}
             
             <div class="nav-item">

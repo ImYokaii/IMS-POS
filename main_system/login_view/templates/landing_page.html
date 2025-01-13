@@ -4,134 +4,147 @@
 
 {% block content %}
 <style>
-@media screen and (max-width: 1550px) {
-    .box-container {
-        display: flex;
-        height: 100%;
-        width: 100%;
-    }
+.box-container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
 
-    .box-container .button-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 5px;
-        border-style: solid;
-        border-color: black;
-        border-radius: 30px;
-        color: black;
-        height: 50px;
-        width: 280px;
-        text-decoration: none;
-    }
-
-    
-    .left-box-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 50px;
-        height: 100%;
-        width: 55%;
-        padding: 40px;
-    }
-
-    .left-box-container .login-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .left-box-container .signup-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-items: center;
-    }
-
-    .left-box-container .signup-container a {
-        margin-bottom: 5px
-    }
-
-    .left-box-containter .separator-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        gap: 10px;
-    }
-
-    .left-box-container span, 
-    .left-box-container p {
-        color: rgba(0, 0, 0, 0.5);
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    .left-box-container h3 {
-        color:#8E0D0D;
-        font-weight: bolder;
-        font-size: 42px;
-    }
-    
-
-    .right-box-container {
-        background-color: #CA1717;
-        background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 40px ), repeating-linear-gradient( #CA1717, #CA2525 );
-        /* background-image: radial-gradient(circle at center center, #CA1717, #CA2525), repeating-radial-gradient(circle at center center, #CA1717, #CA1717, 10px, transparent 20px, transparent 10px); */
-        background-blend-mode: multiply;
-        height: 100%;
-        width: 45%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 5%;
-        box-shadow: -3px 0 5px rgba(0, 0, 0, 0.5);
-    }
+.box-container .button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 30px;
+    color: black;
+    height: 50px;
+    width: 280px;
+    text-decoration: none;
+}
 
 
-    .right-box-container .title-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        flex-wrap: wrap;
-        background-color: rgba(255, 255, 255, 0.303);
-        border-radius: 30px;
-        height: 100%;
-        width: 100%;
-        padding: 40px;
-    }
+.left-box-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    height: 100%;
+    width: 55%;
+    padding: 40px;
+}
 
-    .right-box-container .company-logo {
-        display: flex;
-        align-items: center;
-        position: relative;
-        top: -10%;
-        left: -30%;
-    }
+.left-box-container .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-    .right-box-container h2 {
-        color: white;
-        font-weight: bolder;
-        font-size: 28px;
-    }
+.left-box-container .signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+}
 
-    .right-box-container h1 {
-        color: white;
-        font-weight: bold;
-        font-size: 56px;
-    }
+.left-box-container .signup-container a {
+    margin-bottom: 5px
+}
 
-    .right-box-container h3 {
-        padding: 20px;
-        color: black;
-        font-size: 34px;
-    }
+.left-box-containter .separator-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+}
+
+.left-box-container span, 
+.left-box-container p {
+    color: rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.left-box-container h3 {
+    color:#8E0D0D;
+    font-weight: bolder;
+    font-size: 42px;
+}
+
+
+.right-box-container {
+    background-color: #CA1717;
+    background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 40px ), repeating-linear-gradient( #CA1717, #CA2525 );
+    /* background-image: radial-gradient(circle at center center, #CA1717, #CA2525), repeating-radial-gradient(circle at center center, #CA1717, #CA1717, 10px, transparent 20px, transparent 10px); */
+    background-blend-mode: multiply;
+    height: 100%;
+    width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5%;
+    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+
+.right-box-container .title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, 0.303);
+    border-radius: 30px;
+    height: 100%;
+    width: 100%;
+    padding: 40px;
+}
+
+.right-box-container .company-logo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: start;
+    top: 0px;
+    height: 10%;
+    width: 100%;
+}
+
+.company-logo img {
+    height: 50px;
+    width: 110px;
+}
+
+.lower-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 90%;
+}
+
+.right-box-container h2 {
+    color: white;
+    font-weight: bolder;
+    font-size: 28px;
+}
+
+.right-box-container h1 {
+    color: white;
+    font-weight: bold;
+    font-size: 56px;
+}
+
+.right-box-container h3 {
+    padding: 20px;
+    color: black;
+    font-size: 34px;
 }
 
 @media screen and (max-width: 1350px) {
@@ -140,9 +153,9 @@
         width: 100%;
     }
 
-    .right-box-container .company-logo {
-        top: -20%;
-        left: -30%
+    .company-logo img {
+        height: 40px;
+        width: 100px;
     }
 
     .right-box-container h2 {
@@ -173,6 +186,11 @@
 
     .left-box-container .signup-container {
         transform: scale(.8);
+    }
+
+    .company-logo img {
+        height: 30px;
+        width: 70px;
     }
 
     .right-box-container h2 {
@@ -212,25 +230,21 @@
     }
 
     .left-box-container .login-container {
-        transform: scale(.7);
+        transform: scale(.8);
     }
 
     .left-box-container .separator-container {
-        transform: scale(.7);
+        transform: scale(.8);
     }
 
     .left-box-container .signup-container {
-        transform: scale(.7);
+        transform: scale(.8);
     }
 
     .right-box-container .title-container {
         width: 100%;
         background-color: rgba(255, 255, 255, 0);
-    }
-
-    .right-box-container .company-logo {
-        top: -20%;
-        left: -10%
+        padding: 10px;
     }
 
     .right-box-container h2 {
@@ -285,8 +299,10 @@
                 <img src="{% static 'images/logo.png' %}" alt="Logo">
             </div>
 
-            <h1>WELCOME TO STOCKORD!</h1>
-            <h3>Streamline Your Hardware Store Operations with us.</h3>
+            <div class="lower-text-container">
+                <h1>WELCOME TO STOCKORD!</h1>
+                <h3>Streamline Your Hardware Store Operations with us.</h3>
+            </div>
         </div>
     </div>
 </div>
