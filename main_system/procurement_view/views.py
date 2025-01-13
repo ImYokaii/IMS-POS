@@ -260,7 +260,7 @@ def edit_unit_price_rq(request, signed_id):
     if item_id is None:
         return HttpResponse("Invalid request", status=400)
         
-    item = get_object_or_404(RequestQuotationItem, request_quotation__id=item_id)
+    item = get_object_or_404(RequestQuotationItem, id=item_id)
 
     if request.method == 'POST':
         form = EditQuotationPriceForm(request.POST, instance=item)

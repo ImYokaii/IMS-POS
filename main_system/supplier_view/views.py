@@ -476,7 +476,7 @@ def edit_unit_price_qs(request, signed_id):
     if item_id is None:
         return HttpResponse("Invalid request", status=400)
     
-    item = get_object_or_404(QuotationSubmissionItem, quotation_submission__id=item_id)
+    item = get_object_or_404(QuotationSubmissionItem, id=item_id)
 
     if request.method == 'POST':
         form = EditQuotationPriceForm(request.POST, instance=item)
