@@ -3,125 +3,6 @@
 {% block title %}Product List{% endblock %}
 
 {% block content %}
-<script src="{% static 'inventory-qr-scanner.js' %}"></script>
-<h1>View Product List</h1>
-
-<form method="get" id="filterForm" class="mb-3">
-    <div class="d-flex flex-wrap gap-3">
-        <div class="mb-3">
-            <label for="id_sku" class="form-label">SKU</label>
-            <input type="text" class="form-control" id="id_sku" name="sku">
-        </div>
-    
-        <div class="mb-3">
-            <label for="id_name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="id_name" name="name">
-        </div>
-    
-        <div class="mb-3">
-            <label for="id_category" class="form-label">Category</label>
-            <select class="form-control" id="id_category" name="category">
-                {% for value, label in form.category.field.widget.choices %}
-                    <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary btn-sm">Filter</button>
-</form>
-
-<!-- 
-<button id="startScanButton" class="btn btn-secondary mt-3">Start Scanning</button>
-<button id="stopScanButton" class="btn btn-danger d-none mt-3">Stop Scanning</button>
-
- 
-<div class="video-container mt-3" style="display: none;">
-    <video id="videoElement" autoplay playsinline></video>
-    <div id="videoError" style="display: none; color: red;">Could not access the camera. Please check permissions.</div>
-</div>
-
-<p id="scannedValue" class="mt-3"></p>
--->
-
-<div class="d-flex justify-content-end mb-3">
-    <a href="{% url 'product_list' %}">
-        <button class="btn btn-info btn-sm me-2">
-            <i class="bi bi-eye"></i> View
-        </button>
-    </a>
-
-    {% if request.user.userpermission.role == "manager" %}
-        <a href="{% url 'restock_product_list' %}">
-            <button class="btn btn-success btn-sm me-2">
-                <i class="bi bi-plus-circle"></i> Restock
-            </button>
-        </a>
-
-        <a href="{% url 'to_waste_product_list' %}">
-            <button class="btn btn-danger btn-sm me-2">
-                <i class="bi bi-trash"></i> To Waste
-            </button>
-        </a>
-
-        <a href="{% url 'edit_product_list' %}">
-            <button class="btn btn-warning btn-sm">
-                <i class="bi bi-pencil-square"></i> Edit
-            </button>
-        </a>
-    {% endif %}
-</div>
-
-
-
-<div class="table-responsive">
-    <table class="table table-bordered table-striped table-hover table-sm table-custom">
-        <thead>
-            <tr>
-                <th class="text-truncate" style="max-width: 35px;">SKU</th>
-                <th class="text-truncate" style="max-width: 100px;">Name</th>
-                <th class="text-truncate" style="max-width: 50px;">Category</th>
-                <th class="text-truncate" style="max-width: 20px;">Qty.</th>
-                <th class="text-truncate" style="max-width: 25px;">Measurement</th>
-                <th class="text-truncate" style="max-width: 30px;">reorder_level</th>
-                <th class="text-truncate" style="max-width: 10px;"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in page_obj %}
-            <tr>
-                <td class="text-truncate" style="max-width: 35px;">{{ product.sku }}</td>
-                <td class="text-truncate" style="max-width: 100px;">{{ product.name }}</td>
-                <td class="text-truncate" style="max-width: 50px;">{{ product.category }}</td>
-                <td class="text-truncate" style="max-width: 20px;">{{ product.quantity }}</td>
-                <td class="text-truncate" style="max-width: 25px;">{{ product.measurement }}</td>
-                <td class="text-truncate" style="max-width: 30px;">{{ product.reorder_level }}</td>
-                <td class="text-truncate" style="max-width: 10px;">
-                    <a href="{% url 'product_view' product.id %}">
-                        <button class="btn btn-info btn-sm">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="text-primary small">Previous</a>
-    {% endif %}
-
-    <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="text-primary small">Next</a>
-    {% endif %}
-</div>
-
-
 <style>
     /* Style for the video container */
     .video-container {
@@ -142,6 +23,252 @@
         height: 100%;
         object-fit: cover; /* Maintain aspect ratio */
     }
+
+    .title-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0px;
+    }
+
+    .upper-section-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 20px;
+        margin-bottom: 40px;
+    }
+
+    .search-bar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .search-bar {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .search-bar label{
+        font-weight: bold;
+    }
+
+    .search-bar input {
+        height: 40px;
+        width: 220px;
+        border-radius: 30px;
+        border-style: none;
+    }
+
+    .search-bar select {
+        height: 40px;
+        width: 220px;
+        border-radius: 30px;
+        border-style: none;
+    }
+
+    .search-bar-container button {
+        color: white;
+        background-color: #8E0D0D;
+        margin-top: 30px;
+        height: 40px;
+        width: 100px;
+        border-radius: 30px;
+        border-style: none;
+    }
+
+    .qr-video-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+
+    .qr-video-button button {
+        color: white;
+        background-color: #8E0D0D;
+        margin-top: 90px;
+        height: 40px;
+        width: 150px;
+        border-radius: 30px;
+        border-style: none;
+    }
+
+    .table-container {
+        width: 100%;
+        padding: 0px 20px;
+    }
+
+    .pagination {
+        padding: 10px 20px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+@media screen and (max-width: 820px) {
+    .actions-container button {
+        display: none;
+    }
+
+    .actions-container::after {
+        content: '⋮';
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .actions-container.open button {
+        display: inline-block;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .upper-section-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .search-bar-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-bar-container input {
+        height: 30px;
+        width: 200px;
+    }
+
+    .search-bar-container select {
+        height: 30px;
+        width: 200px;
+    }
+
+    .search-bar-container button {
+        height: 30px;
+    }
+}
 </style>
 
+<div class="title-container">
+    <h1>View Product List</h1>
+</div>
+
+<div class="upper-section-container">
+    <form method="get" id="filterForm" class="search-bar-container">
+        <div class="search-bar">
+            <label for="id_sku" class="form-label">SKU</label>
+            <input type="text" class="form-control" id="id_sku" name="sku" placeholder="Search by SKU">
+        </div>
+        
+        <div class="search-bar">
+            <label for="id_name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="id_name" name="name" placeholder="Search by Name">
+        </div>
+        
+        <div class="search-bar">
+            <label for="id_category" class="form-label">Category</label>
+            <select class="form-control" id="id_category" name="category">
+                {% for value, label in form.category.field.widget.choices %}
+                    <option value="{{ value }}" {% if value == form.category.value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Filter</button>
+    </form>
+
+    
+    <div class="qr-scanning-container">
+        <div class="qr-video-button">
+            <div class="video-container" style="width: 120px; height: 120px; overflow: hidden; display: none;">
+                <video id="videoElement" autoplay muted style="width: 120px; height: 120px;"></video>
+                <div id="videoError" style="display: none; color: red;">Could not access the camera. Please check permissions.</div>
+            </div>
+
+            <button id="startScanButton" class="btn btn-secondary mt-3">Start Scanning</button>
+            <button id="stopScanButton" class="btn btn-danger d-none mt-3">Stop Scanning</button>
+        </div>
+
+        <p id="scannedValue" class="mt-3"></p>
+    </div>
+</div>
+
+
+<div class="table-container">
+    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-truncate small">SKU</th>
+                    <th scope="col" class="text-truncate small">Name</th>
+                    <th scope="col" class="text-truncate small">Category</th>
+                    <th scope="col" class="text-truncate small">Qty.</th>
+                    <th scope="col" class="text-truncate small">Measurement</th>
+                    <th scope="col" class="text-truncate small">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in page_obj %}
+                <tr>
+                    <td scope="row" class="text-truncate small">{{ product.sku }}</td>
+                    <td scope="row" class="text-truncate small">{{ product.name }}</td>
+                    <td scope="row" class="text-truncate small">{{ product.category }}</td>
+                    <td scope="row" class="text-truncate small">{{ product.quantity }}</td>
+                    <td scope="row" class="text-truncate small">{{ product.measurement }}</td>
+                    <td scope="row" class="text-truncate small actions-container">
+                        <a href="{% url 'product_view' product.id %}">
+                            <button class="btn btn-info btn-sm">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </a>
+
+                        {% if request.user.userpermission.role == "manager" %}
+                            <a href="{% url 'transfer_to_waste' product.id %}">
+                                <button class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </a>
+
+                            <a href="{% url 'edit_product' product.id %}">
+                                <button class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="text-primary small">Previous</a>
+    {% endif %}
+
+    <span class="mx-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="text-primary small">Next</a>
+    {% endif %}
+</div>
+
+<script>
+document.querySelectorAll('.actions-container').forEach(container => {
+    container.addEventListener('click', () => {
+        container.classList.toggle('open');
+    });
+});
+</script>
+
+<script src="{% static 'inventory-qr-scanner.js' %}"></script>
 {% endblock %}

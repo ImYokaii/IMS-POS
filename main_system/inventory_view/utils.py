@@ -9,7 +9,7 @@ load_dotenv()
 # ===== FILTER PRODUCT SEARCH RESULTS ===== #
 def search_filter_products(sku, name, category, status):
     from .models import Product
-    
+
     products = Product.objects.filter(status=status)
 
     if sku:

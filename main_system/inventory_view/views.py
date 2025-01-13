@@ -188,11 +188,11 @@ def transfer_to_waste(request, product_id):
             try:
                 product_transfer_to_waste(product, quantity, reason, employee)
                 messages.success(request, f"{product.name} product transferred to waste")
-                return redirect('to_waste_product_list')
+                return redirect('wasted_product_list')
             
             except ValidationError as error_message:
                 messages.error(request, str(error_message))
-                return redirect('restock_product_quantity', product_id=product_id)
+                return redirect('transfer_to_waste', product_id=product_id)
 
             except ValueError as error_message:
                 messages.error(request, "Invalid quantity input. Please enter a valid number.")
@@ -246,7 +246,7 @@ def edit_product(request, product_id):
             try:
                 form.save()
                 messages.success(request, f"Product '{product.name}' has been updated successfully.")
-                return redirect('edit_product_list')
+                return redirect('product_list')
 
             except ValidationError as error_message:
                 messages.error(request, f"Error: {error_message}")
@@ -310,7 +310,14 @@ def wasted_product_list(request):
         category = form.cleaned_data.get('category')
         date_wasted = form.cleaned_data.get('date_wasted')
 
-        products = search_filter_waste_products(sku, name, category, date_wasted)
+        products = (
+            search_filter_waste_products(sku, name, category, date_wasted)
+            .order_by('-date_wasted')
+        )
 
-    return render(request, 'wasted_product_list.html', {'form': form, 'products': products})
+    paginator = Paginator(products, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'wasted_product_list.html', {'form': form, 'page_obj': page_obj})
 # =============================================== #
