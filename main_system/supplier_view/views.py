@@ -33,7 +33,7 @@ def request_quotations_list(request):
     STATUS_1 = STATUS[1]
 
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gt=due_date, status=STATUS_0).order_by('-quotation_no')
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__gt=due_date).order_by('-quotation_no')
 
     for quotation in request_quotations:
         quotation.signed_id = sign_id(quotation.id)

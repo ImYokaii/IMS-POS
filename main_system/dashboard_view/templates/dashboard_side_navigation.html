@@ -12,6 +12,10 @@
     gap: 10px;
 }
 
+.side-nav-container a {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 .side-nav-container .nav-item {
     padding: 10px;
     transition: 0.5s ease;
@@ -24,6 +28,34 @@
     border-color: white;
     background-color: #8E0D0D;
 }
+
+{% if request.path == '/dashboard/dashboard/' or request.path == '/dashboard/dashboard'%}
+.side-nav-container .dashboard-link a {
+    color: white;
+}
+
+.side-nav-container .dashboard-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
+
+{% if request.path == '/dashboard/financial_dashboard/' or request.path == '/dashboard/financial_dashboard'%}
+.side-nav-container .financial-dashboard-link a {
+    color: white;
+}
+
+.side-nav-container .financial-dashboard-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
 
 .nav-item strong {
     white-space: nowrap;
@@ -43,14 +75,14 @@
 </style>
 
 <div class="side-nav-container">
-    <div class="nav-item">
-        <a class="nav-link text-white" href="{% url 'dashboard' %}">
+    <div class="nav-item dashboard-link">
+        <a class="nav-link" href="{% url 'dashboard' %}">
             <strong>Dashboard</strong>
         </a>
     </div>
 
-    <div class="nav-item">
-        <a class="nav-link text-white" href={% url 'financial_dashboard' %}>
+    <div class="nav-item financial-dashboard-link">
+        <a class="nav-link" href={% url 'financial_dashboard' %}>
             <strong>Financial Dashboard</strong>
         </a>
     </div>

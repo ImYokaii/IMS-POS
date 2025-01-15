@@ -426,7 +426,7 @@ def supplier_quotation_submission_detail(request, signed_id):
     quotation_submission = get_object_or_404(QuotationSubmission, id=submission_id)
 
     due_date = timezone.now().date()
-    if quotation_submission.request_quotation.quote_valid_until >= due_date:
+    if quotation_submission.request_quotation.quote_valid_until > due_date:
         return redirect('invalid_request')
 
     items = quotation_submission.items.all()
