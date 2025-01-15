@@ -21,7 +21,7 @@ def check_due_request_quotations():
     today = timezone.now().date()
     today_str = today.strftime('%Y-%m-%d')
 
-    request_quotations = RequestQuotation.objects.filter(quote_valid_until__lte=today_str, status=ONGOING_STATUS)
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__lt=today_str, status=ONGOING_STATUS)
     request_quotations.update(status=ENDED_STATUS)
 # =============================================== #
 

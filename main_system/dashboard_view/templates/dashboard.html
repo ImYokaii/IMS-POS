@@ -7,85 +7,177 @@
     .title-container {
         display: flex;
         align-items-center;
-        justify-content: start;
+        justify-content: center;
         margin: 40px;
     }
 
     .dashboard-container {
+        background-color: #8E0D0D;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: start;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         margin: 40px;
         gap: 20px;
+        border-radius: 30px;
+    }
+
+    .inventory-upper-container,
+    .inventory-lower-container {
+        display: flex;
+        aling-items: center;
+        justify-content: center;
+    }
+
+    .inventory-upper-left-container,
+    .inventory-upper-right-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .inventory-upper-left-left-container,
+    .inventory-upper-left-right-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .data-container1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .data-container2 {
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        border-radius: 30px;
     }
 
     .dashboard-datas {
         display: flex;
-        flex-direction: column;
         align-items: center;
         text-align: center;
+        justify-content: center;
         height: 150px;
         width: 150px;
     }
+
+
 </style>
 
 <div class="title-container">
-    <h3>Inventory Dashboard</h3>
+    <h3>Inventory-Procurement Analytics</h3>
 </div>
 
 <div class="dashboard-container">
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_products|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-box-seam"></i>
-        <span class="fixed-width-title fw-bold">Total Products</span>
+    <div class="inventory-upper-container">
+        <div class="inventory-upper-left-container">
+            <div class="inventory-upper-left-left-container">
+                <div class="data-container1">
+                    <div class="dashboard-datas">
+                        <h3>Inventory Dashboard</h3>
+                    </div>
+                </div>
+
+                <div class="data-container2">
+                    <div class="dashboard-datas">
+                        <i class="icon bi bi-box-seam fs-4"></i>
+                        <h3 class="text-secondary">{{ total_products|format_large_number|default:"0" }}</h3>
+                    </div>
+                    <span class="fixed-width-title fw-bold">Total Products</span>
+                </div>
+            </div>
+
+            <div class="inventory-upper-left-right-container">
+                <div class="dashboard-datas">
+                    <h3 class="text-secondary">{{ total_inventory|format_large_number|default:"0" }}</h3>
+                    <i class="icon bi bi-box2"></i>
+                    <span class="fixed-width-title fw-bold">Estimated Inventory</span>
+                </div>
+
+                <div class="dashboard-datas">
+                    <h3 class="text-secondary">₱{{ total_inventory_value|format_large_number|default:"0.00" }}</h3>
+                    <i class="icon bi bi-cash-coin"></i>
+                    <span class="fixed-width-title fw-bold">Estimated Inventory Value</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ top_1_wasted_product.product__name|default:"N/A" }}</h3>
+            <i class="icon bi bi-trash-fill"></i>
+            <span class="fixed-width-title fw-bold">Top 1 Wasted Product</span>
+        </div>
+
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ top_2_wasted_product.product__name|default:"N/A" }}</h3>
+            <i class="icon bi bi-trash-fill"></i>
+            <span class="fixed-width-title fw-bold">Top 2 Wasted Product</span>
+        </div>
+
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ top_3_wasted_product.product__name|default:"N/A" }}</h3>
+            <i class="icon bi bi-trash-fill"></i>
+            <span class="fixed-width-title fw-bold">Top 3 Wasted Product</span>
+        </div>
     </div>
 
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ low_stock_products|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-exclamation-circle"></i>
-        <span class="fixed-width-title fw-bold">Low Stock Products</span>
-        <a href="{% url 'low_stock_products' %}" class="text-decoration-none text-secondary small">
-            Click to View
-        </a>
-    </div>
+    <div class="inventory-bottom-container">
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ low_stock_products|format_large_number|default:"0" }}</h3>
+            <i class="icon bi bi-exclamation-circle"></i>
+            <span class="fixed-width-title fw-bold">Low Stock Products</span>
+            <a href="{% url 'low_stock_products' %}" class="text-decoration-none text-secondary small">
+                Click to View
+            </a>
+        </div>
 
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_inventory|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-box2"></i>
-        <span class="fixed-width-title fw-bold">Estimated Inventory</span>
-    </div>
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ total_waste|format_large_number|default:"0" }}</h3>
+            <i class="icon bi bi-trash"></i>
+            <span class="fixed-width-title fw-bold">Estimated Waste</span>
+        </div>
 
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">₱{{ total_inventory_value|format_large_number|default:"0.00" }}</h3>
-        <i class="icon bi bi-cash-coin"></i>
-        <span class="fixed-width-title fw-bold">Estimated Inventory Value</span>
-    </div>
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">₱{{ waste_cost|format_large_number|default:"0.00" }}</h3>
+            <i class="icon bi bi-cash"></i>
+            <span class="fixed-width-title fw-bold">Estimated Waste Cost</span>
+        </div>
 
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_waste|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-trash"></i>
-        <span class="fixed-width-title fw-bold">Estimated Waste</span>
-    </div>
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ top_1_sold_product.product_name|default:"N/A" }}</h3>
+            <i class="bi bi-trophy-fill"></i>
+            <span class="fixed-width-title fw-bold">Top 1 Sold Product</span>
+        </div>
 
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">₱{{ waste_cost|format_large_number|default:"0.00" }}</h3>
-        <i class="icon bi bi-cash"></i>
-        <span class="fixed-width-title fw-bold">Estimated Waste Cost</span>
-    </div>
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ top_2_sold_product.product_name|default:"N/A" }}</h3>
+            <i class="bi bi-trophy-fill"></i>
+            <span class="fixed-width-title fw-bold">Top 2 Sold Product</span>
+        </div>
 
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ top_wasted_product.product__name|default:"N/A" }}</h3>
-        <i class="icon bi bi-trash-fill"></i>
-        <span class="fixed-width-title fw-bold">Top Wasted Product</span>
+        <div class="dashboard-datas">
+            <h3 class="text-secondary">{{ top_3_sold_product.product_name|default:"N/A" }}</h3>
+            <i class="bi bi-trophy-fill"></i>
+            <span class="fixed-width-title fw-bold">Top 3 Sold Product</span>
+        </div>
     </div>
 </div>
 
-
-<div class="title-container">
-    <h3>Procurement Dashboard</h3>
-</div>
 
 <div class="dashboard-container">
+    <div class="dashboard-datas">
+        <h3>Procurement Dashboard</h3>
+    </div>
+
     <div class="dashboard-datas">
         <h3 class="text-secondary">{{ total_ongoing_rq|format_large_number|default:"0" }}</h3>
         <i class="icon bi bi-file-earmark-post"></i> 

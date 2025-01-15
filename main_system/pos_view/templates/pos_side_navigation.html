@@ -12,6 +12,10 @@
     gap: 10px;
 }
 
+.side-nav-container a {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 .side-nav-container .nav-item {
     padding: 10px;
     transition: 0.5s ease;
@@ -23,6 +27,40 @@
     border-width: 1px;
     border-color: white;
     background-color: #8E0D0D;
+}
+
+{% if request.path == '/pos/pos_page/' or request.path == '/pos/pos_page'%}
+.side-nav-container .pos-page-link a {
+    color: white;
+}
+
+.side-nav-container .pos-page-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
+
+{% if request.path == '/pos/transaction_invoices/' or request.path == '/pos/transaction_invoices'%}
+.side-nav-container .transaction-invoices-link a {
+    color: white;
+}
+
+.side-nav-container .transaction-invoices-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
+
+.nav-item strong {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
 }
 
 @media screen and (max-width: 820px) {
@@ -38,17 +76,17 @@
 
 
 <div class="side-nav-container" id="SideNavBar">
-    <div class="nav-item">
-        <a class="nav-link text-white" href="{% url 'pos_page' %}">
+    <div class="nav-item pos-page-link">
+        <a class="nav-link" href="{% url 'pos_page' %}">
             <strong>POS</strong>
         </a>
     </div>
 
-    <div class="nav-item">
-        {% if request.user.userpermission.role == "manager" %}
-            <a class="nav-link text-white" href="{% url 'transaction_invoices' %}">
-                <strong>Transaction Invoices</strong>
-            </a>
-        {% endif %}
-    </div>
+    {% if request.user.userpermission.role == "manager" %}
+        <div class="nav-item transaction-invoices-link">
+                <a class="nav-link" href="{% url 'transaction_invoices' %}">
+                    <strong>Transaction Invoices</strong>
+                </a>
+        </div>
+    {% endif %}
 </div>

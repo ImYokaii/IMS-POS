@@ -40,7 +40,13 @@ def dashboard(request):
     total_inventory_value = Product.objects.aggregate(total=Sum(F('quantity') * F('cost_price')))['total']
     total_waste = WasteProduct.objects.aggregate(total=Sum('quantity'))['total']
     waste_cost = WasteProduct.objects.aggregate(total=Sum(F('quantity') * F('product__cost_price')))['total']
-    top_wasted_product = WasteProduct.objects.values('product__name').annotate(total_waste=Sum('quantity')).order_by('-total_waste').first()
+    top_1_sold_product = SalesInvoiceItem.objects.values('product_name').annotate(total_quantity_sold=Sum('quantity')).order_by('-total_quantity_sold').first()
+    top_2_sold_product = SalesInvoiceItem.objects.values('product_name').annotate(total_quantity_sold=Sum('quantity')).order_by('-total_quantity_sold')[1]
+    top_3_sold_product = SalesInvoiceItem.objects.values('product_name').annotate(total_quantity_sold=Sum('quantity')).order_by('-total_quantity_sold')[2]
+    top_1_wasted_product = WasteProduct.objects.values('product__name').annotate(total_waste=Sum('quantity')).order_by('-total_waste').first()
+    top_2_wasted_product = WasteProduct.objects.values('product__name').annotate(total_waste=Sum('quantity')).order_by('-total_waste')[1]
+    top_3_wasted_product = WasteProduct.objects.values('product__name').annotate(total_waste=Sum('quantity')).order_by('-total_waste')[2]
+
 
     # Procurement Dashboard
     total_ongoing_rq = RequestQuotation.objects.filter(status="Ongoing").count()
@@ -56,7 +62,12 @@ def dashboard(request):
          'total_inventory_value': total_inventory_value,
          'total_waste': total_waste,
          'waste_cost': waste_cost,
-         'top_wasted_product': top_wasted_product,
+         'top_1_sold_product': top_1_sold_product,
+         'top_2_sold_product': top_2_sold_product,
+         'top_3_sold_product': top_3_sold_product,
+         'top_1_wasted_product': top_1_wasted_product,
+         'top_2_wasted_product': top_2_wasted_product,
+         'top_3_wasted_product': top_3_wasted_product,
          'total_ongoing_rq': total_ongoing_rq,
          'total_pending_pr': total_pending_pr,
          'total_approved_pr': total_approved_pr,
