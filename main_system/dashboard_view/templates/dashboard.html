@@ -24,6 +24,7 @@
 }
 
 .title-container {
+    text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,6 +43,7 @@
     border-radius: 30px;
     height: 860px;
     width: 1200px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, .7);
 }
 
 .dashboard-container2 {
@@ -55,6 +57,7 @@
     border-radius: 30px;
     height: 430px;
     width: 1200px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, .7);
 }
 
 .inventory-upper-container,
@@ -104,6 +107,7 @@
     border-radius: 30px;
     height: 50%;
     width: 100%;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .dashboard-datas {
@@ -127,6 +131,7 @@
     border-radius: 30px;
     height: 100%;
     width: 90%;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .inventory-upper-right-container {
@@ -139,6 +144,7 @@
     align-items: center;
     justify-content: space-around;
     border-radius: 30px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .data-container4,
@@ -162,6 +168,7 @@
 }
 
 .top-waste-container span {
+    text-align: center;
     background-color: #8E0D0D; 
     width: 50px; 
     height: 85px; 
@@ -181,6 +188,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 30px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .inventory-bottom-right-container {
@@ -204,6 +212,7 @@
     width: 100%;
     gap: 10px;
     border-radius: 30px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .data-container6,
@@ -235,6 +244,7 @@
     height: 49%;
     width: 100%;
     border-radius: 30px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .procurement-left-container {
@@ -265,6 +275,7 @@
     justify-content: space-around;
     border-radius: 30px;
     padding: 20px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .procurement-right-container {
@@ -278,6 +289,7 @@
     border-radius: 30px;
     padding: 20px;
     gap: 10px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .all-data-container10 {
@@ -301,6 +313,7 @@
 
 
 .title-container h3 {
+    text-align: center;
     font-size: 42px;
     font-weight: bold;
 }
@@ -311,94 +324,452 @@
 
 .data-container1 h3,
 .data-container11 h3 {
+    text-align: center;
     font-size: 38px;
     font-weight: bold;
 }
 
 .data-container2 span {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
 }
 
 .data-container2 h3,
 .data-container3 h3 {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
     color: #8E0D0D;
 }
 
 .data-container3 span {
+    text-align: center;
     font-size: 20px;
     font-weight: bold;
 }
 
 .inventory-upper-right-container span {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
 }
 
 .data-container4 h3,
 .data-container5 h3 {
+    text-align: center;
     font-size: 34px;
     font-weight: bold;
     color: #8E0D0D;
 }
 
 .inventory-bottom-left-container span {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
 }
 
 .data-container6 span,
 .data-container7 span {
+    text-align: center;
     font-size: 20px;
     font-weight: bold;
 }
 
 .data-container6 h3,
 .data-container7 h3 {
+    text-align: center;
     font-size: 34px;
     font-weight: bold;
     color: #8E0D0D;
 }
 
 .inventory-bottom-right-bottom-container span {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
 }
 
 .inventory-bottom-right-bottom-container h3 {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
     color: #8E0D0D;
 }
 
 .procurement-left-container span {
+    text-align: center;
     font-size: 20px;
     font-weight: bold;
 }
 
 .data-container9 h3 {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
     color: #8E0D0D;
 }
 
 .procurement-right-container h2 {
+    font-size: 42px;
+    text-align: center;
     font-weight: bold;
 }
 
 .procurement-right-container span {
+    text-align: center;
     font-size: 20px;
     font-weight: bold;
 }
 
 .data-container10 h3 {
+    text-align: center;
     font-size: 28px;
     font-weight: bold;
     color: #8E0D0D;
 }
 
+@media screen and (max-width: 1350px) {
+    .dashboard-container,
+    .dashboard-container2 {
+        margin: 20px;
+    }
+
+    .dashboard-container {
+        height: 860px;
+        width: 1000px;
+    }
+
+    .dashboard-container2 {
+        height: 430px;
+        width: 1000px;
+    }
+
+    .title-container h3 {
+        font-size: 38px;
+    }
+
+    .icon {
+        font-size: 28px;
+    }
+
+    .data-container1 h3,
+    .data-container11 h3 {
+        font-size: 34px;
+    }
+
+    .data-container2 span {
+        font-size: 24px;
+    }
+
+    .data-container2 h3,
+    .data-container3 h3 {
+        font-size: 24px;
+    }
+
+    .data-container3 span {
+        font-size: 18px;
+    }
+
+    .inventory-upper-right-container span {
+        font-size: 24px;
+    }
+
+    .data-container4 h3,
+    .data-container5 h3 {
+        font-size: 30px;
+    }
+
+    .inventory-bottom-left-container span {
+        font-size: 24px;
+    }
+
+    .data-container6 span,
+    .data-container7 span {
+        font-size: 18px;
+    }
+
+    .data-container6 h3,
+    .data-container7 h3 {
+        font-size: 30px;
+    }
+
+    .inventory-bottom-right-bottom-container span {
+        font-size: 24px;
+    }
+
+    .inventory-bottom-right-bottom-container h3 {
+        font-size: 24px;
+    }
+
+    .procurement-left-container span {
+        font-size: 16px;
+    }
+
+    .data-container9 h3 {
+        font-size: 24px;
+    }
+
+    .procurement-right-container h2 {
+        font-size: 38px;
+    }
+
+    .procurement-right-container span {
+        font-size: 16px;
+    }
+
+    .data-container10 h3 {
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-width: 820px) {
+    .dashboard-container {
+        height: 660px;
+        width: 750px;
+    }
+
+    .dashboard-container2 {
+        height: 350px;
+        width: 750px;
+    }
+
+    .title-container h3 {
+        font-size: 32px;
+    }
+
+    .icon {
+        font-size: 22px;
+    }
+
+    .data-container1 h3,
+    .data-container11 h3 {
+        font-size: 24px;
+    }
+
+    .data-container2 span {
+        font-size: 18px;
+    }
+
+    .data-container2 h3,
+    .data-container3 h3 {
+        font-size: 18px;
+    }
+
+    .data-container3 span {
+        font-size: 14px;
+    }
+
+    .top-waste-container {
+        height: 70%;
+    }
+
+    .top-waste-container span {
+        width: 35px;
+        height: 50px;
+    }
+
+    .inventory-upper-right-container span {
+        font-size: 18px;
+    }
+
+    .data-container4 h3,
+    .data-container5 h3 {
+        font-size: 24px;
+    }
+
+    .inventory-bottom-left-container span {
+        font-size: 18px;
+    }
+
+    .data-container6 span,
+    .data-container7 span {
+        font-size: 16px;
+    }
+
+    .data-container6 h3,
+    .data-container7 h3 {
+        font-size: 24px;
+    }
+
+    .inventory-bottom-right-bottom-container span {
+        font-size: 18px;
+    }
+
+    .inventory-bottom-right-bottom-container h3 {
+        font-size: 18px;
+    }
+
+    .procurement-left-container span {
+        font-size: 14px;
+    }
+
+    .data-container9 h3 {
+        font-size: 18px;
+    }
+
+    .procurement-right-container h2 {
+        font-size: 20px;
+    }
+
+    .procurement-right-container span {
+        font-size: 10px;
+    }
+
+    .data-container10 h3 {
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .title-container {
+        margin: 20px;
+    }
+
+    .dashboard-container,
+    .dashboard-container2{
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .dashboard-container {
+        height: 720px;
+        width: 300px;
+    }
+
+    .dashboard-container2 {
+        height: 250px;
+        width: 300px;
+    }
+
+
+
+
+    .inventory-upper-container,
+    .inventory-bottom-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .inventory-upper-left-container,
+    .inventory-upper-right-container,
+    .inventory-bottom-left-container,
+    .inventory-bottom-right-container {
+        width: 100%;
+    }
+
+    .dashboard-container2 {
+        flex-direction: column;
+    }
+
+    .procurement-left-container{
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .procurement-right-container {
+        width: 100%;
+    }
+
+    .all-data-container10 {
+        justify-content: space-between;
+    }
+
+    .data-container9,
+    .data-container10,
+    .data-container11 {
+        height: 100%;
+    }
+
+
+
+     
+    .title-container h3 {
+        font-size: 18px;
+    }
+
+    .icon {
+        font-size: 12px;
+    }
+
+    .data-container1 h3,
+    .data-container11 h3 {
+        font-size: 14px;
+    }
+
+    .data-container2 span {
+        font-size: 12px;
+    }
+
+    .data-container2 h3,
+    .data-container3 h3 {
+        font-size: 14px;
+    }
+
+    .data-container3 span {
+        font-size: 10px;
+    }
+
+    .top-waste-container {
+        height: 85%;
+    }
+
+    .top-waste-container span {
+        width: 25px;
+        height: 40px;
+    }
+
+    .inventory-upper-right-container span {
+        font-size: 16px;
+    }
+
+    .data-container4 h3,
+    .data-container5 h3 {
+        font-size: 14px;
+    }
+
+    .inventory-bottom-left-container span {
+        font-size: 16px;
+    }
+
+    .data-container6 span,
+    .data-container7 span {
+        font-size: 12px;
+    }
+
+    .data-container6 h3,
+    .data-container7 h3 {
+        font-size: 14px;
+    }
+
+    .inventory-bottom-right-bottom-container span {
+        font-size: 16px;
+    }
+
+    .inventory-bottom-right-bottom-container h3 {
+        font-size: 14px;
+    }
+
+    .procurement-left-container span {
+        font-size: 12px;
+    }
+
+    .data-container9 h3 {
+        font-size: 14px;
+    }
+
+    .procurement-right-container h2 {
+        font-size: 16px;
+    }
+
+    .procurement-right-container span {
+        font-size: 10px;
+    }
+
+    .data-container10 h3 {
+        font-size: 8px;
+    }
+}
 </style>
 
 <div class="box-container">
@@ -512,7 +883,7 @@
                         </div>
                         
                         <div class="data-container7">
-                            <span class="fixed-width-title fw-bold">Estimated Waste Cost</span>
+                            <span class="fixed-width-title fw-bold">Waste Cost</span>
                             <div class="dashboard-datas">
                                 <i class="icon bi bi-trash"></i>
                                 <h3>₱{{ waste_cost|format_large_number|default:"0.00" }}</h3>

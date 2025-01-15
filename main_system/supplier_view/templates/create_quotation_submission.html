@@ -59,11 +59,15 @@
             left: 50%;
             transform: translateX(-50%);
         }
+
+        .card {
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
 
     <div class="container mt-5">
-        <div class="card shadow-lg border-0">
-            <div class="card-header bg-dark text-white">
+        <div class="card border-0">
+            <div class="card-header text-white" style="background-color: #8E0D0D;">
                 <h2 class="mb-0">Quotation Submission</h2>
             </div>
             
@@ -177,7 +181,7 @@
                         {% endfor %}
                     </div>
 
-                    <button type="submit" class="btn btn-primary mt-4">Submit</button>
+                    <button type="submit" class="btn btn-success mt-4">Submit</button>
                 </form>
             </div>
         </div>

@@ -18,6 +18,7 @@ form {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .title-container h2 {
@@ -36,7 +37,7 @@ form {
     border-radius: 30px;
 }
 
-@media and screen (max-width: 520px) {
+@media screen and (max-width: 520px) {
     .title-container h2 {
         font-size: 18px;
     }
@@ -48,7 +49,7 @@ form {
 </style>
 
 <div class="box-container">
-    <form method="post" class="shadow p-4 bg-light">
+    <form method="post" class="p-4 bg-light">
         {% csrf_token %}
         <div class="title-container">
             <h2>Transfer to Waste</h2>

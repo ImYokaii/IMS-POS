@@ -22,6 +22,10 @@ nav {
     font-weight: bold;
 }
 
+.navbar-brand:hover {
+    color: white;
+}
+
 .navbar-nav {
     display: flex;
     flex-direction: row;
@@ -40,6 +44,10 @@ nav {
 .nav-item a {
     color: white;
     text-decoration: none;
+}
+
+.nav-item a:hover {
+    color: white;
 }
 
 .nav-item:hover {
@@ -111,15 +119,13 @@ nav {
         padding-right: 20px;
     }
 }
-
-@media screen and 
 </style>
 
 <div class="nav-bar">
     <nav>
-        <a class="navbar-brand" href="#">
+        <div class="navbar-brand">
             My Hardware Store
-        </a>
+        </div>
         
         <div class="hamburger-container">
             <div class="hamburger" id="hamburger">

@@ -3,6 +3,11 @@
 {% block title %}View Purchase Invoice Details{% endblock %}
 
 {% block content %}
+<style>
+    .card {
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
 <div class="card mt-5 mb-5 m-auto p-5 w-75">
     <h1 class="mb-4 text-center">Purchase Invoice Details</h1>
     
@@ -37,9 +42,9 @@
         </p>
     </div>
 
-    <div class="mb-4">
+    <div class="mb-4" style="overflow-y: auto;">
         <hr>
-        <table class="table table-hover">
+        <table class="table table-hover" style="overflow-y: auto; width: 100%;">
             <thead class="thead-light">
                 <tr>
                     <th scope="col"><p class="small text-muted mb-0">Product Name</p></th>
