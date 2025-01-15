@@ -4,208 +4,594 @@
 
 {% block content %}
 <style>
-    .title-container {
-        display: flex;
-        align-items-center;
-        justify-content: center;
-        margin: 40px;
-    }
+.box-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-    .dashboard-container {
-        background-color: #8E0D0D;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin: 40px;
-        gap: 20px;
-        border-radius: 30px;
-    }
+.ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit the number of lines to 3 (or adjust as needed) */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adds ellipsis at the end */
+    max-height: 100%;
 
-    .inventory-upper-container,
-    .inventory-lower-container {
-        display: flex;
-        aling-items: center;
-        justify-content: center;
-    }
+    line-clamp: 2; /* Standard line-clamp property */
+    box-orient: vertical;
+}
 
-    .inventory-upper-left-container,
-    .inventory-upper-right-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+.title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px;
+}
 
-    .inventory-upper-left-left-container,
-    .inventory-upper-left-right-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
+.dashboard-container {
+    background-color: #8E0D0D;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 40px;
+    padding: 40px;
+    gap: 20px;
+    border-radius: 30px;
+    height: 860px;
+    width: 1200px;
+}
 
-    .data-container1 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
+.dashboard-container2 {
+    background-color: #8E0D0D;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px;
+    padding: 40px;
+    gap: 10px;
+    border-radius: 30px;
+    height: 430px;
+    width: 1200px;
+}
 
-    .data-container2 {
-        background-color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        border-radius: 30px;
-    }
+.inventory-upper-container,
+.inventory-bottom-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 50%;
+    width: 100%;
+}
 
-    .dashboard-datas {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        justify-content: center;
-        height: 150px;
-        width: 150px;
-    }
+.inventory-upper-left-container,
+.inventory-upper-right-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 50%;
+}
 
+.inventory-upper-left-left-container,
+.inventory-upper-left-right-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 50%;
+}
+
+.data-container1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: 50%;
+    width: 100%;
+}
+
+.data-container2 {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    border-radius: 30px;
+    height: 50%;
+    width: 100%;
+}
+
+.dashboard-datas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    gap: 10px;
+}
+
+.data-container3 {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    border-radius: 30px;
+    height: 100%;
+    width: 90%;
+}
+
+.inventory-upper-right-container {
+    background-color: white;
+    height: 100%;
+    width: 50%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 30px;
+}
+
+.data-container4,
+.data-container5 {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    width: 100%;
+    gap: 30px;
+}
+
+.top-waste-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    width: 30%;
+    gap: 10px;
+}
+
+.top-waste-container span {
+    background-color: #8E0D0D; 
+    width: 50px; 
+    height: 85px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
+.inventory-bottom-left-container {
+    background-color: white;
+    height: 100%;
+    width: 49%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+}
+
+.inventory-bottom-right-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 30px;
+    height: 100%;
+    width: 50%;
+}
+
+.inventory-bottom-right-upper-container {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: 49%;
+    width: 100%;
+    gap: 10px;
+    border-radius: 30px;
+}
+
+.data-container6,
+.data-container7 {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.data-container8 {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.inventory-bottom-right-bottom-container {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: 49%;
+    width: 100%;
+    border-radius: 30px;
+}
+
+.procurement-left-container {
+    height: 100%;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-container11 {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.data-container9 {
+    background-color: white;
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.procurement-right-container {
+    background-color: white;
+    height: 100%;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    padding: 20px;
+    gap: 10px;
+}
+
+.all-data-container10 {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-container10 {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+
+
+
+.title-container h3 {
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.icon {
+    font-size: 32px;
+}
+
+.data-container1 h3,
+.data-container11 h3 {
+    font-size: 38px;
+    font-weight: bold;
+}
+
+.data-container2 span {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.data-container2 h3,
+.data-container3 h3 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #8E0D0D;
+}
+
+.data-container3 span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.inventory-upper-right-container span {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.data-container4 h3,
+.data-container5 h3 {
+    font-size: 34px;
+    font-weight: bold;
+    color: #8E0D0D;
+}
+
+.inventory-bottom-left-container span {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.data-container6 span,
+.data-container7 span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.data-container6 h3,
+.data-container7 h3 {
+    font-size: 34px;
+    font-weight: bold;
+    color: #8E0D0D;
+}
+
+.inventory-bottom-right-bottom-container span {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.inventory-bottom-right-bottom-container h3 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #8E0D0D;
+}
+
+.procurement-left-container span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.data-container9 h3 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #8E0D0D;
+}
+
+.procurement-right-container h2 {
+    font-weight: bold;
+}
+
+.procurement-right-container span {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.data-container10 h3 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #8E0D0D;
+}
 
 </style>
 
-<div class="title-container">
-    <h3>Inventory-Procurement Analytics</h3>
-</div>
+<div class="box-container">
+    <div class="title-container">
+        <h3>Inventory-Procurement Analytics</h3>
+    </div>
 
-<div class="dashboard-container">
-    <div class="inventory-upper-container">
-        <div class="inventory-upper-left-container">
-            <div class="inventory-upper-left-left-container">
-                <div class="data-container1">
-                    <div class="dashboard-datas">
-                        <h3>Inventory Dashboard</h3>
+    <div class="dashboard-container">
+        <div class="inventory-upper-container">
+            <div class="inventory-upper-left-container">
+                <div class="inventory-upper-left-left-container">
+                    <div class="data-container1">
+                        <div class="dashboard-datas">
+                            <h3 class="text-light">Inventory Dashboard</h3>
+                        </div>
+                    </div>
+
+                    <div class="data-container2">
+                        <span class="fixed-width-title fw-bold">Total Products</span>
+                        <div class="dashboard-datas">
+                            <i class="icon bi bi-box-seam"></i>
+                            <h3>{{ total_products|format_large_number|default:"0" }}</h3>
+                        </div>
                     </div>
                 </div>
 
-                <div class="data-container2">
-                    <div class="dashboard-datas">
-                        <i class="icon bi bi-box-seam fs-4"></i>
-                        <h3 class="text-secondary">{{ total_products|format_large_number|default:"0" }}</h3>
+                <div class="inventory-upper-left-right-container">
+                    <div class="data-container3">
+                        <span class="fixed-width-title fw-bold">Estimated Inventory</span>
+                        <div class="dashboard-datas">
+                            <i class="icon bi bi-box2"></i>
+                            <h3>{{ total_inventory|format_large_number|default:"0" }}</h3>
+                        </div>
+
+                        <span class="fixed-width-title fw-bold">Inventory Value</span>
+                        <div class="dashboard-datas">
+                            <i class="icon bi bi-cash-coin"></i>
+                            <h3>₱{{ total_inventory_value|format_large_number|default:"0.00" }}</h3>
+                        </div>
                     </div>
-                    <span class="fixed-width-title fw-bold">Total Products</span>
                 </div>
             </div>
 
-            <div class="inventory-upper-left-right-container">
-                <div class="dashboard-datas">
-                    <h3 class="text-secondary">{{ total_inventory|format_large_number|default:"0" }}</h3>
-                    <i class="icon bi bi-box2"></i>
-                    <span class="fixed-width-title fw-bold">Estimated Inventory</span>
-                </div>
+            <div class="inventory-upper-right-container">
+                <span class="fixed-width-title fw-bold"><i class="bi bi-exclamation-circle"></i>  3 Most Wasted Products</span>
 
-                <div class="dashboard-datas">
-                    <h3 class="text-secondary">₱{{ total_inventory_value|format_large_number|default:"0.00" }}</h3>
-                    <i class="icon bi bi-cash-coin"></i>
-                    <span class="fixed-width-title fw-bold">Estimated Inventory Value</span>
+                <div class="data-container4">
+                    <div class="top-waste-container">
+                        <div class="dashboard-datas">
+                            <h3 class="ellipsis">{{ top_1_wasted_product.product__name|default:"N/A" }}</h3>
+                        </div>
+                        <span style="color: #FF0000;">1</span>
+                    </div>
+                    
+                    <div class="top-waste-container">
+                        <div class="dashboard-datas">
+                            <h3 class="ellipsis">{{ top_2_wasted_product.product__name|default:"N/A" }}</h3>
+                        </div>
+                        <span style="color: #FFA500;">2</span>
+                    </div>
+
+                    <div class="top-waste-container">
+                        <div class="dashboard-datas">
+                            <h3 class="ellipsis">{{ top_3_wasted_product.product__name|default:"N/A" }}</h3>
+                        </div>
+                        <span style="color: #FFD700;">3</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ top_1_wasted_product.product__name|default:"N/A" }}</h3>
-            <i class="icon bi bi-trash-fill"></i>
-            <span class="fixed-width-title fw-bold">Top 1 Wasted Product</span>
-        </div>
 
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ top_2_wasted_product.product__name|default:"N/A" }}</h3>
-            <i class="icon bi bi-trash-fill"></i>
-            <span class="fixed-width-title fw-bold">Top 2 Wasted Product</span>
-        </div>
+        <div class="inventory-bottom-container">
+            <div class="inventory-bottom-left-container">
+                <span class="fixed-width-title fw-bold"><i class="bi bi-trophy"></i>  3 Most Sold Products</span>
 
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ top_3_wasted_product.product__name|default:"N/A" }}</h3>
-            <i class="icon bi bi-trash-fill"></i>
-            <span class="fixed-width-title fw-bold">Top 3 Wasted Product</span>
+                
+                <div class="data-container5">
+                    <div class="top-waste-container">
+                        <div class="dashboard-datas">
+                            <h3 class="ellipsis">{{ top_1_sold_product.product_name|default:"N/A" }}</h3>
+                        </div>
+                        <span style="color: #FFD700">1</span>
+                    </div>
+                    
+                    <div class="top-waste-container">
+                        <div class="dashboard-datas">
+                            <h3 class="ellipsis">{{ top_2_sold_product.product_name|default:"N/A" }}</h3>
+                        </div>
+                        <span style="color: #C0C0C0;">2</span>
+                    </div>
+                    
+                    <div class="top-waste-container">
+                        <div class="dashboard-datas">
+                            <h3 class="ellipsis">{{ top_3_sold_product.product_name|default:"N/A" }}</h3>
+                        </div>
+                        <span style="color: #CD7F32;">3</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inventory-bottom-right-container">
+                <div class="inventory-bottom-right-upper-container">
+                    <div class="data-container8">
+                        <div class="data-container6">
+                            <span class="fixed-width-title fw-bold">Estimated Waste</span>
+                            <div class="dashboard-datas">
+                                <i class="icon bi bi-trash"></i>
+                                <h3>{{ total_waste|format_large_number|default:"0" }}</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="data-container7">
+                            <span class="fixed-width-title fw-bold">Estimated Waste Cost</span>
+                            <div class="dashboard-datas">
+                                <i class="icon bi bi-trash"></i>
+                                <h3>₱{{ waste_cost|format_large_number|default:"0.00" }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-bottom-right-bottom-container">
+                    <span class="fixed-width-title fw-bold"><i class="bi bi-graph-down-arrow"></i>  Low Stock Products</span>
+                    <div class="dashboard-datas">
+                        <h3>{{ low_stock_products|format_large_number|default:"0" }}</h3>
+                        <a href="{% url 'low_stock_products' %}" class="text-decoration-none text-secondary" style="display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-eye-fill"></i>
+                              View
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="inventory-bottom-container">
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ low_stock_products|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-exclamation-circle"></i>
-            <span class="fixed-width-title fw-bold">Low Stock Products</span>
-            <a href="{% url 'low_stock_products' %}" class="text-decoration-none text-secondary small">
-                Click to View
-            </a>
+
+    <div class="dashboard-container2">
+        <div class="procurement-left-container">
+            <div class="data-container11">
+                <div class="dashboard-datas">
+                    <h3 class="text-light">Procurement Dashboard</h3>
+                </div>
+            </div>
+            
+            <div class="data-container9">
+                <span class="fixed-width-title fw-bold">Ongoing Quotations</span>
+                <div class="dashboard-datas">
+                    <i class="icon bi bi-file-earmark-post"></i>
+                    <h3>{{ total_ongoing_rq|format_large_number|default:"0" }}</h3>
+                </div>
+            </div>
         </div>
+            
+        <div class="procurement-right-container">
+            <div class="procurement-right-container-title">
+                <h2><i class="icon bi bi-cart2"></i>  Purchase Orders</h2>
+            </div>
 
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ total_waste|format_large_number|default:"0" }}</h3>
-            <i class="icon bi bi-trash"></i>
-            <span class="fixed-width-title fw-bold">Estimated Waste</span>
+            <div class="all-data-container10">
+                <div class="data-container10">
+                    <span class="fixed-width-title fw-bold">To be Approved</span>
+                    <div class="dashboard-datas">
+                        <i class="icon bi bi-hourglass-split"></i> 
+                        <h3>{{ total_pending_pr|format_large_number|default:"0" }}</h3>
+                    </div>
+                </div>
+                
+                <div class="data-container10">
+                    <span class="fixed-width-title fw-bold">To be Delivered</span>
+                    <div class="dashboard-datas">
+                        <i class="icon bi bi-truck"></i> 
+                        <h3>{{ total_approved_pr|format_large_number|default:"0" }}</h3>
+                    </div>
+                </div>
+                
+                <div class="data-container10">
+                    <span class="fixed-width-title fw-bold">To be Received</span>
+                    <div class="dashboard-datas">
+                        <i class="icon bi bi-box-arrow-in-left"></i> 
+                        <h3>{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
+                    </div>
+                </div>
+                
+                <div class="data-container10">
+                    <span class="fixed-width-title fw-bold">To be Paid</span>
+                    <div class="dashboard-datas">
+                        <i class="icon bi bi-credit-card"></i>
+                        <h3>{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">₱{{ waste_cost|format_large_number|default:"0.00" }}</h3>
-            <i class="icon bi bi-cash"></i>
-            <span class="fixed-width-title fw-bold">Estimated Waste Cost</span>
-        </div>
-
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ top_1_sold_product.product_name|default:"N/A" }}</h3>
-            <i class="bi bi-trophy-fill"></i>
-            <span class="fixed-width-title fw-bold">Top 1 Sold Product</span>
-        </div>
-
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ top_2_sold_product.product_name|default:"N/A" }}</h3>
-            <i class="bi bi-trophy-fill"></i>
-            <span class="fixed-width-title fw-bold">Top 2 Sold Product</span>
-        </div>
-
-        <div class="dashboard-datas">
-            <h3 class="text-secondary">{{ top_3_sold_product.product_name|default:"N/A" }}</h3>
-            <i class="bi bi-trophy-fill"></i>
-            <span class="fixed-width-title fw-bold">Top 3 Sold Product</span>
-        </div>
-    </div>
-</div>
-
-
-<div class="dashboard-container">
-    <div class="dashboard-datas">
-        <h3>Procurement Dashboard</h3>
-    </div>
-
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_ongoing_rq|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-file-earmark-post"></i> 
-        <span class="fixed-width-title fw-bold">Ongoing Quotations</span>
-    </div>
-    
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_pending_pr|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-hourglass-split"></i> 
-        <span class="fixed-width-title fw-bold">Purchase Requests to Approve</span>
-    </div>
-    
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_approved_pr|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-truck"></i> 
-        <span class="fixed-width-title fw-bold">Purchase Orders to Deliver</span>
-    </div>
-    
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-box-arrow-in-left"></i> 
-        <span class="fixed-width-title fw-bold">Purchase Orders to Receive</span>
-    </div>
-    
-    <div class="dashboard-datas">
-        <h3 class="text-secondary">{{ total_Delivered_pr|format_large_number|default:"0" }}</h3>
-        <i class="icon bi bi-credit-card"></i>
-        <span class="fixed-width-title fw-bold">Purchase Orders to be Paid</span>
     </div>
 </div>
 {% endblock %}

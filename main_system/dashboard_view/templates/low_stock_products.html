@@ -1,30 +1,51 @@
 {% extends "dashboard_base.html" %}
 
 {% block content %}
+<style>
+.title-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px;
+}
+
+.table-container {
+        width: 100%;
+        padding: 0px 40px;
+    }
+</style>
+
+<div class="title-container">
     <h1>Low Stock Products</h1>
-    
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Quantity</th>
-                <th>Measurement</th>
-                <th>Reorder Level</th>
-            </tr>
-        </thead>
+</div>
 
-        <tbody>
-            {% for product in product_instance %}
+<div class="table-container">
+    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+        <table class="table table-hover align-middle">
+            <thead>
                 <tr>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.name }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.category }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.quantity }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.measurement }}</td>
-                    <td class="text-truncate" style="max-width: 150px; height: 50px;">{{ product.reorder_level }}</td>
+                    <th scope="col" class="text-truncate small">Name</th>
+                    <th scope="col" class="text-truncate small">Category</th>
+                    <th scope="col" class="text-truncate small">Quantity</th>
+                    <th scope="col" class="text-truncate small">Measurement</th>
+                    <th scope="col" class="text-truncate small">Reorder Level</th>
                 </tr>
-            {% endfor %}
-        </tbody>
+            </thead>
 
-    </table>
+            <tbody>
+                {% for product in product_instance %}
+                    <tr>
+                        <td scope="row" class="text-truncate small">{{ product.name }}</td>
+                        <td scope="row" class="text-truncate small">{{ product.category }}</td>
+                        <td scope="row" class="text-truncate small">{{ product.quantity }}</td>
+                        <td scope="row" class="text-truncate small">{{ product.measurement }}</td>
+                        <td scope="row" class="text-truncate small">{{ product.reorder_level }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
 {% endblock %}
