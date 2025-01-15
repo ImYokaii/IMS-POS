@@ -1,161 +1,268 @@
 {% extends "dashboard_base.html" %}
 
+{% load custom_filters %}
+
 {% block content %}
-    <div class="container my-4">
-        <div class="row mb-4">
-            <div class="col text-center">
-                <h1 class="display-4">Financial Dashboard</h1>
-            </div>
-        </div>
+<style>
+.loading-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 1000;
+}
 
-        <!-- Revenue Section -->
-        <div class="mb-4">
-            <h2 class="mb-3">Revenue</h2>
-            <div class="card-deck row">
-                <!-- Total Revenue Card -->
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #4CAF50; color: white;">
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                <i class="bi bi-cash-stack"></i>
-                                Total Revenue
-                            </h3>
-                            <p class="card-text fs-2 fw-bold">₱ {{ total_revenue|floatformat:2 }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+.loading-screen p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #555;
+}
 
-        <!-- Line Separator -->
-        <hr class="my-4" style="border-top: 2px solid #ccc;">
+.line-graph-container {
+    width: 100%;
+    text-align: center;
+}
+.line-graph-container div {
+    width: 100%;
+}
 
-        <!-- Sales Section -->
-        <div>
-            <h2 class="mb-3">Sales</h2>
-            <div class="card-deck row">
-                <!-- Daily Sales Card -->
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #FFDA76;">
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                <i class="bi bi-calendar-day"></i>
-                                Daily Sales
-                            </h3>
-                            <p class="card-text fs-2 fw-bold">₱ {{ daily_sales|floatformat:2 }}</p>
-                        </div>
-                    </div>
-                </div>
+.box-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
-                <!-- Monthly Sales Card -->
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #E68369;">
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                <i class="bi bi-calendar-month"></i>
-                                Monthly Sales
-                            </h3>
-                            <p class="card-text fs-2 fw-bold">₱ {{ monthly_sales|floatformat:2 }}</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Yearly Sales Card -->
-                <div class="col-md-4 mb-4">
-                    <div class="card shadow-lg border-0 rounded-3" style="background-color: #88D66C;">
-                        <div class="card-body">
-                            <h3 class="card-title">
-                                <i class="bi bi-calendar-year"></i>
-                                Yearly Sales
-                            </h3>
-                            <p class="card-text fs-2 fw-bold">₱ {{ yearly_sales|floatformat:2 }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Line Separator -->
-        <hr class="my-4" style="border-top: 2px solid #ccc;">
+.title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px;
+}
 
-        <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen" style="display: none;">
-        <div class="spinner-border text-primary" role="status">
-            <span class="sr-only"></span>
-        </div>
-        <p>Grabbing Finance Data. . .</p>
+.container-1 {
+    height: 270px;
+    width: 100%;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.revenue-container {
+    background-color: white;
+    height: 100%;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.all-sales-container {
+    background-color: white;
+    height: 100%;
+    width: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    gap: 10px;
+    border-radius: 30px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sales-container {
+    height: 100%;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.container-2 ,
+.container-3,
+.container-4{
+    background-color: #101010;
+    height: 610px;
+    width: 95%;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 30px;
+    margin-bottom: 40px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.bar-graph-container,
+.line-graph-container {
+    height: 85%;
+    width: 100%;
+}
+
+
+
+
+.title-container h3 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.container-1 span {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.container-1 h3 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #8E0D0D;
+}
+
+@media screen and (max-width: 820px) {
+    .title-container {
+        margin: 20px;
+    }
+
+    .title-container h3 {
+        font-size: 34px;
+    }
+
+    .container-1 {
+        padding: 20px;
+        height: 200px;
+    }
+
+    .container-1 span {
+        font-size: 16px;
+    }
+
+    .container-1 h3 {
+        font-size: 20px;
+    }
+
+    .container-2,
+    .container-3,
+    .container-4 {
+        margin-bottom: 10px;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .title-container h3 {
+        font-size: 24px;
+    }
+
+    .container-1 {
+        padding: 10px;
+        height: 100px;
+        gap: 5px;
+    }
+
+    .revenue-container {
+        padding: 5px;
+    }
+
+    .all-sales-container {
+        padding: 5px;
+    }
+
+    .container-1 span {
+        font-size: 8px;
+    }
+
+    .container-1 h3 {
+        font-size: 10px;
+    }
+
+    .container-2,
+    .container-3,
+    .container-4 {
+        padding: 10px;
+        height: 600px;
+    }
+}
+</style>
+
+<!-- Loading Screen -->
+<div id="loadingScreen" class="loading-screen" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only"></span>
+    </div>
+    <p>Grabbing Finance Data. . .</p>
+</div>
+
+
+<div class="box-container">
+    <div class="title-container">
+        <h3>Financial Dashboard</h3>
     </div>
 
-        <!-- Bar Graph Section -->
-        <div class="mb-4">
-            <h2 class="mb-3">Monthly Sales</h2>
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body text-center">
-                    <div class="bar-graph-container" style="max-width: 100%; overflow-x: auto;">
-                        <!-- Render the bar graph -->
-                        <div id="bar-graph-container">{{ bar_graph|safe }}</div>
-                    </div>
-                </div>
-            </div>
+    <div class="container-1">
+        <div class="revenue-container">
+            <span class="fixed-width-title fw-bold">Total Revenue</span>
+            <h3>₱ {{ total_revenue|floatformat:2|format_large_number|default:"0" }}</h3>
         </div>
 
-        <!-- Linear Forecasting Section -->
-        <div class="mb-4">
-            <h2 class="mb-3">Sales Forecast</h2>
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body text-center">
-                    <!-- Render the Sales Over Time (Forecast) graph -->
-                    <div class="line-graph-container" style="max-width: 100%; overflow-x: auto;">
-                        <div id="line-graph-container">{{ line_graph|safe }}</div>
-                    </div>
-                </div>
+        <div class="all-sales-container">
+            <div class="sales-container">
+                <span class="fixed-width-title fw-bold">Today's Sales</span>
+                <h3>₱ {{ daily_sales|floatformat:2|format_large_number|default:"0" }}</h3>
+            </div>
+
+            <div class="sales-container">
+                <span class="fixed-width-title fw-bold">Month's Sales</span>
+                <h3>₱ {{ monthly_sales|floatformat:2|format_large_number|default:"0" }}</h3>
+            </div>
+
+            <div class="sales-container">
+                <span class="fixed-width-title fw-bold">Year's Sales</span>
+                <h3>₱ {{ yearly_sales|floatformat:2|format_large_number|default:"0" }}</h3>
             </div>
         </div>
-
-        <!-- Regression Graph Section -->
-        <div class="mb-4">
-            <h2 class="mb-3">Sales with Regression Line</h2>
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body text-center">
-                    <!-- Render the Aggregated Sales with Regression graph -->
-                    <div class="line-graph-container" style="max-width: 100%; overflow-x: auto;">
-                        <div id="regression-graph-container">{{ blank_line_graph|safe }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <style>
-        .loading-screen {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 1);
-        z-index: 1000;
-    }
+    <!-- Line Separator -->
+    <hr class="my-4" style="border-top: 2px solid #ccc;">
 
-    .loading-screen p {
-        margin-top: 10px;
-        font-size: 1.2rem;
-        color: #555;
-    }
+    <div class="container-2">
+        <h3 class="text-light">Monthly Sales</h3>
+        <div class="bar-graph-container">
+            {{ bar_graph|safe }}
+        </div>
+    </div>
 
-    .line-graph-container {
-        width: 100%;
-        text-align: center;
-    }
-    .line-graph-container div {
-        width: 100%;
-    }
-    </style>
+    <div class="container-3">
+        <h3 class="text-light">Sales Forecast</h3>
+        <div class="line-graph-container">
+            {{ line_graph|safe }}
+        </div>
+    </div>
+
+    <div class="container-4">
+        <h3 class="text-light">Sales with Regression Line</h3>
+        <div class="line-graph-container">
+            {{ blank_line_graph|safe }}
+        </div>
+    </div>
+</div>
+
 
 <script>
     // Show loading screen when the page starts loading

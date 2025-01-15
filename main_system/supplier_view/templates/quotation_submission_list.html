@@ -3,12 +3,18 @@
 {% block title %}View Submitted Quotations{% endblock %}
 
 {% block content %}
+<style>
+    .table-responsive {
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <p class="h2">Quotation Submissions</p>
     </div>
 
-    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+    <div class="table-responsive p-3 rounded-3 bg-light">
         <table class="table table-hover align-middle">
             <thead>
                 <tr>
@@ -39,7 +45,7 @@
                                 {% endif %}
                         </td>
                         <td class="text-center small">
-                            <a href="{% url 'quotation_submission_detail' qs.signed_id %}" class="btn btn-info btn-sm">Details</a>
+                            <a href="{% url 'quotation_submission_detail' qs.signed_id %}" class="btn btn-outline-primary btn-sm">Details</a>
                         </td>
                     </tr>
                 {% empty %}

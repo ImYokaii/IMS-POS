@@ -3,12 +3,18 @@
 {% block title %}View Purchase Orders{% endblock %}
 
 {% block content %}
+<style>
+    .table-responsive {
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <p class="h2">Purchase Order List</p>
     </div>
 
-    <div class="table-responsive p-3 rounded-3 bg-light shadow-sm">
+    <div class="table-responsive p-3 rounded-3 bg-light">
         <table class="table table-hover align-middle">
             <thead>
                 <tr>
@@ -45,7 +51,7 @@
                             {% endif %}
                         </td>
                         <td scope="row" class="text-center small">
-                            <a href="{% url 'purchase_orders_detail' po.signed_id %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            <a href="{% url 'purchase_orders_detail' po.signed_id %}" class="btn btn-outline-primary btn-sm">Details</a>
                         </td>
                     </tr>
                 {% empty %}
