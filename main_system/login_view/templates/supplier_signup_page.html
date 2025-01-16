@@ -46,7 +46,7 @@
     justify-content: start;
     gap: 10px;
     width: 100%;
-    margin-top: 140px;
+    margin-top: 300px;
 }
 
 .left-box-container .back-button-container a {
@@ -203,6 +203,10 @@
     font-size: 56px;
 }
 
+.captcha-container {
+    width: 350px;
+}
+
 @media screen and (max-width: 1350px) {
     .company-logo img {
         height: 40px;
@@ -210,7 +214,7 @@
     }
 
     .left-box-container .back-button-container {
-        margin-top: 200px;
+        margin-top: 250px;
     }
 
     .left-box-container {
@@ -238,7 +242,7 @@
     }
 
     .left-box-container .back-button-container {
-        margin-top: 300px;
+        margin-top: 400px;
     }
 
     .left-box-container .title-container h3 {
@@ -279,7 +283,7 @@
     }
 
     .left-box-container .back-button-container {
-        margin-top: 360px;
+        margin-top: 480px;
     }
 
     .left-box-container .right-left-form-container {
@@ -355,7 +359,7 @@
                         <span>Username</span>
                     </label>
                     <div class="form-field">
-                        <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
+                        <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
                         {% if form.username.errors %}
                             <div class="invalid-feedback">
                                 Invalid username.
@@ -370,7 +374,7 @@
                         <span>First Name</span>
                     </label>
                     <div class="form-field">
-                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="First Name">
+                        <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="First Name">
                         {% if form.first_name.errors %}
                             <div class="invalid-feedback">
                                 Invalid first name.
@@ -385,7 +389,7 @@
                         <span>Last Name</span>
                     </label>
                     <div class="form-field">
-                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Last Name">
+                        <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Last Name">
                         {% if form.last_name.errors %}
                             <div class="invalid-feedback">
                                 Invalid last name.
@@ -402,7 +406,7 @@
                         <span>Email Address</span>
                     </label>
                     <div class="form-field">
-                        <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="Email">
+                        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="Email">
                         {% if form.email.errors %}
                             <div class="invalid-feedback">
                                 Invalid email address.
@@ -417,7 +421,7 @@
                         <span>Password</span>
                     </label>
                     <div class="form-field">
-                        <input type="password" class="form-control" id="password1" name="password1" value="{{ form.password1.value|default:'' }}" placeholder="********">
+                        <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="password1" name="password1" value="{{ form.password1.value|default:'' }}" placeholder="********">
                         {% if form.password1.errors %}
                             <div class="invalid-feedback">
                                 Invalid password
@@ -432,7 +436,7 @@
                         <span>Confirm Password</span>
                     </label>
                     <div class="form-field">
-                        <input type="password" class="form-control" id="password2" name="password2" value="{{ form.password2.value|default:'' }}" placeholder="********">
+                        <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="password2" name="password2" value="{{ form.password2.value|default:'' }}" placeholder="********">
                         {% if form.password2.errors %}
                             <div class="invalid-feedback">
                                 Passwords do not match.
@@ -451,7 +455,7 @@
                         <span>Company Name</span>
                     </label>
                     <div class="lower-form-field">
-                        <input type="text" class="form-control" id="company_name" name="company_name" value="{{ supplier_form.company_name.value|default:'' }}" placeholder="Company Name">
+                        <input type="text" class="form-control {% if form.company_name.errors %}is-invalid{% endif %}" id="company_name" name="company_name" value="{{ supplier_form.company_name.value|default:'' }}" placeholder="Company Name">
                         {% if supplier_form.company_name.errors %}
                             <div class="invalid-feedback">
                                 Invalid company name
@@ -466,7 +470,7 @@
                         <span>Company Address</span>
                     </label>
                     <div class="lower-form-field">
-                        <input type="text" class="form-control" id="company_address" name="company_address" value="{{ supplier_form.company_address.value|default:'' }}" placeholder="Company Address">
+                        <input type="text" class="form-control {% if form.company_address.errors %}is-invalid{% endif %}" id="company_address" name="company_address" value="{{ supplier_form.company_address.value|default:'' }}" placeholder="Company Address">
                         {% if supplier_form.company_address.errors %}
                             <div class="invalid-feedback">
                                 Invalid company address.
@@ -481,7 +485,7 @@
                         <span>Company Contact</span>
                     </label>
                     <div class="lower-form-field">
-                        <input type="text" class="form-control" id="company_contact" name="company_contact" value="{{ supplier_form.company_contact.value|default:'' }}" placeholder="Company Contact">
+                        <input type="text" class="form-control {% if form.company_contact.errors %}is-invalid{% endif %}" id="company_contact" name="company_contact" value="{{ supplier_form.company_contact.value|default:'' }}" placeholder="Company Contact">
                         {% if supplier_form.company_contact.errors %}
                             <div class="invalid-feedback">
                                 Invalid company contact.
@@ -494,7 +498,7 @@
 
         <div class="form-container-captcha">
             <label class="form-label">Captcha:</label>
-            <div class="captcha-container">
+            <div class="captcha-container form-control {% if form.captcha.errors %}is-invalid{% endif %}">
                 {{ form.captcha }}
             </div>
             {% if form.captcha.errors %}
