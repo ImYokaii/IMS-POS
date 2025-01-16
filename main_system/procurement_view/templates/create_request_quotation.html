@@ -146,7 +146,7 @@
 
                                         <div class="col-md-6">
                                             <div class="mb-2">
-                                                <label for="id_measurement_{{ forloop.counter0 }}" class="form-label fw-bold mb-0">Measurement</label>
+                                                <label for="id_measurement_{{ forloop.counter0 }}" class="form-label fw-bold mb-0">Actual Unit</label>
                                                 <input type="text" class="form-control {% if form.measurement.errors %}is-invalid{% endif %}" id="id_measurement_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-measurement" value="{{ form.measurement.value|default:'' }}">
                                                 {% if form.measurement.errors %}
                                                     <div class="invalid-feedback">{{ form.measurement.errors }}</div>

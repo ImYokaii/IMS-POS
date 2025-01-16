@@ -152,7 +152,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label fw-bold">Measurement</label>
+                                            <label class="form-label fw-bold">Actual Unit</label>
                                             <p class="form-control-plaintext">{{ form.measurement.value }}</p>
                                             <input type="hidden" class="form-control {% if form.measurement.errors %}is-invalid{% endif %}" id="id_measurement_{{ forloop.counter0 }}" name="form-{{ forloop.counter0 }}-measurement" value="{{ form.measurement.value|default:'' }}">
                                             {% if form.measurement.errors %}

@@ -44,11 +44,11 @@
         </div>
 
         <div class="mb-3">
-            <label for="measurement" class="form-label">Measurement</label>
+            <label for="measurement" class="form-label">Actual Unit</label>
             <input type="text" class="form-control {% if form.measurement.errors %}is-invalid{% endif %}" id="measurement" name="measurement" value="{{ form.measurement.value|default:'' }}">
             {% if form.measurement.errors %}
                 <div class="invalid-feedback">
-                    Invalid Measurement.
+                    Invalid Actual Unit.
                 </div>
             {% endif %}
         </div>
