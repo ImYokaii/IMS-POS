@@ -4,14 +4,29 @@
 
 {% block content %}
 <style>
-    .card {
-        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    }
+.card {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h3 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.button-below-container {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 20px;
+}
 </style>
 
 <div class="container mt-5 d-flex justify-content-center">
     <div class="card p-4" style="width: 500px;">
-        <h2 class="mb-4 text-center">Edit Unit Price</h2>
+        <h3 class="mb-4 text-center">Edit Unit Price</h3>
 
         <form method="POST">
             {% csrf_token %}
@@ -39,7 +54,10 @@
                 {% endif %}
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Save</button>
+            <div class="button-below-container">
+                <button type="submit" class="btn btn-primary w-100">Save</button>
+                <a href="{% url 'quotation_submission_list' %}" class="btn btn-secondary w-100">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

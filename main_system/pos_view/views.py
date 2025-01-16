@@ -92,6 +92,11 @@ def add_item(request):
 @login_required(login_url="/login/")
 def complete_invoice(request):
     invoice = SalesInvoice.objects.filter().order_by('-id').first()
+
+    if invoice.status == "Paid":
+        messages.error(request, "Error! That transaction is already paid.")
+        return redirect('pos_page')
+    
     items = SalesInvoiceItem.objects.filter(invoice=invoice)
 
     total_amount = sum(item.unit_price * item.quantity for item in items)
@@ -111,23 +116,28 @@ def complete_invoice(request):
 def input_cash(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
 
-    if request.method == 'POST':
-        cash_tendered = Decimal(request.POST.get('cash_tendered', 0))
-        
-        if cash_tendered >= invoice.total_amount_with_vat:
-            invoice.cash_tendered = cash_tendered
-            invoice.save()
+    if invoice.status == "Paid":
+        messages.error(request, "Error! That transaction is already paid.")
+        return redirect('pos_page')
 
-            return redirect('transaction_summary', invoice.id)
-        
-        else:
-            messages.error(request, "Cash tendered is less than the total amount payable.")
-            return redirect('input_cash', invoice.id)
+    else:
+        if request.method == 'POST':
+            cash_tendered = Decimal(request.POST.get('cash_tendered', 0))
+            
+            if cash_tendered >= invoice.total_amount_with_vat:
+                invoice.cash_tendered = cash_tendered
+                invoice.save()
 
-    return render(request, 'input_cash.html', {
-        'invoice': invoice,
-        'total_amount_with_vat': invoice.total_amount_with_vat,
-    })
+                return redirect('transaction_summary', invoice.id)
+            
+            else:
+                messages.error(request, "Cash tendered is less than the total amount payable.")
+                return redirect('input_cash', invoice.id)
+
+        return render(request, 'input_cash.html', {
+            'invoice': invoice,
+            'total_amount_with_vat': invoice.total_amount_with_vat,
+        })
 
 
 @login_required(login_url="/login/")
@@ -151,6 +161,10 @@ def delete_item(request, item_id):
 def transaction_summary(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
 
+    if invoice.status == 'Paid':
+        messages.error(request, "Error! That transaction is already paid.")
+        return redirect('pos_page')
+
     change = invoice.cash_tendered - invoice.total_amount_with_vat
 
     return render(request, 'transaction_summary.html', {
@@ -162,6 +176,10 @@ def transaction_summary(request, invoice_id):
 @login_required(login_url="/login/")
 def finish_transaction(request, invoice_id):
     invoice = get_object_or_404(SalesInvoice, id=invoice_id)
+
+    if invoice.status == 'Paid':
+        messages.error(request, "Error! That transaction is already paid.")
+        return redirect('pos_page')
 
     invoice.status = 'Paid'
     invoice.save()
@@ -187,12 +205,15 @@ def finish_transaction(request, invoice_id):
 
     return redirect('receipt_page', invoice.id)
 
-    messages.success(request, "Transaction finished successfully.")
-    return redirect('pos_page')
-
 
 @login_required(login_url="/login/")
 def receipt_page(request, invoice_id):
+    is_two = OfficialReceipt.objects.filter(sales_invoice__id=invoice_id).count()
+
+    if is_two >= 2:
+        messages.error(request, "Error! That transaction is already paid.")
+        return redirect('pos_page')
+
     official_receipt = get_object_or_404(OfficialReceipt, sales_invoice__id=invoice_id)
 
     return render(request, 'receipt_page.html', {

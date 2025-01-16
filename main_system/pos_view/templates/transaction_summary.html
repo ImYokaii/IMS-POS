@@ -13,6 +13,12 @@
     overflow-y: auto;
 }
 
+.title-container h3 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+}
+
 .square-container {
     background-color: white;
     display: flex;
@@ -21,9 +27,10 @@
     justify-content: center;
     height: 400px;
     width: 400px;
-    border-radius: 30px;
+    border-radius: 10px;
     padding: 40px;
     gap: 20px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .summary-container {
@@ -70,7 +77,7 @@
 
 <div class="box-container">
     <div class="title-container">
-        <h1>Transaction Summary</h1>
+        <h3>Transaction Summary</h3>
     </div>
 
     <div class="square-container">
@@ -79,7 +86,7 @@
         <div class="summary-container">
             <p><strong style="font-weight: bold;">Invoice No:</strong> {{ invoice.invoice_no }}</p>
             <p><strong style="font-weight: bold;">Total Amount:</strong> ₱{{ invoice.total_amount|floatformat:2 }}</p>
-            <p><strong style="font-weight: bold;">Total Amount (VAT Inclusive):</strong> ₱{{ invoice.total_amount|floatformat:2 }}</p>
+            <p><strong style="font-weight: bold;">Total Amount (VAT Inclusive):</strong> ₱{{ invoice.total_amount_with_vat|floatformat:2 }}</p>
             <p><strong style="font-weight: bold;">Cash Tendered:</strong> ₱{{ invoice.cash_tendered|floatformat:2 }}</p>
             <p><strong style="font-weight: bold;">Change:</strong> ₱{{ change|floatformat:2 }}</p>
         </div>

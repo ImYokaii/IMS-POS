@@ -4,17 +4,31 @@
 
 {% block content %}
 <style>
-    .d-flex .btn {
-        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    }
+.d-flex .btn {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
 
-    .table-responsive {
-        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    }
+.table-responsive {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h3 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40px;
+}
 </style>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="h2">Purchase Request List</p>
+        <h3>Purchase Request List</h3>
         <a class="btn btn-success rounded-3" href="{% url 'accepted_quotations_list' %}">
             <i class="bi bi-cart2"></i>
             <span>New Purchase Request</span>
