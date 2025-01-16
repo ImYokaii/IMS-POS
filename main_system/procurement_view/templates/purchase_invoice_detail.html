@@ -4,12 +4,30 @@
 
 {% block content %}
 <style>
-    .card {
-        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    }
+.card {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h3 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.button-below-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+
+.button-below-container a {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
 </style>
 <div class="card mt-5 mb-5 m-auto p-5 w-75">
-    <h1 class="mb-4 text-center">Purchase Invoice Details</h1>
+    <h3 class="mb-4 text-center">Purchase Invoice Details</h3>
     
     <div class="row mb-2">
         <div class="col-md-6">
@@ -85,8 +103,8 @@
     </div>
 </div>
 
-<div class="text-center">
+<div class="text-center button-below-container">
+    <a href="{% url 'purchase_invoice_list' %}" class="btn btn-secondary">Back</a>
     <a href="{% url 'download_purchase_invoice_pdf' purchase_invoice.id %}" class="btn btn-primary">Download PDF</a>
-    <a href="{% url 'purchase_invoice_list' %}" class="btn btn-outline-secondary">Back to List</a>
 </div>
 {% endblock %}

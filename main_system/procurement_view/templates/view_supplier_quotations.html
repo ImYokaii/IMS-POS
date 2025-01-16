@@ -4,13 +4,27 @@
 
 {% block content %}
 <style>
-    .table-responsive {
-        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-    }
+.table-responsive {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h3 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40px;
+}
 </style>
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <p class="h2">List of Supplier Quotations</p>
+        <h3>List of Supplier Quotations</h3>
     </div>
 
     <div class="table-responsive p-3 rounded-3 bg-light">
@@ -68,6 +82,6 @@
 </div>
 
 <div class="text-center m-3">
-    <a href="{% url 'request_quotation_list' %}" class="btn btn-outline-secondary">Go Back</a>
+    <a href="{% url 'request_quotation_list' %}" class="btn btn-secondary">Go Back</a>
 </div>
 {% endblock %}

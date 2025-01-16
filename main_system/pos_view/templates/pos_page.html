@@ -12,6 +12,12 @@
         margin: 20px 0px;
     }
 
+    .title-container h3 {
+        text-align: center;
+        font-size: 42px;
+        font-weight: bold;
+    }
+
     .upper-section-container {
         width: 100%;
         display: flex;
@@ -37,7 +43,7 @@
     .search-bar-button input {
         height: 40px;
         width: 220px;
-        border-radius: 30px 0px 0px 30px;
+        border-radius: 10px 0px 0px 10px;
         border-style: none;
         box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
     }
@@ -47,7 +53,7 @@
         background-color: #8E0D0D;
         height: 40px;
         width: 120px;
-        border-radius: 0px 30px 30px 0px;
+        border-radius: 0px 10px 10px 0px;
         border-style: none;
         box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
     }
@@ -67,7 +73,7 @@
         width: 100%;
         height: 100%;
         overflow-y: auto;
-        border-radius: 30px;
+        border-radius: 10px;
         padding: 20px;
         box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
     }
@@ -104,7 +110,7 @@
         color: white;
         background-color: #8E0D0D;
         border-style: none;
-        border-radius: 30px;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -125,7 +131,7 @@
         height: 100%;
         width: 100%;
         background-color: white;
-        border-radius: 30px;
+        border-radius: 10px;
         display: flex;
         flex-direction: column;
         align-items: left;
@@ -149,7 +155,7 @@
         display: flex;
         flex-direction: column;
         padding: 20px;
-        border-radius: 30px;
+        border-radius: 10px;
         box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
     }
 
@@ -197,7 +203,7 @@
 </style>
 
 <div class="title-container">
-    <h1>POS Page</h1>
+    <h3>Point-Of-Sale</h3>
 </div>
 
 <div class="upper-section-container">
@@ -327,7 +333,9 @@
                                 {% if invoice.status != "Completed" %}
                                     <form method="POST" action="{% url 'delete_item' item.id %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </form>
                                 {% endif %}
                             </td>
