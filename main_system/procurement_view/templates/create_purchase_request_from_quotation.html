@@ -50,6 +50,18 @@
         .card {
             box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
         }
+
+        .button-below-container {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+        
+        .button-below-container a {
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
 
     <div class="container mt-5">
@@ -112,36 +124,41 @@
 
                     <div class="custom-separator"></div>
 
-                    <h4 class="text-muted mt-4 mb-4">Items</h4>
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="small">Product Name</th>
-                                <th scope="col" class="small">Quantity</th>
-                                <th scope="col" class="small">Measurement</th>
-                                <th scope="col" class="small">Unit Price</th>
-                                <th scope="col" class="small">Price Valid Until</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in items %}
+                    <div class="mb-4" style="overflow-y: auto;">
+                        <h4 class="text-muted mt-4 mb-4">Items</h4>
+                        <table class="table table-hover align-middle" style="overflow-y: auto; width: 100%;">
+                            <thead>
                                 <tr>
-                                    <td>{{ item.product_name }}</td>
-                                    <td>
-                                        <input type="number" name="quantity" class="form-control {% if item.quantity.errors %}is-invalid{% endif %}" value="{{ item.quantity }}" min="0" required>
-                                        {% if item.quantity.errors %}
-                                            <div class="invalid-feedback">{{ item.quantity.errors }}</div>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ item.measurement }}</td>
-                                    <td>₱ {{ item.unit_price }}</td>
-                                    <td>{{ item.price_valid_until }}</td>
+                                    <th scope="col" class="small">Product Name</th>
+                                    <th scope="col" class="small">Quantity</th>
+                                    <th scope="col" class="small">Measurement</th>
+                                    <th scope="col" class="small">Unit Price</th>
+                                    <th scope="col" class="small">Price Valid Until</th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>{{ item.product_name }}</td>
+                                        <td>
+                                            <input type="number" name="quantity" class="form-control {% if item.quantity.errors %}is-invalid{% endif %}" value="{{ item.quantity }}" min="0" required>
+                                            {% if item.quantity.errors %}
+                                                <div class="invalid-feedback">{{ item.quantity.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ item.measurement }}</td>
+                                        <td>₱ {{ item.unit_price }}</td>
+                                        <td>{{ item.price_valid_until }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
 
-                    <button type="submit" class="btn btn-success">Submit Purchase Request</button>
+                    <div class="button-below-container">
+                        <a href="{% url 'accepted_quotations_list' %}" class="btn btn-danger">Cancel</a>
+                        <button type="submit" class="btn btn-success">Submit Purchase Request</button>
+                    </div>
                 </form>
             </div>
         </div>
