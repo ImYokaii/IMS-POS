@@ -3,6 +3,8 @@ from . import views
 
 
 urlpatterns = [
+    path('invalid_request/', views.invalid_request, name="invalid_request"),
+
     path('request_quotations_list/', views.request_quotations_list, name="request_quotations_list"),
     path('request_quotations_detail/<str:signed_id>', views.request_quotations_detail, name="request_quotations_detail"),
     path('download_request_quotations_pdf/<int:quotation_id>', views.download_request_quotations_pdf, name="download_request_quotations_pdf"),

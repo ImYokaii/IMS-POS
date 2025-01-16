@@ -134,7 +134,7 @@
         </div>
 
         <div class="form-container">
-            <label class="form-label">Measurement</label>
+            <label class="form-label">Actual Unit</label>
             <input type="text" class="form-control {% if form.measurement.errors %}is-invalid{% endif %}" id="measurement" name="measurement" value="{{ form.measurement.value|default:'' }}">
             {% if form.measurement.errors %}
                 <div class="invalid-feedback">

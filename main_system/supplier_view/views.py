@@ -27,6 +27,11 @@ load_dotenv()
 
 
 @login_required(login_url=settings.LOGIN_URL)
+def invalid_request(request):
+    return render(request, 'invalid_request.html')
+
+
+@login_required(login_url=settings.LOGIN_URL)
 def request_quotations_list(request):
     STATUS = os.environ.get('RQ_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
@@ -52,7 +57,7 @@ def request_quotations_list(request):
 def request_quotations_detail(request, signed_id):
     quotation_id = unsign_id(signed_id)
     if quotation_id is None:
-        return HttpResponse("Invalid request", status=400)
+        return redirect("invalid request")
     
     quotation = get_object_or_404(RequestQuotation, id=quotation_id)
 
@@ -137,7 +142,7 @@ def purchase_orders_list(request):
 def purchase_orders_detail(request, signed_id):
     po_id = unsign_id(signed_id)
     if po_id is None:
-        return HttpResponse("Invalid request", status=400)
+        return redirect("invalid request")
 
     STATUS_CHOICES = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     purchase_order = get_object_or_404(PurchaseOrder, id=po_id)
@@ -238,7 +243,7 @@ def purchase_invoices_list(request):
 def purchase_invoices_detail(request, signed_id):
     pi_id = unsign_id(signed_id)
     if pi_id is None:
-        return HttpResponse("Invalid request", status=400)
+        return redirect("invalid request")
     
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
 
@@ -308,7 +313,7 @@ def download_purchase_invoices_pdf(request, purchase_invoice_id):
 def create_quotation_submission(request, signed_id):
     quotation_id = unsign_id(signed_id)
     if quotation_id is None:
-        return HttpResponse("Invalid request", status=400)
+        return redirect("invalid request")
 
     quotation_request = get_object_or_404(RequestQuotation, id=quotation_id)
     quotation_request_items = RequestQuotationItem.objects.filter(request_quotation=quotation_request)
@@ -407,9 +412,12 @@ def quotation_submission_list(request):
 def quotation_submission_detail(request, signed_id):
     qs_id = unsign_id(signed_id)
     if qs_id is None:
-        return HttpResponse("Invalid request", status=400)
+        return redirect("invalid request")
     
     quotation_submission = get_object_or_404(QuotationSubmission, id=qs_id)
+
+    if quotation_submission.supplier != request.user or not quotation_submission.exists():
+        return redirect('invalid_request')
 
     STATUS = os.environ.get('QS_STATUS_CHOICES', '').split(',')
     STATUS_0 = STATUS[0]
@@ -474,7 +482,7 @@ def download_quotation_submission_pdf(request, quotation_id):
 def edit_unit_price_qs(request, signed_id):
     item_id = unsign_id(signed_id)
     if item_id is None:
-        return HttpResponse("Invalid request", status=400)
+        return redirect("invalid request")
     
     item = get_object_or_404(QuotationSubmissionItem, id=item_id)
 

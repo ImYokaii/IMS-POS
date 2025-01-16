@@ -10,6 +10,24 @@
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+h3 {
+    text-align: center;
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.button-below-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+
+.button-below-container a {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 @media screen and (max-width: 520px) {
     .card {
         padding: 20px;
@@ -28,7 +46,7 @@
 </style>
 
 <div class="card mt-5 mb-5 m-auto">
-    <h1 class="mb-4 text-center">Transaction Invoice Details</h1>
+    <h3 class="mb-4 text-center">Transaction Invoice Details</h3>
     
     <div class="row mb-2">
         <div class="col-md-6">
@@ -81,7 +99,7 @@
                 <tr>
                     <th scope="col"><p class="small text-muted mb-0">Product Name</p></th>
                     <th scope="col"><p class="small text-muted mb-0">Quantity</p></th>
-                    <th scope="col"><p class="small text-muted mb-0">Measurement</p></th>
+                    <th scope="col"><p class="small text-muted mb-0">Actual Unit</p></th>
                     <th scope="col"><p class="small text-muted mb-0">Unit Price</p></th>
                     <th scope="col"><p class="small text-muted mb-0">Total Price</p></th>
                 </tr>
@@ -118,8 +136,8 @@
     </div>
 </div>
 
-<div class="text-center">
+<div class="text-center button-lower-container">
+    <a href="{% url 'transaction_invoices' %}" class="btn btn-outline-secondary">Back</a>
     <a href="{% url 'download_sales_invoice_pdf' invoice.id %}" class="btn btn-primary">Download PDF</a>
-    <a href="{% url 'transaction_invoices' %}" class="btn btn-outline-secondary">Back to List</a>
 </div>
 {% endblock %}
