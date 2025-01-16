@@ -257,7 +257,7 @@
             </div>
 
             <div class="form-field">
-                <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
+                <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
                 {% if form.username.errors %}
                     <div class="invalid-feedback">
                         Invalid username.
@@ -273,7 +273,7 @@
             </label>
 
             <div class="form-field">
-                <input type="password" class="form-control" id="password" name="password" value="{{ form.password.value|default:'' }}" placeholder="********">
+                <input type="password" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="password" name="password" value="{{ form.password.value|default:'' }}" placeholder="********">
                 {% if form.password.errors %}
                     <div class="invalid-feedback">
                         Invalid password.
@@ -284,7 +284,7 @@
 
         <div class="form-container">
             <label class="form-label">Captcha</label>
-            <div class="captcha-container">
+            <div class="captcha-container form-control {% if form.captcha.errors %}is-invalid{% endif %}">
                 {{ form.captcha }}
             </div>
             {% if form.captcha.errors %}

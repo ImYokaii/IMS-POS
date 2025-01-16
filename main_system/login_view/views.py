@@ -58,8 +58,7 @@ def login_page(request):
         else:
             username = request.POST.get('username')
             check_attempts = increment_failed_login_attempts(request, username)
-
-            return redirect("login")
+            return render(request, "login.html", {"form": form})
             
     else:
         form = LoginForm()
@@ -98,12 +97,14 @@ def employee_signup_page(request):
                     company_contact=None)
             
                 return redirect("login")
+            
+        else:
+            return render(request, "employee_signup_page.html", {"form": form})
     
     else:
         form = UserRegistrationForm()
 
-    return render(request, "employee_signup_page.html", 
-        {"form": form,})
+    return render(request, "employee_signup_page.html", {"form": form,})
 # =============================================== #
 
 
@@ -136,6 +137,11 @@ def supplier_signup_page(request):
                     is_permitted=False)
                 
                 return redirect("login")
+            
+        else:
+            return render(request, "supplier_signup_page.html", 
+                {"form": form,
+                "supplier_form": supplier_form,})
     
     else:
         form = UserRegistrationForm()

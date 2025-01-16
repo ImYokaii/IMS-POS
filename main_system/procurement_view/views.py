@@ -30,7 +30,7 @@ def invalid_request(request):
 @login_required(login_url=settings.LOGIN_URL)
 def accepted_quotations_list(request):
     due_date = timezone.now().date().strftime('%Y-%m-%d')
-    accepted_quotations = QuotationSubmission.objects.filter(status="Accepted", quote_valid_until__gte=due_date).order_by('-quotation_no')
+    accepted_quotations = QuotationSubmission.objects.filter(status="Accepted", quote_valid_until__gt=due_date).order_by('-quotation_no')
 
     for quotation in accepted_quotations:
         quotation.signed_id = sign_id(quotation.id)

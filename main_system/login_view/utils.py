@@ -21,7 +21,7 @@ def check_due_request_quotations():
     today = timezone.now().date()
     today_str = today.strftime('%Y-%m-%d')
 
-    request_quotations = RequestQuotation.objects.filter(quote_valid_until__lt=today_str, status=ONGOING_STATUS)
+    request_quotations = RequestQuotation.objects.filter(quote_valid_until__lte=today_str, status=ONGOING_STATUS)
     request_quotations.update(status=ENDED_STATUS)
 # =============================================== #
 
@@ -34,6 +34,7 @@ def check_logging_user_role(role):
     ROLE_4_URL = os.environ.get('ROLE_4_URL').split(",")
 
     if role == os.environ.get('ROLE_1'):
+        check_due_request_quotations()
         return ROLE_1_URL[0]
     
     elif role == os.environ.get('ROLE_2'):

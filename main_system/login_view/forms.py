@@ -33,8 +33,12 @@ class UserRegistrationForm(UserCreationForm):
 
 # ===== SUPPLIER Registration FORM ===== #
 class CompanyRegistrationForm(forms.ModelForm):
-    """Form to register a supplier with specific details."""
+
     class Meta:
         model = CompanyProfile
         fields = ['company_name', 'company_address', 'company_contact']
+
+    company_name = forms.CharField(required=True)
+    company_address = forms.CharField(required=True)
+    company_contact = forms.CharField(required=True)
 # =============================================== #

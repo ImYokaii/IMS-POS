@@ -188,6 +188,13 @@
     font-size: 56px;
 }
 
+.captcha-container {
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    width: 335px;
+}
+
 @media screen and (max-width: 1350px) {
     .company-logo img {
         height: 40px;
@@ -215,7 +222,7 @@
     }
 
     .left-box-container .back-button-container {
-        margin-top: 20px;
+        margin-top: 120px;
     }
 
     .left-box-container .title-container h3 {
@@ -252,7 +259,7 @@
     }
 
     .left-box-container .back-button-container {
-        margin-top: 40px;
+        margin-top: 220px;
     }
 
     .left-box-container .right-left-form-container {
@@ -324,7 +331,7 @@
                         <span>Username</span>
                     </label>
                     <div class="form-field">
-                        <input type="text" class="form-control" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
+                        <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" id="username" name="username" value="{{ form.username.value|default:'' }}" placeholder="Username">
                         {% if form.username.errors %}
                             <div class="invalid-feedback">
                                 Invalid username.
@@ -339,7 +346,7 @@
                         <span>First Name</span>
                     </label>
                     <div class="form-field">
-                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="First Name">
+                        <input type="text" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" id="first_name" name="first_name" value="{{ form.first_name.value|default:'' }}" placeholder="First Name">
                         {% if form.first_name.errors %}
                             <div class="invalid-feedback">
                                 Invalid first name.
@@ -354,7 +361,7 @@
                         <span>Last Name</span>
                     </label>
                     <div class="form-field">
-                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Last Name">
+                        <input type="text" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" id="last_name" name="last_name" value="{{ form.last_name.value|default:'' }}" placeholder="Last Name">
                         {% if form.last_name.errors %}
                             <div class="invalid-feedback">
                                 Invalid last name.
@@ -371,7 +378,7 @@
                         <span>Email Address</span>
                     </label>
                     <div class="form-field">
-                        <input type="email" class="form-control" id="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="Email">
+                        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" id="email" name="email" value="{{ form.email.value|default:'' }}" placeholder="Email">
                         {% if form.email.errors %}
                             <div class="invalid-feedback">
                                 Invalid email address.
@@ -386,7 +393,7 @@
                         <span>Password</span>
                     </label>
                     <div class="form-field">
-                        <input type="password" class="form-control" id="password1" name="password1" value="{{ form.password1.value|default:'' }}" placeholder="********">
+                        <input type="password" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" id="password1" name="password1" value="{{ form.password1.value|default:'' }}" placeholder="********">
                         {% if form.password1.errors %}
                             <div class="invalid-feedback">
                                 Invalid password.
@@ -401,7 +408,7 @@
                         <span>Confirm Password</span>
                     </label>
                     <div class="form-field">
-                        <input type="password" class="form-control" id="password2" name="password2" value="{{ form.password2.value|default:'' }}" placeholder="********">
+                        <input type="password" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" id="password2" name="password2" value="{{ form.password2.value|default:'' }}" placeholder="********">
                         {% if form.password2.errors %}
                             <div class="invalid-feedback">
                                 Passwords do not match.
@@ -417,7 +424,7 @@
             <label class="form-label">
                 <span>Captcha:</span>
             </label>
-            <div class="captcha-container">
+            <div class="captcha-container form-control {% if form.captcha.errors %}is-invalid{% endif %}">
                 {{ form.captcha }}
             </div>
             {% if form.captcha.errors %}
