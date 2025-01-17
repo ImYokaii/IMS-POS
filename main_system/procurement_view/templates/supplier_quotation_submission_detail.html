@@ -7,6 +7,18 @@
 .card {
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+.button-below-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+
+.button-below-container a {
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
 </style>
 
 <div class="card mt-5 mb-5 m-auto p-5 w-75">
@@ -102,8 +114,8 @@
     </div>
 </div>
 
-<div class="text-center">
+<div class="text-center button-below-container">
+    <a href="{% url 'view_supplier_quotations' quotation_submission.request_quotation.signed_id %}" class="btn btn-secondary">Back</a>
     <a href="{% url 'download_supplier_quotation_pdf' quotation_submission.id %}" class="btn btn-primary">Download PDF</a> 
-    <a href="{% url 'view_supplier_quotations' quotation_submission.request_quotation.signed_id %}" class="btn btn-outline-secondary">Go Back</a>
 </div>
 {% endblock %}
