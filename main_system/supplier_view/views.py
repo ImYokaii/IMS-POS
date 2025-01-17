@@ -117,7 +117,7 @@ def download_request_quotations_pdf(request, quotation_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 def purchase_orders_list(request):
-    purchase_orders = PurchaseOrder.objects.all().order_by('-quotation_no')
+    purchase_orders = PurchaseOrder.objects.filter(supplier=request.user).order_by('-quotation_no')
 
     for quotation in purchase_orders:
         quotation.signed_id = sign_id(quotation.id)
@@ -146,6 +146,9 @@ def purchase_orders_detail(request, signed_id):
 
     STATUS_CHOICES = os.environ.get('PO_STATUS_CHOICES', '').split(',')
     purchase_order = get_object_or_404(PurchaseOrder, id=po_id)
+
+    if purchase_order.supplier != request.user:
+        return redirect('invalid_request')
 
     vat = purchase_order.total_amount * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
 
@@ -190,6 +193,10 @@ def purchase_orders_detail(request, signed_id):
 @login_required(login_url=settings.LOGIN_URL)
 def download_purchase_orders_pdf(request, purchase_order_id):
     purchase_order = get_object_or_404(PurchaseOrder, id=purchase_order_id)
+
+    if purchase_order.supplier != request.user:
+        return redirect('invalid_request')
+    
     items = purchase_order.items.all()
 
     for item in items:
@@ -247,6 +254,9 @@ def purchase_invoices_detail(request, signed_id):
     
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=pi_id)
 
+    if purchase_invoice.supplier != request.user:
+        return redirect('invalid_request')
+
     vat = purchase_invoice.total_amount_payable * Decimal(float(os.environ.get('VALUE_ADDED_TAX')))
 
     items = purchase_invoice.items.all()
@@ -283,6 +293,10 @@ def purchase_invoices_detail(request, signed_id):
 @login_required(login_url=settings.LOGIN_URL)
 def download_purchase_invoices_pdf(request, purchase_invoice_id):
     purchase_invoice = get_object_or_404(PurchaseInvoice, id=purchase_invoice_id)
+
+    if purchase_invoice.supplier != request.user:
+        return redirect('invalid_request')
+    
     items = purchase_invoice.items.all()
 
     for item in items:

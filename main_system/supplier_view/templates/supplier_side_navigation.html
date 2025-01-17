@@ -12,6 +12,10 @@
     gap: 10px;
 }
 
+.side-nav-container a {
+    color: rgba(255, 255, 255, 0.5);
+}
+
 .side-nav-container .nav-item {
     padding: 10px;
     transition: 0.5s ease;
@@ -24,6 +28,62 @@
     border-color: white;
     background-color: #8E0D0D;
 }
+
+{% if request.path == '/supplier/request_quotations_list/' or request.path == '/supplier/request_quotations_list'%}
+.side-nav-container .request-quotations-link a {
+    color: white;
+}
+
+.side-nav-container .request-quotations-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
+
+{% if request.path == '/supplier/quotation_submission_list/' or request.path == '/supplier/quotation_submission_list'%}
+.side-nav-container .quotation-submission-link a {
+    color: white;
+}
+
+.side-nav-container .quotation-submission-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
+
+{% if request.path == '/supplier/purchase_orders_list/' or request.path == '/supplier/purchase_orders_list'%}
+.side-nav-container .purchase-orders-link a {
+    color: white;
+}
+
+.side-nav-container .purchase-orders-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
+
+{% if request.path == '/supplier/purchase_invoices_list/' or request.path == '/supplier/purchase_invoices_list'%}
+.side-nav-container .purchase-invoices-link a {
+    color: white;
+}
+
+.side-nav-container .purchase-invoices-link {
+    color: white;
+    border-top-style: solid;
+    border-width: 1px;
+    border-color: white;
+    background-color: #8E0D0D;
+}
+{% endif %}
 
 .nav-item strong {
     white-space: nowrap;
@@ -43,26 +103,26 @@
 </style>
 
 <div class="side-nav-container">
-    <div class="nav-item">
-        <a class="nav-link text-white" href="{% url 'request_quotations_list' %}">
+    <div class="nav-item request-quotations-link">
+        <a class="nav-link" href="{% url 'request_quotations_list' %}">
             <strong>Quotations</strong>
         </a>
     </div>
 
-    <div class="nav-item">
-        <a class="nav-link text-white" href="{% url 'quotation_submission_list' %}">
+    <div class="nav-item quotation-submission-link">
+        <a class="nav-link" href="{% url 'quotation_submission_list' %}">
             <strong>Submissions</strong>
         </a>
     </div>
 
-    <div class="nav-item">
-        <a class="nav-link text-white" href="{% url 'purchase_orders_list' %}">
+    <div class="nav-item purchase-orders-link">
+        <a class="nav-link" href="{% url 'purchase_orders_list' %}">
             <strong>Orders</strong>
         </a>
     </div>
 
-    <div class="nav-item">
-        <a class="nav-link text-white" href="{% url 'purchase_invoices_list' %}">
+    <div class="nav-item purchase-invoices-link">
+        <a class="nav-link" href="{% url 'purchase_invoices_list' %}">
             <strong>Invoices</strong>
         </a>
     </div>
