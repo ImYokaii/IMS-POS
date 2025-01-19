@@ -68,6 +68,10 @@ def add_item(request):
         if product.selling_price <= 0:
             messages.error(request, "This product cannot be added to the invoice because its selling price is 0.")
             return redirect('pos_page')
+
+        if product.quantity < quantity:
+            messages.error(request, "Error! Quantity can not be greater than the inventory quantity.")
+            return redirect('pos_page')
         
         invoice = SalesInvoice.objects.filter().order_by('-id').first()
 
