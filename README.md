@@ -35,7 +35,8 @@ Stockord is an inventory management system specifically designed for local hardw
 - Other Technologies:
     - Barcode Scanning: ZXing library
     - Financial Forecasting: Plotly library
-    - Cloud Infrastructure: Amazon Web Services (AWS) - EC2 (web server), RDS (database), S3 (storage), Cloudflare (domain/security)
+    - Cloud Infrastructure: Amazon Web Services (AWS)
+    - EC2 (web server), RDS (database), S3 (storage), Cloudflare (domain/security)
 
 
 ## Access The System
