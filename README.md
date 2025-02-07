@@ -39,7 +39,7 @@ Stockord is an inventory management system specifically designed for local hardw
     - EC2 (web server), RDS (database), S3 (storage), Cloudflare (domain/security)
 
 
-## Access The System
+## Access The System (Researchers Decided to Closed the Web Server to minimize the cost of billing)
 - Website Link: https://www.stockord.win
 
 Login As:
